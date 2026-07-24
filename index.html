@@ -61,10 +61,6 @@ p{text-wrap:pretty}
 .ticker-inner{display:inline-flex;animation:tickmove 38s linear infinite}
 .ticker-inner span{padding-right:2.2em}
 @keyframes tickmove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@media (prefers-reduced-motion: reduce){
-  .ticker-inner{animation:none}
-  #factory{display:none}
-}
 
 /* ===== hazard tape ===== */
 .tape{
@@ -104,8 +100,39 @@ header{padding:56px 0 40px;position:relative}
 .online::before{content:"●";margin-right:6px;animation:blink 2.2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
-/* ===== sections ===== */
-section{padding:44px 0 8px}
+/* ===== sections / responsive columns ===== */
+section{padding:44px 0 8px;break-inside:avoid}
+@media (min-width: 960px){
+  .wrap{max-width:1200px}
+  .cols{columns:2;column-gap:44px}
+  header{max-width:640px}
+  section{padding-top:28px}
+}
+@media (min-width: 1500px){
+  .wrap{max-width:1760px}
+  .cols{columns:3}
+}
+@media (min-width: 2100px){
+  .wrap{max-width:2300px}
+  .cols{columns:4}
+}
+
+/* ===== 遊び心ギミック第1弾 ===== */
+.status .row{opacity:0;transform:translateX(-8px);animation:boot .35s ease-out forwards}
+.status .row:nth-child(1){animation-delay:.15s}
+.status .row:nth-child(2){animation-delay:.3s}
+.status .row:nth-child(3){animation-delay:.45s}
+.status .row:nth-child(4){animation-delay:.6s}
+.status .row:nth-child(5){animation-delay:.75s}
+.status .row:nth-child(6){animation-delay:.9s}
+@keyframes boot{to{opacity:1;transform:none}}
+.logo .dot{animation:blink 1.4s infinite}
+.ship,.crew,.latest,.restricted{transition:transform .2s ease,border-color .2s ease}
+.ship:hover,.crew:hover,.latest:hover{transform:translateY(-3px);border-color:var(--accent-dim)}
+.restricted.open .door-stripes{animation:alarm .45s steps(2) 4}
+@keyframes alarm{50%{filter:brightness(1.7) saturate(1.4)}}
+.emblem{transition:transform .25s}
+.ship-top:hover .emblem{transform:rotate(-6deg) scale(1.06)}
 .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:20px}
 .sec-head .en{font-size:11px;letter-spacing:.24em;color:var(--accent)}
 .sec-head h2{font-size:19px;font-weight:800}
@@ -305,6 +332,8 @@ footer{margin-top:56px}
     <div class="row"><span>保有機体</span><b>17機</b></div>
   </div>
 </header>
+
+<main class="cols">
 
 <!-- ================= CREW ================= -->
 <section>
@@ -511,6 +540,8 @@ footer{margin-top:56px}
   </div>
 </section>
 
+</main><!-- /cols -->
+
 </div><!-- /wrap -->
 
 <div id="sortie-fx" hidden aria-hidden="true">
@@ -542,7 +573,6 @@ footer{margin-top:56px}
 // ===== 24時間稼働の工場背景（ドット絵版 v2）=====
 // 自作スプライト（誘導員・パンダさん機・格納庫）＋ Kenney CC0 工場パーツ
 (()=>{
-if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 const cv=document.getElementById('factory'), cx=cv.getContext('2d');
 let W=0,H=0;
 function resize(){
@@ -692,7 +722,6 @@ function frame(now){
   window.addEventListener('pageshow', reset); // 戻ってきた時に演出を畳む
   document.querySelectorAll('a[data-sortie]').forEach(a => {
     a.addEventListener('click', e => {
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; // 演出なし＝通常リンク
       e.preventDefault();
       if (busy) return;
       busy = true;
