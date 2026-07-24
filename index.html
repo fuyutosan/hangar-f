@@ -51,10 +51,11 @@ p{text-wrap:pretty}
 #factory{
   position:fixed;inset:0;z-index:-1;pointer-events:none;
 }
-/* ===== status ticker ===== */
+/* ===== status ticker（天井の稼働表示＝スクロールしても付いてくる） ===== */
+.topbar{position:sticky;top:0;z-index:50;box-shadow:0 4px 14px rgba(0,0,0,.45)}
 .ticker{
   overflow:hidden;border-bottom:1px solid var(--line);
-  background:rgba(11,14,20,.92);
+  background:rgba(11,14,20,.96);
   font-size:11px;letter-spacing:.12em;color:var(--accent);
   padding:6px 0;white-space:nowrap;
 }
@@ -323,11 +324,13 @@ footer{margin-top:56px}
 <canvas id="factory" aria-hidden="true"></canvas>
 <div id="boot" hidden aria-hidden="true"></div>
 
+<div class="topbar">
 <div class="tape"></div>
 <div class="ticker mono" aria-hidden="true"><div class="ticker-inner">
 <span>◉ 第F格納庫 24時間稼働中</span><span>溶接班: 火花良好</span><span>塗装ライン: いい色出てます</span><span>誘導員: 本日も絶好調</span><span>管制塔: 異常なし（平和）</span><span>次期機体: 構想中 → まもなく製造</span><span>パンダさん: 笹休憩中</span><span>整備記録: 自動転記オンライン</span>
 <span>◉ 第F格納庫 24時間稼働中</span><span>溶接班: 火花良好</span><span>塗装ライン: いい色出てます</span><span>誘導員: 本日も絶好調</span><span>管制塔: 異常なし（平和）</span><span>次期機体: 構想中 → まもなく製造</span><span>パンダさん: 笹休憩中</span><span>整備記録: 自動転記オンライン</span>
 </div></div>
+</div><!-- /topbar -->
 
 <div class="wrap">
 
