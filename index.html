@@ -253,8 +253,28 @@ body.overdrive .logo{text-shadow:0 0 20px rgba(255,201,60,.75)}
   margin-left:auto;font-size:11px;letter-spacing:.2em;color:var(--accent);
   border:1px solid var(--accent-dim);border-radius:6px;padding:6px 10px;white-space:nowrap;
 }
-.hangar-inner{max-height:0;overflow:hidden;transition:max-height .7s ease}
-.restricted.open .hangar-inner{max-height:1600px}
+.hangar-inner{
+  max-height:0;overflow:hidden;position:relative;
+  transition:max-height .5s ease .4s; /* 閉じる時: シャッター降下(.4s)を待ってから畳む */
+}
+.restricted.open .hangar-inner{
+  max-height:1600px;
+  transition:max-height .65s ease 0s;  /* 開く時: 即座に展開 */
+}
+.inner-shutter{
+  position:absolute;inset:0;z-index:5;pointer-events:none;
+  background:repeating-linear-gradient(0deg,#232c44 0 12px,#182034 12px 15px);
+  transform:translateY(0);
+  transition:transform .4s ease 0s;    /* 閉じる時: 即ガラガラ降下 */
+}
+.inner-shutter::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:10px;
+  background:repeating-linear-gradient(-45deg,var(--accent) 0 10px,#151515 10px 20px);
+}
+.restricted.open .inner-shutter{
+  transform:translateY(-101%);
+  transition:transform .55s cubic-bezier(.65,0,.35,1) .15s; /* 開く時: 少し溜めてから上昇 */
+}
 .hangar-inner-pad{padding:6px 18px 20px}
 .hangar-note{font-size:12px;color:var(--sub);margin:8px 0 16px}
 .mini{
@@ -493,6 +513,7 @@ footer{margin-top:56px}
       </div>
     </button>
     <div class="hangar-inner" id="hangar-inner">
+      <div class="inner-shutter" aria-hidden="true"></div>
       <div class="hangar-inner-pad">
         <p class="hangar-note jp">※機密指定ですが、むしろ見てほしい区画です。この格納庫の機体は、すべて愛で動いています。</p>
 
