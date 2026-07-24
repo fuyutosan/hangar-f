@@ -215,6 +215,13 @@ section{padding:44px 0 8px}
 .log-tag{font-size:10px;color:var(--accent);border:1px solid var(--accent-dim);border-radius:4px;padding:0 6px;letter-spacing:.1em;white-space:nowrap}
 .log-note{font-size:12px;color:var(--sub);margin-top:12px}
 
+.log-row{flex-wrap:wrap}
+.cat{font-size:10px;border-radius:999px;padding:1px 9px;letter-spacing:.08em;white-space:nowrap}
+.cat-game{color:#ff7ab8;background:rgba(255,122,184,.14)}
+.cat-app{color:#5bc9ff;background:rgba(91,201,255,.14)}
+.cat-page{color:#b48cff;background:rgba(180,140,255,.14)}
+.cat-tool{color:#57d9a3;background:rgba(87,217,163,.14)}
+.cat-learn{color:#ffa94d;background:rgba(255,169,77,.14)}
 /* ===== control tower ===== */
 .tower{
   border:1px solid var(--line);border-radius:12px;background:var(--panel);
@@ -453,23 +460,23 @@ footer{margin-top:56px}
 <section>
   <div class="sec-head"><span class="en mono">SORTIE LOG</span><h2>発進記録</h2></div>
   <div class="log">
-    <div class="log-row"><span class="log-date mono">2026-07-23</span><a href="https://fuyutosan.github.io/sasatomo-caravan/" target="_blank" rel="noopener">笹友キャラバン</a><span class="log-tag mono">NEW</span></div>
-    <div class="log-row"><span class="log-date mono">2026-07-19</span><a href="https://fuyutosan.github.io/Mei-library/" target="_blank" rel="noopener">めいちゃん図書館</a></div>
-    <div class="log-row"><span class="log-date mono">2026-07-13</span><a href="https://fuyutosan.github.io/sales-study/" target="_blank" rel="noopener">特殊鋼学習プログラム（全60回）</a></div>
-    <div class="log-row"><span class="log-date mono">2026-07-12</span><a href="https://github.com/fuyutosan/daitoshokan-ai-library" target="_blank" rel="noopener">大図書館（AIの記憶システム）</a></div>
-    <div class="log-row"><span class="log-date mono">2026-07-11</span><a href="https://fuyutosan.github.io/sumiyomi/" target="_blank" rel="noopener">墨詠み</a></div>
-    <div class="log-row"><span class="log-date mono">2026-07-11</span><span>メイメイ秘書室（公演カレンダー自動同期）</span><span class="log-tag mono">運用中</span></div>
-    <div class="log-row"><span class="log-date mono">2026-07-05</span><a href="https://fuyutosan.github.io/nemuri-hoshizora/" target="_blank" rel="noopener">ねむり星空</a></div>
-    <div class="log-row"><span class="log-date mono">2026-07-03</span><a href="https://fuyutosan.github.io/fable5-guide/" target="_blank" rel="noopener">Fable 5のトリセツ大ぼうけん</a></div>
-    <div class="log-row"><span class="log-date mono">2026-07-01</span><a href="https://fuyutosan.github.io/mei-hakase/" target="_blank" rel="noopener">愛生博士クイズ</a></div>
-    <div class="log-row"><span class="log-date mono">2026-06-11</span><a href="https://fuyutosan.github.io/tokushu-ko-study/" target="_blank" rel="noopener">特殊鋼3か月独学プログラム</a></div>
-    <div class="log-row"><span class="log-date mono">2026-06-06</span><a href="https://fuyutosan.github.io/panda-charger/" target="_blank" rel="noopener">パンダさん充電器</a></div>
-    <div class="log-row"><span class="log-date mono">2026-06-05</span><a href="https://fuyutosan.github.io/meimei/" target="_blank" rel="noopener">メイメイのお家</a></div>
-    <div class="log-row"><span class="log-date mono">2026-05-28</span><a href="https://fuyutosan.github.io/mei-news/" target="_blank" rel="noopener">デイリーめいちゃんニュース</a></div>
-    <div class="log-row"><span class="log-date mono">2026-05-26</span><span>Hello!お知らせ（ハロプロLINE通知）</span><span class="log-tag mono">運用中</span></div>
-    <div class="log-row"><span class="log-date mono">2026-05-22</span><a href="https://fuyutosan.github.io/pandasanpet/" target="_blank" rel="noopener">パンダさんころころ（デスクトップアプリ）</a></div>
-    <div class="log-row"><span class="log-date mono">2025-05-06</span><a href="https://fuyutosan.github.io/pandasangame/" target="_blank" rel="noopener">パンダさんパワーゲーム</a></div>
-    <div class="log-row"><span class="log-date mono">2025-04-17</span><a href="https://fuyutosan.github.io/panda-power/" target="_blank" rel="noopener">パンダさんパワー!!ゲーム</a><span class="log-tag mono">初号機</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-23</span><a href="https://fuyutosan.github.io/sasatomo-caravan/" target="_blank" rel="noopener">笹友キャラバン</a><span class="cat cat-game">ゲーム</span><span class="log-tag mono">NEW</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-19</span><a href="https://fuyutosan.github.io/Mei-library/" target="_blank" rel="noopener">めいちゃん図書館</a><span class="cat cat-page">ホームページ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-13</span><a href="https://fuyutosan.github.io/sales-study/" target="_blank" rel="noopener">特殊鋼学習プログラム（全60回）</a><span class="cat cat-learn">学習</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-12</span><a href="https://github.com/fuyutosan/daitoshokan-ai-library" target="_blank" rel="noopener">大図書館（AIの記憶システム）</a><span class="cat cat-tool">ツール</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-11</span><a href="https://fuyutosan.github.io/sumiyomi/" target="_blank" rel="noopener">墨詠み</a><span class="cat cat-app">アプリ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-11</span><span>メイメイ秘書室（公演カレンダー自動同期）</span><span class="cat cat-tool">ツール</span><span class="log-tag mono">運用中</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-05</span><a href="https://fuyutosan.github.io/nemuri-hoshizora/" target="_blank" rel="noopener">ねむり星空</a><span class="cat cat-app">アプリ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-03</span><a href="https://fuyutosan.github.io/fable5-guide/" target="_blank" rel="noopener">Fable 5のトリセツ大ぼうけん</a><span class="cat cat-learn">学習</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-01</span><a href="https://fuyutosan.github.io/mei-hakase/" target="_blank" rel="noopener">愛生博士クイズ</a><span class="cat cat-game">ゲーム</span></div>
+    <div class="log-row"><span class="log-date mono">2026-06-11</span><a href="https://fuyutosan.github.io/tokushu-ko-study/" target="_blank" rel="noopener">特殊鋼3か月独学プログラム</a><span class="cat cat-learn">学習</span></div>
+    <div class="log-row"><span class="log-date mono">2026-06-06</span><a href="https://fuyutosan.github.io/panda-charger/" target="_blank" rel="noopener">パンダさん充電器</a><span class="cat cat-app">アプリ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-06-05</span><a href="https://fuyutosan.github.io/meimei/" target="_blank" rel="noopener">メイメイのお家</a><span class="cat cat-page">ホームページ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-05-28</span><a href="https://fuyutosan.github.io/mei-news/" target="_blank" rel="noopener">デイリーめいちゃんニュース</a><span class="cat cat-page">ホームページ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-05-26</span><span>Hello!お知らせ（ハロプロLINE通知）</span><span class="cat cat-tool">ツール</span><span class="log-tag mono">運用中</span></div>
+    <div class="log-row"><span class="log-date mono">2026-05-22</span><a href="https://fuyutosan.github.io/pandasanpet/" target="_blank" rel="noopener">パンダさんころころ（デスクトップアプリ）</a><span class="cat cat-app">アプリ</span></div>
+    <div class="log-row"><span class="log-date mono">2025-05-06</span><a href="https://fuyutosan.github.io/pandasangame/" target="_blank" rel="noopener">パンダさんパワーゲーム</a><span class="cat cat-game">ゲーム</span></div>
+    <div class="log-row"><span class="log-date mono">2025-04-17</span><a href="https://fuyutosan.github.io/panda-power/" target="_blank" rel="noopener">パンダさんパワー!!ゲーム</a><span class="cat cat-game">ゲーム</span><span class="log-tag mono">初号機</span></div>
   </div>
   <p class="log-note jp">※この記録は、機体が増えるたびに追記されます。だいたい週に1機のペース。</p>
 </section>
