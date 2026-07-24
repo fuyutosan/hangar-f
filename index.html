@@ -279,6 +279,17 @@ body.overdrive .logo{text-shadow:0 0 20px rgba(255,201,60,.75)}
   transform:translateY(-101%);
   transition:transform .55s cubic-bezier(.65,0,.35,1) .15s; /* 開く時: 少し溜めてから上昇 */
 }
+/* 汎用シャッターパネル（発進記録・整備記録の折り畳みに使用） */
+.shutter-pane{max-height:0;overflow:hidden;position:relative;transition:max-height .5s ease .4s}
+.shutter-pane.open{max-height:2600px;transition:max-height .65s ease 0s}
+.shutter-pane.open .inner-shutter{
+  transform:translateY(-101%);
+  transition:transform .55s cubic-bezier(.65,0,.35,1) .15s;
+}
+/* 扉見出しの折返し許可＋開扉ボタンを絶対に潰さない */
+.door-title{min-width:0;flex:1}
+.door-face h3{white-space:normal}
+.door-open-label{flex:0 0 auto}
 .hangar-inner-pad{padding:6px 18px 20px}
 .hangar-note{font-size:12px;color:var(--sub);margin:8px 0 16px}
 .mini{
@@ -509,8 +520,8 @@ footer{margin-top:56px}
       <div class="door-stripes"></div>
       <div class="door-face">
         <span class="lock">🔒</span>
-        <span>
-          <h3 class="nw">CLASSIFIED ─ 推し関連区画</h3>
+        <span class="door-title">
+          <h3>CLASSIFIED ─ 推し関連区画</h3>
           <span class="cls mono">動力源：愛</span>
         </span>
         <span class="door-open-label mono">開扉 ▼</span>
@@ -872,8 +883,16 @@ function foldLog(container, keep, unit){
   if(!container) return;
   const rows = [...container.querySelectorAll('.log-row')];
   if(rows.length <= keep) return;
+  // 超過分をシャッターパネルに格納（開閉は特別格納庫と同じガラガラ演出）
   const hidden = rows.slice(keep);
-  hidden.forEach(r => r.classList.add('folded'));
+  const pane = document.createElement('div');
+  pane.className = 'shutter-pane';
+  const shu = document.createElement('div');
+  shu.className = 'inner-shutter';
+  shu.setAttribute('aria-hidden', 'true');
+  pane.appendChild(shu);
+  hidden.forEach(r => pane.appendChild(r));
+  container.appendChild(pane);
   const btn = document.createElement('button');
   btn.className = 'log-more mono';
   let open = false;
@@ -881,7 +900,7 @@ function foldLog(container, keep, unit){
   btn.textContent = label();
   btn.addEventListener('click', () => {
     open = !open;
-    hidden.forEach(r => r.classList.toggle('folded', !open));
+    pane.classList.toggle('open', open);
     btn.textContent = label();
   });
   container.appendChild(btn);
