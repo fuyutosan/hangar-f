@@ -225,6 +225,31 @@ section{padding:44px 0 8px}
 .tower-btns{margin-top:18px;display:flex;flex-direction:column;gap:10px;align-items:stretch}
 .tower-btns .btn{justify-content:center;margin-top:0;padding:13px 18px;font-size:14px}
 
+/* ===== sortie cut-in ===== */
+#sortie-fx{position:fixed;inset:0;z-index:99;background:rgba(8,10,15,.94);
+  display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+#sortie-fx[hidden]{display:none}
+.sfx-tape{height:22px;background:repeating-linear-gradient(-45deg,var(--accent) 0 16px,#151515 16px 32px)}
+.sfx-tape.top{animation:sfxin-t .25s ease-out}
+.sfx-tape.bottom{animation:sfxin-b .25s ease-out}
+@keyframes sfxin-t{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+@keyframes sfxin-b{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sfx-body{position:relative;flex:1}
+.sfx-lines{position:absolute;inset:0;opacity:.25;
+  background:repeating-linear-gradient(0deg,transparent 0 26px,var(--sub) 26px 27px);
+  animation:sfxlines .5s linear infinite}
+@keyframes sfxlines{from{background-position:0 0}to{background-position:-120px 0}}
+.sfx-jet{position:absolute;width:120px;height:auto;left:-20%;top:58%;
+  animation:sfxfly 1.1s ease-in .15s forwards}
+@keyframes sfxfly{
+  0%{left:-20%;top:60%;transform:rotate(0deg)}
+  45%{left:32%;top:57%;transform:rotate(-2deg)}
+  100%{left:112%;top:16%;transform:rotate(-16deg)}
+}
+.sfx-text{position:absolute;left:50%;top:72%;transform:translateX(-50%);
+  color:var(--accent);letter-spacing:.3em;font-size:15px;white-space:nowrap;
+  animation:blink .5s infinite}
+
 /* ===== footer ===== */
 footer{margin-top:56px}
 .foot-inner{padding:26px 0 44px;text-align:center;color:var(--sub);font-size:12px;line-height:2}
@@ -317,7 +342,7 @@ footer{margin-top:56px}
     <div class="latest-body">
       <h3 class="nw">笹友キャラバン</h3>
       <p class="jp">パンダさんたちが世界に元気を配りにいく、ドット絵×放置×ハクスラゲーム。育てて、眺めて、また育てる。</p>
-      <a class="btn" href="https://fuyutosan.github.io/sasatomo-caravan/" target="_blank" rel="noopener">出撃（遊んでみる）</a>
+      <a class="btn" data-sortie href="https://fuyutosan.github.io/sasatomo-caravan/" target="_blank" rel="noopener">出撃（遊んでみる）</a>
     </div>
   </div>
 </section>
@@ -336,7 +361,7 @@ footer{margin-top:56px}
       </div>
     </div>
     <p class="jp">言の葉を三つ拾うと、墨があなたのこころを詠む。流れる水墨画の上で答える心理診断。結果は縦書きの「結果札」で持ち帰れます。</p>
-    <a class="btn" href="https://fuyutosan.github.io/sumiyomi/" target="_blank" rel="noopener">出撃</a>
+    <a class="btn" data-sortie href="https://fuyutosan.github.io/sumiyomi/" target="_blank" rel="noopener">出撃</a>
   </div>
 
   <div class="ship">
@@ -349,7 +374,7 @@ footer{margin-top:56px}
       </div>
     </div>
     <p class="jp">スマホの光で、天井を星空に変える。呼吸のリズムでゆっくり明滅する、眠れない夜のいちばん近い星。</p>
-    <a class="btn" href="https://fuyutosan.github.io/nemuri-hoshizora/" target="_blank" rel="noopener">出撃</a>
+    <a class="btn" data-sortie href="https://fuyutosan.github.io/nemuri-hoshizora/" target="_blank" rel="noopener">出撃</a>
   </div>
 
   <div class="ship">
@@ -362,7 +387,7 @@ footer{margin-top:56px}
       </div>
     </div>
     <p class="jp">充電するたび、パンダさんが元気をくれる。ただの充電時間が、ちょっとした楽しみに変わる充電画面アプリ。</p>
-    <a class="btn" href="https://fuyutosan.github.io/panda-charger/" target="_blank" rel="noopener">出撃</a>
+    <a class="btn" data-sortie href="https://fuyutosan.github.io/panda-charger/" target="_blank" rel="noopener">出撃</a>
   </div>
 </section>
 
@@ -466,6 +491,21 @@ footer{margin-top:56px}
 </section>
 
 </div><!-- /wrap -->
+
+<div id="sortie-fx" hidden aria-hidden="true">
+  <div class="sfx-tape top"></div>
+  <div class="sfx-body">
+    <div class="sfx-lines"></div>
+    <svg class="sfx-jet" viewBox="0 0 36 17" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 8 L29 7 L35 10 L1 13 Z" fill="#ffc93c"/>
+      <path d="M3 9 L9 1 L13 9 Z" fill="#ffc93c"/>
+      <path d="M16 11 L23 17 L27 11 Z" fill="#ffc93c"/>
+      <rect x="26" y="8" width="4" height="2" fill="#0b0e14"/>
+    </svg>
+    <div class="sfx-text mono">SORTIE!! ── 出撃</div>
+  </div>
+  <div class="sfx-tape bottom"></div>
+</div>
 
 <footer>
   <div class="tape"></div>
@@ -614,6 +654,25 @@ requestAnimationFrame(frame);
 </script>
 
 <script type="module">
+// 出撃カットイン：出撃ボタン→飛行機が離陸する演出→リンク先へ
+{
+  const fx = document.getElementById('sortie-fx');
+  let busy = false;
+  const reset = () => { fx.hidden = true; busy = false; };
+  window.addEventListener('pageshow', reset); // 戻ってきた時に演出を畳む
+  document.querySelectorAll('a[data-sortie]').forEach(a => {
+    a.addEventListener('click', e => {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; // 演出なし＝通常リンク
+      e.preventDefault();
+      if (busy) return;
+      busy = true;
+      fx.hidden = false;
+      setTimeout(() => { location.href = a.href; }, 1350);
+      setTimeout(reset, 4000); // 遷移が起きなかった場合の保険
+    });
+  });
+}
+
 // 整備記録：大図書館（作業記録）から自動転記された kiroku.json を表示
 try{
   const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
