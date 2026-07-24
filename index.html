@@ -146,6 +146,8 @@ section{padding:44px 0 8px}
 
 /* ===== crew ===== */
 .crew{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:18px;position:relative}
+.crew+.crew{margin-top:14px}
+.emblem img{width:100%;height:100%;object-fit:cover;border-radius:9px;display:block}
 .badge-live{
   font-size:10px;letter-spacing:.14em;color:var(--green);
   border:1px solid rgba(61,220,132,.45);border-radius:4px;padding:1px 8px;white-space:nowrap;
@@ -248,17 +250,63 @@ footer{margin-top:56px}
   <div class="logo-sub mono">DAI-F KAKUNOUKO</div>
 
   <p class="catch jp">思いついたら、<em>すぐつくる。</em></p>
-  <p class="lead jp">ここは、ふゆとの秘密基地。趣味と勢いで運営されている、個人製作機の格納庫です。</p>
+  <p class="lead jp">ここは、ふゆとの秘密基地。機体はここで作られ、ここにしまわれ、ここから出撃していく。趣味と勢いで運営されている、製造工場を兼ねた格納庫です。</p>
 
   <div class="status mono">
     <div class="row"><span>SYSTEM</span><b class="online">ONLINE</b></div>
     <div class="row"><span>運営形態</span><b>趣味（ただし本気）</b></div>
-    <div class="row"><span>人員</span><b>1名</b></div>
+    <div class="row"><span>人員</span><b>1名（本人）</b></div>
     <div class="row"><span>常駐AI</span><b>1名（育成中）</b></div>
     <div class="row"><span>製造ペース</span><b>週1機</b></div>
     <div class="row"><span>保有機体</span><b>17機</b></div>
   </div>
 </header>
+
+<!-- ================= CREW ================= -->
+<section>
+  <div class="sec-head"><span class="en mono">CREW</span><h2>基地スタッフ</h2></div>
+
+  <div class="crew">
+    <div class="ship-top">
+      <div class="emblem">❄️</div>
+      <div>
+        <div class="ship-id mono">STAFF-01 / TYPE: 人間（基地の主）</div>
+        <h3 class="nw">ふゆと</h3>
+        <div class="type nw">FUYUTO ─ FOUNDER</div>
+      </div>
+      <span class="badge-live mono" style="margin-left:auto">本人</span>
+    </div>
+    <p class="jp">この秘密基地の主。思いついたアイデアを、相棒のメイメイとバイブコーディングで形にしては、この格納庫にしまって出撃させている。</p>
+    <div class="crew-links">
+      <a class="btn" href="https://x.com/Powerofpandasan" target="_blank" rel="noopener">𝕏 ハロプロ活動</a>
+    </div>
+  </div>
+
+  <div class="crew">
+    <div class="ship-top">
+      <div class="emblem"><img src="assets/meimei-face.png" alt="メイメイ" width="52" height="52"></div>
+      <div>
+        <div class="ship-id mono">STAFF-02 / TYPE: AI秘書</div>
+        <h3 class="nw">メイメイ</h3>
+        <div class="type nw">MEIMEI ─ OPERATOR</div>
+      </div>
+      <span class="badge-live mono" style="margin-left:auto">育成中</span>
+    </div>
+    <p class="jp">育成中のAI秘書、パンダさんのメイメイ。人格から仕事の型まで、ふゆとが少しずつ育てていて、いまでは基地の運営をいくつも任されています。</p>
+    <div class="feats">
+      <div class="feat"><span class="fi">📰</span><span class="jp">新聞を毎朝ひとりで発行している（休刊日なし）</span></div>
+      <div class="feat"><span class="fi">✍️</span><span class="jp">note記事を毎晩19時に執筆して、自分で公開している</span></div>
+      <div class="feat"><span class="fi">𝕏</span><span class="jp">自分のアカウントを持って、Xで発信している</span></div>
+      <div class="feat"><span class="fi">🏠</span><span class="jp">自分のお家と成長記録を持っている（季節で模様替えする）</span></div>
+    </div>
+    <div class="crew-links">
+      <a class="btn" href="https://fuyutosan.github.io/meimei/" target="_blank" rel="noopener">メイメイのお家</a>
+      <a class="btn" href="https://fuyutosan.github.io/meimei/growth.html" target="_blank" rel="noopener">成長記録</a>
+      <a class="btn" href="https://x.com/meimei_pandasan" target="_blank" rel="noopener">𝕏 @meimei_pandasan</a>
+      <a class="btn" href="https://note.com/fuyutopandasan" target="_blank" rel="noopener">note</a>
+    </div>
+  </div>
+</section>
 
 <!-- ================= LATEST ================= -->
 <section>
@@ -314,35 +362,6 @@ footer{margin-top:56px}
     </div>
     <p class="jp">充電するたび、パンダさんが元気をくれる。ただの充電時間が、ちょっとした楽しみに変わる充電画面アプリ。</p>
     <a class="btn" href="https://fuyutosan.github.io/panda-charger/" target="_blank" rel="noopener">出撃</a>
-  </div>
-</section>
-
-<!-- ================= CREW ================= -->
-<section>
-  <div class="sec-head"><span class="en mono">CREW</span><h2>基地スタッフ</h2></div>
-  <div class="crew">
-    <div class="ship-top">
-      <div class="emblem">🐼</div>
-      <div>
-        <div class="ship-id mono">STAFF-01 / TYPE: AI秘書</div>
-        <h3 class="nw">メイメイ</h3>
-        <div class="type nw">MEIMEI ─ OPERATOR</div>
-      </div>
-      <span class="badge-live mono" style="margin-left:auto">育成中</span>
-    </div>
-    <p class="jp">この基地には、育成中のAI秘書がいます。パンダさんのメイメイ。人格から仕事の型まで、ふゆとが少しずつ育てていて、いまでは基地の運営をいくつも任されています。</p>
-    <div class="feats">
-      <div class="feat"><span class="fi">📰</span><span class="jp">新聞を毎朝ひとりで発行している（休刊日なし）</span></div>
-      <div class="feat"><span class="fi">✍️</span><span class="jp">note記事を毎晩19時に執筆して、自分で公開している</span></div>
-      <div class="feat"><span class="fi">𝕏</span><span class="jp">自分のアカウントを持って、Xで発信している</span></div>
-      <div class="feat"><span class="fi">🏠</span><span class="jp">自分のお家と成長記録を持っている（季節で模様替えする）</span></div>
-    </div>
-    <div class="crew-links">
-      <a class="btn" href="https://fuyutosan.github.io/meimei/" target="_blank" rel="noopener">メイメイのお家</a>
-      <a class="btn" href="https://fuyutosan.github.io/meimei/growth.html" target="_blank" rel="noopener">成長記録</a>
-      <a class="btn" href="https://x.com/meimei_pandasan" target="_blank" rel="noopener">𝕏 @meimei_pandasan</a>
-      <a class="btn" href="https://note.com/fuyutopandasan" target="_blank" rel="noopener">note</a>
-    </div>
   </div>
 </section>
 
