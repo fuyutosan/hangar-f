@@ -157,6 +157,14 @@ section{padding:44px 0 8px}
   border:1px solid rgba(61,220,132,.45);border-radius:4px;padding:1px 8px;white-space:nowrap;
 }
 .badge-live::before{content:"●";margin-right:5px;animation:blink 2.2s infinite}
+.mini .badge-live{color:var(--green);margin-left:auto}
+.log-more{
+  display:block;width:100%;border:0;border-top:1px dashed rgba(38,48,74,.6);
+  background:none;color:var(--accent);font-family:inherit;cursor:pointer;
+  font-size:12px;letter-spacing:.15em;padding:11px 0;
+}
+.log-more:hover{color:#ffe08a}
+.log-row.folded{display:none}
 .feats{margin-top:14px}
 .feat{
   display:flex;gap:10px;align-items:baseline;font-size:13.5px;color:var(--text);
@@ -439,17 +447,19 @@ footer{margin-top:56px}
           <span class="go">▶</span>
         </a>
 
-        <div class="mini">
+        <a class="mini" href="https://line.me/R/ti/p/@248mvpgb" target="_blank" rel="noopener">
           <div class="emblem">🔔</div>
-          <span><b class="nw">Hello!お知らせ</b><span class="jp">公式スケジュールを毎朝チェックして、コンサートやFCイベントの締切前にLINEで知らせてくれる通知装備。毎朝9時、24時間運用</span></span>
+          <span><b class="nw">Hello!お知らせ</b><span class="jp">公式スケジュールを毎朝チェックして、コンサートやFCイベントの締切前にLINEで知らせてくれる通知装備（LINE公式アカウント）</span></span>
           <span class="badge-live mono">運用中</span>
-        </div>
+          <span class="go">▶</span>
+        </a>
 
-        <div class="mini">
+        <a class="mini" href="https://fuyutosan.github.io/meimei/calendar/mm26.ics" target="_blank" rel="noopener">
           <div class="emblem">🗓️</div>
-          <span><b class="nw">メイメイ秘書室</b><span class="jp">推しの公演スケジュールを自動でGoogleカレンダーへ同期。毎朝更新される専属秘書</span></span>
+          <span><b class="nw">メイメイ秘書室</b><span class="jp">推しの公演スケジュールを毎朝自動更新する専属秘書。タップでカレンダー購読（ics）できる</span></span>
           <span class="badge-live mono">運用中</span>
-        </div>
+          <span class="go">▶</span>
+        </a>
 
       </div>
     </div>
@@ -523,12 +533,14 @@ footer{margin-top:56px}
   <div class="wrap foot-inner">
     <div class="foot-logo nw">HANGAR F. ── 第F格納庫</div>
     動力源：趣味 ／ 設計・指揮：ふゆと（人間1名） ／ 製造班：相棒のAI<br>
+    <span style="font-size:10px">背景の工場パーツの一部: Kenney.nl（CC0）</span><br>
     <span class="mono">© 2026 HANGAR F.</span>
   </div>
 </footer>
 
 <script>
-// ===== 24時間稼働の工場背景 =====
+// ===== 24時間稼働の工場背景（ドット絵版 v2）=====
+// 自作スプライト（誘導員・パンダさん機・格納庫）＋ Kenney CC0 工場パーツ
 (()=>{
 if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 const cv=document.getElementById('factory'), cx=cv.getContext('2d');
@@ -538,129 +550,136 @@ function resize(){
   W=innerWidth;H=innerHeight;
   cv.width=W*d;cv.height=H*d;
   cx.setTransform(d,0,0,d,0,0);
+  cx.imageSmoothingEnabled=false;
 }
 addEventListener('resize',resize);resize();
 
-const ACC='#ffc93c',DIM='#5b6478',GRN='#3ddc84',RED='#ff6b57';
+const NAMES=['marshaller_blue_A','marshaller_blue_B','marshaller_green_A','marshaller_green_B',
+ 'marshaller_red_A','marshaller_red_B','plane_long','plane_short','beacon_red','beacon_blue',
+ 'crate_a','crate_b','barrel','belt_l','belt_m','belt_r','machine_a','machine_pc','machine_b',
+ 'machine_ctrl','hook','sign_warn','pole','hangar'];
+const IMG={};let loaded=0;
+NAMES.forEach(n=>{
+  const i=new Image();
+  i.onload=()=>{ if(++loaded===NAMES.length) requestAnimationFrame(frame); };
+  i.onerror=()=>{ if(++loaded===NAMES.length) requestAnimationFrame(frame); };
+  i.src='assets/px/'+n+'.png';
+  IMG[n]=i;
+});
+const S=2, T=18*S; // ドット2倍表示・タイル36px
 const rnd=(a,b)=>a+Math.random()*(b-a);
+const WANDS=['blue','green','red'];
 
-// 遠景の設備LED（画面上半分でチカチカ）
-const leds=Array.from({length:12},()=>({x:Math.random(),y:rnd(.12,.55),p:rnd(2,7),c:Math.random()<.7?ACC:GRN}));
-// ベルトコンベアの箱
-const boxes=Array.from({length:7},(_,i)=>({x:i/7,w:rnd(9,15)}));
-// 誘導員つき発進サイクル
-const plane={phase:'wait',x:-90,y:0,vx:0,tilt:0,t:0,wait:rnd(.5,2)};
-const puffs=[],sparks=[],steams=[];
-let sparkTimer=0,flash=0,craneT=0;
+// 状態
+const leds=Array.from({length:12},()=>({x:Math.random(),y:rnd(.12,.5),p:rnd(2,7),g:Math.random()<.7}));
+const items=Array.from({length:5},(_,i)=>({f:i/5,type:['crate_a','crate_b','barrel','crate_a','crate_b'][i]}));
+const plane={phase:'wait',x:-120,y:0,vx:0,tilt:0,t:0,wait:rnd(.5,2),wand:WANDS[0]};
+const puffs=[],sparks=[];
+let sparkTimer=0,flash=0,craneT=0,animT=0,last=performance.now();
 
-function drawJet(x,y,tilt){
-  cx.save();cx.translate(x,y);cx.rotate(tilt);
-  cx.fillStyle=ACC;
-  cx.beginPath();cx.moveTo(-17,0);cx.lineTo(11,-1);cx.lineTo(17,2);cx.lineTo(-17,5);cx.closePath();cx.fill();
-  cx.beginPath();cx.moveTo(-15,1);cx.lineTo(-9,-8);cx.lineTo(-5,1);cx.closePath();cx.fill();
-  cx.beginPath();cx.moveTo(-2,3);cx.lineTo(5,9);cx.lineTo(9,3);cx.closePath();cx.fill();
-  cx.fillStyle='#0b0e14';cx.fillRect(7,0,4,2);
-  cx.restore();
-}
-function drawMarshaller(x,gy,t,busy){
-  const a=Math.sin(t*(busy?14:3))*(busy?1.1:0.5);
-  cx.strokeStyle=DIM;cx.lineWidth=2;cx.lineCap='round';
-  cx.beginPath();cx.moveTo(x,gy);cx.lineTo(x,gy-9);cx.stroke();          // 胴
-  cx.beginPath();cx.arc(x,gy-12,2.6,0,7);cx.fillStyle=DIM;cx.fill();    // 頭
-  for(const s of [1,-1]){                                               // 腕＋誘導棒
-    const ang=-Math.PI/2 + s*(0.9 + a*0.55);
-    const hx=x+Math.cos(ang)*9, hy=gy-8+Math.sin(ang)*9;
-    cx.strokeStyle=DIM;cx.beginPath();cx.moveTo(x,gy-8);cx.lineTo(hx,hy);cx.stroke();
-    cx.fillStyle='#ff9d3c';cx.beginPath();cx.arc(hx,hy,2.2,0,7);cx.fill();
-    cx.globalAlpha=.35;cx.beginPath();cx.arc(hx,hy,5,0,7);cx.fill();cx.globalAlpha=1;
-  }
-}
-
-let last=performance.now();
 function frame(now){
-  const dt=Math.min((now-last)/1000,.05);last=now;
+  const dt=Math.min((now-last)/1000,.05);last=now;animT+=dt;
   cx.clearRect(0,0,W,H);
-  cx.globalAlpha=.62;
+  cx.globalAlpha=.66;
   const t=now/1000;
-  const gy=H-38;          // 滑走ライン
-  const cy=H-13;          // コンベアライン
-  const bayX=W*.13;       // 溶接ベイ
-  const mX=W*.60;         // 誘導員の立ち位置
+  const gy=H-46;             // 滑走ライン（スプライトの足元）
+  const beltY=H-40;          // コンベア上端
+  const mX=W-64;             // 誘導員（右側）
+  const hangarX=8, hangarY=gy+6-IMG.hangar.height*S;
 
   // 遠景LED
   for(const L of leds){
-    if(Math.sin(t*L.p)>0.2){cx.fillStyle=L.c;cx.globalAlpha=.35;cx.fillRect(L.x*W,L.y*H,2,2);cx.globalAlpha=.62;}
+    if(Math.sin(t*L.p)>0.2){
+      cx.fillStyle=L.g?'#ffc93c':'#3ddc84';cx.globalAlpha=.35;
+      cx.fillRect(L.x*W,L.y*H,2,2);cx.globalAlpha=.66;
+    }
   }
-  // 回転灯（左右の塔）
-  for(const [bx,ph] of [[14,0],[W-14,2]]){
-    cx.strokeStyle=DIM;cx.lineWidth=2;cx.beginPath();cx.moveTo(bx,gy);cx.lineTo(bx,gy-26);cx.stroke();
-    const on=Math.sin(t*5+ph)>0;
-    cx.fillStyle=on?RED:'#3a2620';cx.beginPath();cx.arc(bx,gy-29,3,0,7);cx.fill();
-    if(on){cx.globalAlpha=.25;cx.beginPath();cx.arc(bx,gy-29,8,0,7);cx.fill();cx.globalAlpha=.62;}
-  }
-  // 滑走ライン
-  cx.strokeStyle='#242c42';cx.lineWidth=2;
-  cx.beginPath();cx.moveTo(0,gy+8);cx.lineTo(W,gy+8);cx.stroke();
-  // コンベア（帯＋流れる箱）
-  cx.strokeStyle='#1c2436';cx.lineWidth=8;
-  cx.beginPath();cx.moveTo(0,cy);cx.lineTo(W,cy);cx.stroke();
-  for(const b of boxes){
-    b.x-=dt*.045; if(b.x<-.05)b.x=1.05;
-    cx.fillStyle='#2c3550';cx.fillRect(b.x*W,cy-11,b.w,8);
-    cx.strokeStyle=ACC;cx.lineWidth=1;cx.globalAlpha=.5;cx.strokeRect(b.x*W,cy-11,b.w,8);cx.globalAlpha=.62;
-  }
-  // クレーン（ゆっくり往復・箱を吊って揺れる）
+  // クレーン（レール＋フックに吊られたクレートが往復）
   craneT+=dt;
-  const crX=W*(.5+.32*Math.sin(craneT*.22));
-  cx.strokeStyle=DIM;cx.lineWidth=2;
-  cx.beginPath();cx.moveTo(0,H-72);cx.lineTo(W,H-72);cx.stroke();
-  cx.fillStyle=DIM;cx.fillRect(crX-7,H-76,14,7);
-  const sw=Math.sin(craneT*1.7)*4;
-  cx.beginPath();cx.moveTo(crX,H-69);cx.lineTo(crX+sw,H-52);cx.stroke();
-  cx.fillStyle='#2c3550';cx.fillRect(crX+sw-5,H-52,10,9);
-  cx.strokeStyle=ACC;cx.globalAlpha=.5;cx.strokeRect(crX+sw-5,H-52,10,9);cx.globalAlpha=.62;
-  // 溶接ベイ（火花＋閃光＋蒸気）
+  const crX=W*(.5+.3*Math.sin(craneT*.2));
+  cx.strokeStyle='#3a4258';cx.lineWidth=3;
+  cx.beginPath();cx.moveTo(0,H-150);cx.lineTo(W,H-150);cx.stroke();
+  const sw=Math.sin(craneT*1.6)*5;
+  cx.strokeStyle='#5b6478';cx.lineWidth=2;
+  cx.beginPath();cx.moveTo(crX,H-148);cx.lineTo(crX+sw,H-124);cx.stroke();
+  cx.drawImage(IMG.hook,crX+sw-9,H-130,T/2,T/2);
+  cx.drawImage(IMG.crate_a,crX+sw-13,H-116,26,26);
+
+  // 機械列（コンベアの奥）＋警告標識
+  const mrow=[['machine_ctrl',.30],['machine_a',.41],['machine_pc',.52],['machine_b',.63]];
+  for(const[m,fx]of mrow){ cx.drawImage(IMG[m],W*fx,gy+8-T,T,T); }
+  cx.drawImage(IMG.sign_warn,W*.72,gy+8-T,T,T);
+
+  // 溶接（machine_pc の位置で火花＋閃光）
+  const bayX=W*.52+T/2;
   sparkTimer-=dt;
-  if(sparkTimer<0){sparkTimer=rnd(.4,1.6);flash=.14;
-    for(let i=0;i<7;i++)sparks.push({x:bayX,y:gy-4,vx:rnd(-38,38),vy:rnd(-70,-15),l:rnd(.3,.7)});}
+  if(sparkTimer<0){sparkTimer=rnd(.4,1.5);flash=.13;
+    for(let i=0;i<7;i++)sparks.push({x:bayX,y:gy-6,vx:rnd(-40,40),vy:rnd(-75,-15),l:rnd(.3,.7)});}
   if(flash>0){flash-=dt;cx.fillStyle='#dff1ff';cx.globalAlpha=Math.min(flash*4,.5);
-    cx.beginPath();cx.arc(bayX,gy-4,10,0,7);cx.fill();cx.globalAlpha=.62;}
+    cx.fillRect(bayX-8,gy-14,16,12);cx.globalAlpha=.66;}
   for(let i=sparks.length-1;i>=0;i--){const s=sparks[i];
     s.l-=dt;if(s.l<0){sparks.splice(i,1);continue;}
-    s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=190*dt;
-    cx.fillStyle=Math.random()<.5?'#ffd97a':'#fff2c9';cx.globalAlpha=Math.min(s.l*2.5,1)*.7;
-    cx.fillRect(s.x,s.y,1.6,1.6);cx.globalAlpha=.62;}
-  cx.strokeStyle=DIM;cx.lineWidth=2;   // ベイの作業機シルエット
-  cx.strokeRect(bayX-16,gy-2,32,8);
-  if(Math.random()<dt*2.2)steams.push({x:bayX+22,y:gy-8,r:2,l:1});
-  for(let i=steams.length-1;i>=0;i--){const s=steams[i];
-    s.l-=dt*.5;if(s.l<0){steams.splice(i,1);continue;}
-    s.y-=14*dt;s.r+=6*dt;
-    cx.fillStyle='#8e97ad';cx.globalAlpha=s.l*.16;
-    cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fill();cx.globalAlpha=.62;}
+    s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=200*dt;
+    cx.fillStyle=Math.random()<.5?'#ffd97a':'#fff2c9';
+    cx.globalAlpha=Math.min(s.l*2.5,1)*.7;cx.fillRect(s.x,s.y,2,2);cx.globalAlpha=.66;}
+
+  // コンベア（キャタピラタイル）＋流れる貨物
+  const beltL=W*.28, beltR=W*.74;
+  cx.drawImage(IMG.belt_l,beltL,beltY,T,T);
+  for(let x=beltL+T;x<beltR-T;x+=T)cx.drawImage(IMG.belt_m,x,beltY,T,T);
+  cx.drawImage(IMG.belt_r,beltR-T,beltY,T,T);
+  for(const it of items){
+    it.f-=dt*.03; if(it.f<-.06)it.f=1.02;
+    const x=beltL+(beltR-beltL)*it.f;
+    if(x>beltL-30&&x<beltR)cx.drawImage(IMG[it.type],x,beltY-26,26,26);
+  }
+
+  // 格納庫（左）＋回転灯
+  cx.drawImage(IMG.hangar,hangarX,hangarY,IMG.hangar.width*S,IMG.hangar.height*S);
+  const towers=[[hangarX+IMG.hangar.width*S+8,'beacon_red',0],[W-20,'beacon_blue',2]];
+  for(const[bx,lamp,ph]of towers){
+    cx.drawImage(IMG.pole,bx,gy+6-T*1.5,T/2,T*1.5);
+    cx.drawImage(IMG[lamp],bx-4,gy+6-T*1.9,T*.7,T*.7);
+    if(Math.sin(t*5+ph)>0){
+      cx.fillStyle=lamp==='beacon_red'?'rgba(255,80,60,.3)':'rgba(80,140,255,.3)';
+      cx.beginPath();cx.arc(bx+8,gy+6-T*1.6,12,0,7);cx.fill();
+    }
+  }
+
   // 発進サイクル（タキシング→誘導→離陸）
   plane.t+=dt;
   if(plane.phase==='wait'){plane.wait-=dt;
-    if(plane.wait<0){plane.phase='taxi';plane.x=-90;plane.y=gy-3;plane.vx=46;plane.tilt=0;}}
+    if(plane.wait<0){plane.phase='taxi';plane.x=-120;plane.y=gy-18;plane.vx=50;plane.tilt=0;
+      plane.wand=WANDS[Math.floor(Math.random()*WANDS.length)];}}
   else if(plane.phase==='taxi'){plane.x+=plane.vx*dt;
-    if(plane.x>=mX-34){plane.phase='hold';plane.t=0;}}
-  else if(plane.phase==='hold'){
-    if(plane.t>2.1){plane.phase='takeoff';plane.vx=60;}}
+    if(plane.x>=mX-70){plane.phase='hold';plane.t=0;}}
+  else if(plane.phase==='hold'){ if(plane.t>2.1){plane.phase='takeoff';plane.vx=60;} }
   else if(plane.phase==='takeoff'){
-    plane.vx+=170*dt;plane.x+=plane.vx*dt;
-    if(plane.vx>170){plane.y-=(plane.vx-170)*.9*dt;plane.tilt=Math.max(plane.tilt-dt*.5,-.32);}
-    if(Math.random()<dt*22)puffs.push({x:plane.x-18,y:plane.y+3,r:1.5,l:.8});
-    if(plane.x>W+120||plane.y<-40){plane.phase='wait';plane.wait=rnd(2,5);}}
+    plane.vx+=180*dt;plane.x+=plane.vx*dt;
+    if(plane.vx>180){plane.y-=(plane.vx-180)*.9*dt;plane.tilt=Math.max(plane.tilt-dt*.6,-.3);}
+    if(Math.random()<dt*20)puffs.push({x:plane.x-4,y:plane.y+16,r:2,l:.7});
+    if(plane.x>W+140||plane.y<-60){plane.phase='wait';plane.wait=rnd(2,5);}}
   for(let i=puffs.length-1;i>=0;i--){const p=puffs[i];
     p.l-=dt;if(p.l<0){puffs.splice(i,1);continue;}
-    p.r+=8*dt;cx.fillStyle='#8e97ad';cx.globalAlpha=p.l*.2;
-    cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fill();cx.globalAlpha=.62;}
-  if(plane.phase!=='wait')drawJet(plane.x,plane.y,plane.tilt);
-  drawMarshaller(mX,gy+6,t,plane.phase==='hold');
+    p.r+=10*dt;cx.fillStyle='#8e97ad';cx.globalAlpha=p.l*.22;
+    cx.fillRect(p.x-p.r,p.y-p.r,p.r*2,p.r*2);cx.globalAlpha=.66;}
+  if(plane.phase!=='wait'){
+    const fl=IMG[(Math.floor(animT*8)%2===0&&plane.phase!=='hold')?'plane_long':'plane_short'];
+    cx.save();cx.translate(plane.x+24,plane.y+12);cx.rotate(plane.tilt);
+    cx.drawImage(fl,-24,-12,48,24);cx.restore();
+  }
+
+  // 誘導員（右側・発進サイクルごとに誘導灯の色が変わる）
+  const busy=plane.phase==='hold';
+  const mf=Math.floor(animT*(busy?7:1.6))%2===0?'A':'B';
+  cx.drawImage(IMG['marshaller_'+plane.wand+'_'+mf],mX,gy+6-32,32,32);
+
+  // 滑走ライン
+  cx.strokeStyle='#242c42';cx.lineWidth=2;
+  cx.beginPath();cx.moveTo(0,gy+8);cx.lineTo(W,gy+8);cx.stroke();
 
   requestAnimationFrame(frame);
 }
-requestAnimationFrame(frame);
 })();
 </script>
 
@@ -684,18 +703,40 @@ requestAnimationFrame(frame);
   });
 }
 
+// 長い記録は5件だけ見せて折り畳む（発進記録・整備記録 共通）
+function foldLog(container, keep, unit){
+  if(!container) return;
+  const rows = [...container.querySelectorAll('.log-row')];
+  if(rows.length <= keep) return;
+  const hidden = rows.slice(keep);
+  hidden.forEach(r => r.classList.add('folded'));
+  const btn = document.createElement('button');
+  btn.className = 'log-more mono';
+  let open = false;
+  const label = () => open ? '▲ 閉じる' : `▼ すべて表示（あと${hidden.length}${unit}）`;
+  btn.textContent = label();
+  btn.addEventListener('click', () => {
+    open = !open;
+    hidden.forEach(r => r.classList.toggle('folded', !open));
+    btn.textContent = label();
+  });
+  container.appendChild(btn);
+}
+foldLog(document.querySelector('.log:not(#maint-log)'), 5, '機');
+
 // 整備記録：大図書館（作業記録）から自動転記された kiroku.json を表示
 try{
   const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const res = await fetch('kiroku.json', {cache:'no-store'});
   if(res.ok){
     const data = await res.json();
-    const list = (data.entries || []).slice(0, 8);
+    const list = (data.entries || []).slice(0, 12);
     if(list.length){
       document.getElementById('maint-log').innerHTML = list.map(e =>
         `<div class="log-row"><span class="log-date mono">${esc(e.date)}</span><span>${esc(e.title)}</span></div>`
       ).join('');
       document.getElementById('maint-sec').hidden = false;
+      foldLog(document.getElementById('maint-log'), 5, '件');
     }
   }
 }catch(e){/* 取得できない時はセクションごと出さない（基地は壊れない） */}
