@@ -386,6 +386,13 @@ footer{margin-top:56px}
   <p class="log-note jp">※この記録は、機体が増えるたびに追記されます。だいたい週に1機のペース。</p>
 </section>
 
+<!-- ================= MAINTENANCE LOG ================= -->
+<section id="maint-sec" hidden>
+  <div class="sec-head"><span class="en mono">MAINTENANCE LOG</span><h2>整備記録</h2></div>
+  <div class="log" id="maint-log"></div>
+  <p class="log-note jp">※この記録は、基地の書庫「大図書館」から自動で転記されています。手書きではありません。</p>
+</section>
+
 <!-- ================= CONTROL TOWER ================= -->
 <section>
   <div class="sec-head"><span class="en mono">CONTROL TOWER</span><h2>管制塔</h2></div>
@@ -411,6 +418,22 @@ footer{margin-top:56px}
 </footer>
 
 <script type="module">
+// 整備記録：大図書館（作業記録）から自動転記された kiroku.json を表示
+try{
+  const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const res = await fetch('kiroku.json', {cache:'no-store'});
+  if(res.ok){
+    const data = await res.json();
+    const list = (data.entries || []).slice(0, 8);
+    if(list.length){
+      document.getElementById('maint-log').innerHTML = list.map(e =>
+        `<div class="log-row"><span class="log-date mono">${esc(e.date)}</span><span>${esc(e.title)}</span></div>`
+      ).join('');
+      document.getElementById('maint-sec').hidden = false;
+    }
+  }
+}catch(e){/* 取得できない時はセクションごと出さない（基地は壊れない） */}
+
 // BudouX：日本語の文節改行（全ブラウザ対応方式）
 try{
   const {loadDefaultJapaneseParser} = await import('https://cdn.jsdelivr.net/npm/budoux@0.6.2/+esm');
