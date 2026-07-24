@@ -132,10 +132,14 @@ section{padding:44px 0 8px;break-inside:avoid}
 }
 #shutter.lift{transform:translateY(-101%)}
 #shutter.fast{transition-duration:.25s}
-.sh-lamp{width:14px;height:14px;border-radius:50%;background:#ff5a3c;
-  box-shadow:0 0 16px #ff5a3c;animation:blink .5s infinite}
-.sh-band{color:var(--accent);font-size:12px;letter-spacing:.35em}
-.sh-skip{color:var(--sub);font-size:10px;letter-spacing:.2em;position:absolute;bottom:30px}
+.sh-lamp{width:16px;height:16px;border-radius:50%;background:#ff5a3c;
+  box-shadow:0 0 18px #ff5a3c;animation:blink .5s infinite}
+.sh-band{color:var(--accent);font-size:clamp(17px,4.6vw,24px);letter-spacing:.28em;text-align:center}
+.sh-skip{
+  margin-top:10px;color:var(--accent);font-size:clamp(15px,4.2vw,20px);letter-spacing:.24em;
+  border:2px solid var(--accent-dim);border-radius:10px;padding:13px 26px;
+  animation:blink 1.5s infinite;
+}
 body.opening .logo{animation:logoin .55s cubic-bezier(.2,.9,.3,1.2) .85s both}
 @keyframes logoin{from{opacity:0;transform:translateX(-46px)}to{opacity:1;transform:none}}
 .status .row b.offline{color:var(--sub);text-shadow:none}
@@ -358,8 +362,8 @@ footer{margin-top:56px}
 <canvas id="factory" aria-hidden="true"></canvas>
 <div id="shutter" hidden aria-hidden="true">
   <div class="sh-lamp"></div>
-  <div class="sh-band mono">HANGAR F. ── OPENING</div>
-  <div class="sh-skip mono">tap to open</div>
+  <div class="sh-band mono">HANGAR F.</div>
+  <div class="sh-skip mono">▶ TAP TO OPEN</div>
 </div>
 
 <div class="topbar">
@@ -795,17 +799,19 @@ try{
     shutter.hidden=false;
     document.body.classList.add('opening');
     sys.textContent='OFFLINE';sys.className='offline';
-    let lifted=false,timerA,timerB;
+    let lifted=false,timerA;
     const lift=fast=>{
       if(lifted)return;lifted=true;
+      clearTimeout(timerA);
       if(fast)shutter.classList.add('fast');
       shutter.classList.add('lift');
-      setTimeout(()=>{shutter.hidden=true;},fast?300:750);
-      clearTimeout(timerB);
-      setTimeout(setOnline,fast?500:1450);
+      setTimeout(()=>{shutter.hidden=true;},fast?320:750);
+      setTimeout(setOnline,fast?600:1450);
     };
-    timerA=setTimeout(()=>lift(false),450);
-    shutter.addEventListener('click',()=>{clearTimeout(timerA);lift(true);},{once:true});
+    window.__hangarOpen=lift; // タップ主導。自動開庫は2.6秒後の保険
+    timerA=setTimeout(()=>lift(false),2600);
+    shutter.addEventListener('pointerdown',()=>lift(true));
+    shutter.addEventListener('click',()=>lift(true));
   }
 }catch(e){
   const sh=document.getElementById('shutter');if(sh)sh.hidden=true;
