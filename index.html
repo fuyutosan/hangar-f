@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>HANGAR F. ── 第F格納庫</title>
+<meta name="description" content="思いついた週に、作る。ふゆとの秘密基地・個人製作機の格納庫。">
+<meta property="og:title" content="HANGAR F. ── 第F格納庫">
+<meta property="og:description" content="思いついた週に、作る。趣味と勢いで運営される個人製作機の格納庫。">
+<meta name="theme-color" content="#0b0e14">
+<style>
+:root{
+  --bg:#0b0e14;
+  --panel:#121826;
+  --panel2:#0e1420;
+  --line:#26304a;
+  --text:#e9edf6;
+  --sub:#8e97ad;
+  --accent:#ffc93c;
+  --accent-dim:#b8901f;
+  --green:#3ddc84;
+  --danger:#161006;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic",system-ui,sans-serif;
+  line-height:1.85;
+  word-break:keep-all;
+  overflow-wrap:anywhere;
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    linear-gradient(rgba(148,163,199,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(148,163,199,.045) 1px,transparent 1px);
+  background-size:36px 36px;
+}
+.mono{font-family:ui-monospace,"Cascadia Mono",Consolas,Menlo,monospace}
+.wrap{max-width:640px;margin:0 auto;padding:0 20px}
+a{color:inherit}
+h1,h2,h3{text-wrap:balance}
+p{text-wrap:pretty}
+.nw{white-space:nowrap}
+
+/* ===== hazard tape ===== */
+.tape{
+  height:14px;
+  background:repeating-linear-gradient(-45deg,var(--accent) 0 14px,#151515 14px 28px);
+  opacity:.9;
+}
+
+/* ===== hero ===== */
+header{padding:56px 0 40px;position:relative}
+.kicker{
+  font-size:11px;letter-spacing:.28em;color:var(--accent);
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+}
+.kicker::before,.kicker::after{content:"";height:1px;background:var(--line);flex:0 0 28px}
+.kicker::after{flex:1}
+.logo{
+  font-size:clamp(44px,13vw,64px);
+  font-weight:900;letter-spacing:.02em;line-height:1.05;
+  color:var(--text);
+}
+.logo .dot{color:var(--accent)}
+.logo-sub{font-size:13px;letter-spacing:.5em;color:var(--sub);margin-top:6px}
+.catch{
+  margin-top:30px;font-size:clamp(22px,6.4vw,30px);font-weight:800;line-height:1.5;
+}
+.catch em{font-style:normal;color:var(--accent)}
+.lead{margin-top:14px;color:var(--sub);font-size:14.5px}
+
+.status{
+  margin-top:28px;border:1px solid var(--line);background:var(--panel2);
+  border-radius:10px;padding:16px 18px;font-size:12.5px;color:var(--sub);
+}
+.status .row{display:flex;justify-content:space-between;gap:12px;padding:3px 0}
+.status .row b{color:var(--text);font-weight:600}
+.online{color:var(--green)}
+.online::before{content:"●";margin-right:6px;animation:blink 2.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ===== sections ===== */
+section{padding:44px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:20px}
+.sec-head .en{font-size:11px;letter-spacing:.24em;color:var(--accent)}
+.sec-head h2{font-size:19px;font-weight:800}
+.sec-head::after{content:"";height:1px;background:var(--line);flex:1;align-self:center}
+
+/* ===== latest ===== */
+.latest{
+  border:1px solid var(--accent-dim);border-radius:12px;overflow:hidden;
+  background:linear-gradient(160deg,#1a1a10 0%,var(--panel) 45%);
+}
+.latest-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.18em;color:var(--accent)}
+.badge-new{background:var(--accent);color:#131313;font-weight:800;padding:1px 8px;border-radius:4px;letter-spacing:.12em}
+.latest-body{padding:20px 18px 22px}
+.latest-body h3{font-size:24px;font-weight:800}
+.latest-body p{margin-top:8px;color:var(--sub);font-size:14px}
+
+/* ===== ship cards ===== */
+.ship{
+  border:1px solid var(--line);border-radius:12px;background:var(--panel);
+  padding:18px;margin-bottom:14px;position:relative;
+}
+.ship-top{display:flex;align-items:center;gap:14px}
+.emblem{
+  flex:0 0 52px;height:52px;border:1px solid var(--line);border-radius:10px;
+  background:var(--panel2);display:grid;place-items:center;font-size:26px;
+}
+.ship-id{font-size:10.5px;letter-spacing:.2em;color:var(--accent)}
+.ship h3{font-size:18.5px;font-weight:800;line-height:1.35}
+.ship .type{font-size:11px;color:var(--sub);letter-spacing:.08em;margin-top:2px}
+.ship p{margin-top:12px;font-size:14px;color:var(--sub)}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;margin-top:14px;
+  border:1px solid var(--accent-dim);color:var(--accent);text-decoration:none;
+  font-size:13px;font-weight:700;letter-spacing:.1em;
+  padding:9px 18px;border-radius:8px;transition:.2s;
+}
+.btn:hover{background:var(--accent);color:#131313}
+.btn::before{content:"▶";font-size:10px}
+.btn.ghost{border-color:var(--line);color:var(--text)}
+.btn.ghost::before{content:"𝕏"}
+.btn.mail::before{content:"✉"}
+
+/* ===== crew ===== */
+.crew{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:18px;position:relative}
+.badge-live{
+  font-size:10px;letter-spacing:.14em;color:var(--green);
+  border:1px solid rgba(61,220,132,.45);border-radius:4px;padding:1px 8px;white-space:nowrap;
+}
+.badge-live::before{content:"●";margin-right:5px;animation:blink 2.2s infinite}
+.feats{margin-top:14px}
+.feat{
+  display:flex;gap:10px;align-items:baseline;font-size:13.5px;color:var(--text);
+  padding:8px 2px;border-bottom:1px dashed rgba(38,48,74,.6);
+}
+.feat:last-child{border-bottom:0}
+.feat .fi{flex:0 0 auto}
+.feat span{color:var(--sub)}
+.crew-links{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+.crew-links .btn{margin-top:0;padding:8px 14px;font-size:12px}
+.crew-links .btn::before{content:"▶";font-size:9px}
+
+/* ===== restricted door ===== */
+.restricted{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel2)}
+.door-btn{
+  width:100%;border:0;cursor:pointer;background:none;color:inherit;
+  font-family:inherit;text-align:left;padding:0;
+}
+.door-stripes{
+  height:16px;
+  background:repeating-linear-gradient(-45deg,var(--accent) 0 14px,#151515 14px 28px);
+}
+.door-face{padding:20px 18px;display:flex;align-items:center;gap:14px}
+.door-face .lock{font-size:26px}
+.door-face h3{font-size:17px;font-weight:800;letter-spacing:.06em}
+.door-face .cls{font-size:11px;color:var(--sub);letter-spacing:.14em;margin-top:2px}
+.door-open-label{
+  margin-left:auto;font-size:11px;letter-spacing:.2em;color:var(--accent);
+  border:1px solid var(--accent-dim);border-radius:6px;padding:6px 10px;white-space:nowrap;
+}
+.hangar-inner{max-height:0;overflow:hidden;transition:max-height .7s ease}
+.restricted.open .hangar-inner{max-height:1600px}
+.hangar-inner-pad{padding:6px 18px 20px}
+.hangar-note{font-size:12px;color:var(--sub);margin:8px 0 16px}
+.mini{
+  display:flex;align-items:center;gap:12px;border:1px solid var(--line);
+  border-radius:10px;background:var(--panel);padding:13px 14px;margin-bottom:10px;
+  text-decoration:none;transition:.2s;
+}
+.mini:hover{border-color:var(--accent-dim)}
+.mini .emblem{flex:0 0 42px;height:42px;font-size:21px;border-radius:8px}
+.mini b{font-size:15px;font-weight:700;display:block;line-height:1.4}
+.mini span{font-size:12px;color:var(--sub);display:block}
+.mini .go{margin-left:auto;color:var(--accent);font-size:12px}
+
+/* ===== sortie log ===== */
+.log{border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:8px 0}
+.log-row{
+  display:flex;gap:14px;align-items:baseline;padding:9px 18px;
+  border-bottom:1px dashed rgba(38,48,74,.6);font-size:13px;
+}
+.log-row:last-child{border-bottom:0}
+.log-date{color:var(--sub);font-size:11.5px;letter-spacing:.06em;flex:0 0 84px}
+.log-row a{color:var(--text);text-decoration:none;border-bottom:1px solid var(--line)}
+.log-row a:hover{color:var(--accent);border-color:var(--accent-dim)}
+.log-tag{font-size:10px;color:var(--accent);border:1px solid var(--accent-dim);border-radius:4px;padding:0 6px;letter-spacing:.1em;white-space:nowrap}
+.log-note{font-size:12px;color:var(--sub);margin-top:12px}
+
+/* ===== control tower ===== */
+.tower{
+  border:1px solid var(--line);border-radius:12px;background:var(--panel);
+  padding:26px 20px 26px;text-align:center;
+}
+.tower .q{font-size:15.5px;font-weight:700;line-height:2.1}
+.tower .q span{
+  display:inline-block;border:1px solid var(--line);border-radius:999px;
+  padding:2px 16px;margin:3px 2px;background:var(--panel2);
+}
+.tower p{margin-top:16px;font-size:13.5px;color:var(--sub)}
+.tower-btns{margin-top:18px;display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.tower-btns .btn{justify-content:center;margin-top:0;padding:13px 18px;font-size:14px}
+
+/* ===== footer ===== */
+footer{margin-top:56px}
+.foot-inner{padding:26px 0 44px;text-align:center;color:var(--sub);font-size:12px;line-height:2}
+.foot-logo{font-weight:900;letter-spacing:.06em;color:var(--text);font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="tape"></div>
+
+<div class="wrap">
+
+<!-- ================= HERO ================= -->
+<header>
+  <div class="kicker mono">RESTRICTED AREA // 第F格納庫</div>
+  <h1 class="logo nw">HANGAR F<span class="dot">.</span></h1>
+  <div class="logo-sub mono">DAI-F KAKUNOUKO</div>
+
+  <p class="catch jp">思いついた週に、<em>作る。</em></p>
+  <p class="lead jp">ここは、ふゆとの秘密基地。趣味と勢いで運営されている、個人製作機の格納庫です。</p>
+
+  <div class="status mono">
+    <div class="row"><span>SYSTEM</span><b class="online">ONLINE</b></div>
+    <div class="row"><span>運営形態</span><b>趣味（ただし本気）</b></div>
+    <div class="row"><span>人員</span><b>1名</b></div>
+    <div class="row"><span>常駐AI</span><b>1名（育成中）</b></div>
+    <div class="row"><span>製造ペース</span><b>週1機</b></div>
+    <div class="row"><span>保有機体</span><b>15機</b></div>
+  </div>
+</header>
+
+<!-- ================= LATEST ================= -->
+<section>
+  <div class="sec-head"><span class="en mono">LATEST SORTIE</span><h2>最新発進機</h2></div>
+  <div class="latest">
+    <div class="latest-bar mono"><span class="badge-new">NEW</span> 2026-07-23 発進</div>
+    <div class="latest-body">
+      <h3 class="nw">笹友キャラバン</h3>
+      <p class="jp">パンダさんたちが世界に元気を配りにいく、ドット絵×放置×ハクスラゲーム。育てて、眺めて、また育てる。</p>
+      <a class="btn" href="https://fuyutosan.github.io/sasatomo-caravan/" target="_blank" rel="noopener">出撃（遊んでみる）</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MAIN HANGAR ================= -->
+<section>
+  <div class="sec-head"><span class="en mono">MAIN HANGAR</span><h2>主力機</h2></div>
+
+  <div class="ship">
+    <div class="ship-top">
+      <div class="emblem">🖌️</div>
+      <div>
+        <div class="ship-id mono">F-01 / TYPE: こころ診断</div>
+        <h3 class="nw">墨詠み</h3>
+        <div class="type nw">SUMIYOMI ─ INK THAT READS YOUR HEART</div>
+      </div>
+    </div>
+    <p class="jp">言の葉を三つ拾うと、墨があなたのこころを詠む。流れる水墨画の上で答える心理診断。結果は縦書きの「結果札」で持ち帰れます。</p>
+    <a class="btn" href="https://fuyutosan.github.io/sumiyomi/" target="_blank" rel="noopener">出撃</a>
+  </div>
+
+  <div class="ship">
+    <div class="ship-top">
+      <div class="emblem">🌌</div>
+      <div>
+        <div class="ship-id mono">F-02 / TYPE: 睡眠支援</div>
+        <h3 class="nw">ねむり星空</h3>
+        <div class="type nw">NEMURI HOSHIZORA</div>
+      </div>
+    </div>
+    <p class="jp">スマホの光で、天井を星空に変える。呼吸のリズムでゆっくり明滅する、眠れない夜のいちばん近い星。</p>
+    <a class="btn" href="https://fuyutosan.github.io/nemuri-hoshizora/" target="_blank" rel="noopener">出撃</a>
+  </div>
+
+  <div class="ship">
+    <div class="ship-top">
+      <div class="emblem">🔋</div>
+      <div>
+        <div class="ship-id mono">F-03 / TYPE: 癒し</div>
+        <h3 class="nw">パンダさん充電器</h3>
+        <div class="type nw">PANDA POWER CHARGER</div>
+      </div>
+    </div>
+    <p class="jp">充電するたび、パンダさんが元気をくれる。ただの充電時間が、ちょっとした楽しみに変わる充電画面アプリ。</p>
+    <a class="btn" href="https://fuyutosan.github.io/panda-charger/" target="_blank" rel="noopener">出撃</a>
+  </div>
+</section>
+
+<!-- ================= CREW ================= -->
+<section>
+  <div class="sec-head"><span class="en mono">CREW</span><h2>基地スタッフ</h2></div>
+  <div class="crew">
+    <div class="ship-top">
+      <div class="emblem">🐼</div>
+      <div>
+        <div class="ship-id mono">STAFF-01 / TYPE: AI秘書</div>
+        <h3 class="nw">メイメイ</h3>
+        <div class="type nw">MEIMEI ─ OPERATOR</div>
+      </div>
+      <span class="badge-live mono" style="margin-left:auto">育成中</span>
+    </div>
+    <p class="jp">この基地には、育成中のAI秘書がいます。パンダさんのメイメイ。人格から仕事の型まで、ふゆとが少しずつ育てていて、いまでは基地の運営をいくつも任されています。</p>
+    <div class="feats">
+      <div class="feat"><span class="fi">📰</span><span class="jp">新聞を毎朝ひとりで発行している（休刊日なし）</span></div>
+      <div class="feat"><span class="fi">✍️</span><span class="jp">note記事を毎晩19時に執筆して、自分で公開している</span></div>
+      <div class="feat"><span class="fi">𝕏</span><span class="jp">自分のアカウントを持って、Xで発信している</span></div>
+      <div class="feat"><span class="fi">🏠</span><span class="jp">自分のお家と成長記録を持っている（季節で模様替えする）</span></div>
+    </div>
+    <div class="crew-links">
+      <a class="btn" href="https://fuyutosan.github.io/meimei/" target="_blank" rel="noopener">メイメイのお家</a>
+      <a class="btn" href="https://fuyutosan.github.io/meimei/growth.html" target="_blank" rel="noopener">成長記録</a>
+      <a class="btn" href="https://x.com/meimei_pandasan" target="_blank" rel="noopener">𝕏 @meimei_pandasan</a>
+      <a class="btn" href="https://note.com/fuyutopandasan" target="_blank" rel="noopener">note</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RESTRICTED ================= -->
+<section>
+  <div class="sec-head"><span class="en mono">RESTRICTED</span><h2>特別格納庫</h2></div>
+  <div class="restricted" id="restricted">
+    <button class="door-btn" onclick="document.getElementById('restricted').classList.toggle('open')" aria-expanded="false" aria-controls="hangar-inner">
+      <div class="door-stripes"></div>
+      <div class="door-face">
+        <span class="lock">🔒</span>
+        <span>
+          <h3 class="nw">CLASSIFIED ─ 推し関連区画</h3>
+          <span class="cls mono">動力源：愛</span>
+        </span>
+        <span class="door-open-label mono">開扉 ▼</span>
+      </div>
+    </button>
+    <div class="hangar-inner" id="hangar-inner">
+      <div class="hangar-inner-pad">
+        <p class="hangar-note jp">※機密指定ですが、むしろ見てほしい区画です。この格納庫の機体は、すべて愛で動いています。</p>
+
+        <a class="mini" href="https://fuyutosan.github.io/mei-hakase/" target="_blank" rel="noopener">
+          <div class="emblem">🎓</div>
+          <span><b class="nw">愛生博士クイズ</b><span class="jp">モーニング娘。'26・山﨑愛生ちゃんの非公式検定。合格すると博士号がもらえる</span></span>
+          <span class="go">▶</span>
+        </a>
+
+        <a class="mini" href="https://fuyutosan.github.io/Mei-library/" target="_blank" rel="noopener">
+          <div class="emblem">📚</div>
+          <span><b class="nw">めいちゃん図書館</b><span class="jp">活動記録を収蔵する非公式ファンサイト</span></span>
+          <span class="go">▶</span>
+        </a>
+
+        <a class="mini" href="https://fuyutosan.github.io/mei-news/" target="_blank" rel="noopener">
+          <div class="emblem">📰</div>
+          <span><b class="nw">デイリーめいちゃんニュース</b><span class="jp">毎日自動で発行される新聞。休刊日なし</span></span>
+          <span class="go">▶</span>
+        </a>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SORTIE LOG ================= -->
+<section>
+  <div class="sec-head"><span class="en mono">SORTIE LOG</span><h2>発進記録</h2></div>
+  <div class="log">
+    <div class="log-row"><span class="log-date mono">2026-07-23</span><a href="https://fuyutosan.github.io/sasatomo-caravan/" target="_blank" rel="noopener">笹友キャラバン</a><span class="log-tag mono">NEW</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-19</span><a href="https://fuyutosan.github.io/Mei-library/" target="_blank" rel="noopener">めいちゃん図書館</a></div>
+    <div class="log-row"><span class="log-date mono">2026-07-13</span><a href="https://fuyutosan.github.io/sales-study/" target="_blank" rel="noopener">特殊鋼学習プログラム（全60回）</a></div>
+    <div class="log-row"><span class="log-date mono">2026-07-12</span><a href="https://github.com/fuyutosan/daitoshokan-ai-library" target="_blank" rel="noopener">大図書館（AIの記憶システム）</a></div>
+    <div class="log-row"><span class="log-date mono">2026-07-11</span><a href="https://fuyutosan.github.io/sumiyomi/" target="_blank" rel="noopener">墨詠み</a></div>
+    <div class="log-row"><span class="log-date mono">2026-07-05</span><a href="https://fuyutosan.github.io/nemuri-hoshizora/" target="_blank" rel="noopener">ねむり星空</a></div>
+    <div class="log-row"><span class="log-date mono">2026-07-03</span><a href="https://fuyutosan.github.io/fable5-guide/" target="_blank" rel="noopener">Fable 5のトリセツ大ぼうけん</a></div>
+    <div class="log-row"><span class="log-date mono">2026-07-01</span><a href="https://fuyutosan.github.io/mei-hakase/" target="_blank" rel="noopener">愛生博士クイズ</a></div>
+    <div class="log-row"><span class="log-date mono">2026-06-11</span><a href="https://fuyutosan.github.io/tokushu-ko-study/" target="_blank" rel="noopener">特殊鋼3か月独学プログラム</a></div>
+    <div class="log-row"><span class="log-date mono">2026-06-06</span><a href="https://fuyutosan.github.io/panda-charger/" target="_blank" rel="noopener">パンダさん充電器</a></div>
+    <div class="log-row"><span class="log-date mono">2026-06-05</span><a href="https://fuyutosan.github.io/meimei/" target="_blank" rel="noopener">メイメイのお家</a></div>
+    <div class="log-row"><span class="log-date mono">2026-05-28</span><a href="https://fuyutosan.github.io/mei-news/" target="_blank" rel="noopener">デイリーめいちゃんニュース</a></div>
+    <div class="log-row"><span class="log-date mono">2026-05-22</span><a href="https://fuyutosan.github.io/pandasanpet/" target="_blank" rel="noopener">パンダさんころころ（デスクトップアプリ）</a></div>
+    <div class="log-row"><span class="log-date mono">2025-05-06</span><a href="https://fuyutosan.github.io/pandasangame/" target="_blank" rel="noopener">パンダさんパワーゲーム</a></div>
+    <div class="log-row"><span class="log-date mono">2025-04-17</span><a href="https://fuyutosan.github.io/panda-power/" target="_blank" rel="noopener">パンダさんパワー!!ゲーム</a><span class="log-tag mono">初号機</span></div>
+  </div>
+  <p class="log-note jp">※この記録は、機体が増えるたびに追記されます。だいたい週に1機のペース。</p>
+</section>
+
+<!-- ================= CONTROL TOWER ================= -->
+<section>
+  <div class="sec-head"><span class="en mono">CONTROL TOWER</span><h2>管制塔</h2></div>
+  <div class="tower">
+    <div class="q jp"><span>「これ、どうやって作ってるの？」</span><br><span>「うちの困りごとも、こういうので解決できる？」</span></div>
+    <p class="jp">管制塔は、いつでも通信を受け付けています。感想ひとことでも、うれしい燃料になります。</p>
+    <div class="tower-btns">
+      <a class="btn ghost" href="https://x.com/Powerofpandasan" target="_blank" rel="noopener">ふゆとをフォローする</a>
+      <a class="btn mail" href="https://x.com/Powerofpandasan" target="_blank" rel="noopener">管制塔に通信する（DM）</a>
+    </div>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="tape"></div>
+  <div class="wrap foot-inner">
+    <div class="foot-logo nw">HANGAR F. ── 第F格納庫</div>
+    動力源：趣味 ／ 設計・指揮：ふゆと（人間1名） ／ 製造班：相棒のAI<br>
+    <span class="mono">© 2026 HANGAR F.</span>
+  </div>
+</footer>
+
+<script type="module">
+// BudouX：日本語の文節改行（全ブラウザ対応方式）
+try{
+  const {loadDefaultJapaneseParser} = await import('https://cdn.jsdelivr.net/npm/budoux@0.6.2/+esm');
+  const parser = loadDefaultJapaneseParser();
+  document.querySelectorAll('.jp').forEach(el=>{
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while(walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(n=>{
+      if(n.nodeValue && n.nodeValue.trim()) n.nodeValue = parser.parse(n.nodeValue).join('​');
+    });
+  });
+}catch(e){/* BudouX不達でもkeep-all+anywhereで成立する */}
+
+// 扉のaria状態
+const btn = document.querySelector('.door-btn');
+btn.addEventListener('click', ()=>{
+  const open = document.getElementById('restricted').classList.contains('open');
+  btn.setAttribute('aria-expanded', open);
+  btn.querySelector('.door-open-label').textContent = open ? '閉扉 ▲' : '開扉 ▼';
+});
+</script>
+</body>
+</html>
