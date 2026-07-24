@@ -119,12 +119,26 @@ section{padding:44px 0 8px;break-inside:avoid}
 }
 
 /* ===== 遊び心ギミック第2弾 ===== */
-#boot{
-  position:fixed;inset:0;z-index:999;background:var(--bg);
-  color:var(--green);font-family:ui-monospace,Consolas,monospace;
-  font-size:13px;line-height:2;padding:28px 24px;white-space:pre-wrap;
+/* 開庫シーケンス（フィジカル演出・ふゆと案） */
+#shutter{
+  position:fixed;inset:0;z-index:999;cursor:pointer;
+  background:repeating-linear-gradient(0deg,#232c44 0 16px,#182034 16px 20px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+  transition:transform .7s cubic-bezier(.65,0,.35,1);
 }
-#boot.hide{opacity:0;transition:opacity .4s ease}
+#shutter::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:16px;
+  background:repeating-linear-gradient(-45deg,var(--accent) 0 14px,#151515 14px 28px);
+}
+#shutter.lift{transform:translateY(-101%)}
+#shutter.fast{transition-duration:.25s}
+.sh-lamp{width:14px;height:14px;border-radius:50%;background:#ff5a3c;
+  box-shadow:0 0 16px #ff5a3c;animation:blink .5s infinite}
+.sh-band{color:var(--accent);font-size:12px;letter-spacing:.35em}
+.sh-skip{color:var(--sub);font-size:10px;letter-spacing:.2em;position:absolute;bottom:30px}
+body.opening .logo{animation:logoin .55s cubic-bezier(.2,.9,.3,1.2) .85s both}
+@keyframes logoin{from{opacity:0;transform:translateX(-46px)}to{opacity:1;transform:none}}
+.status .row b.offline{color:var(--sub);text-shadow:none}
 .btn:active,.door-btn:active{transform:translateY(2px) scale(.98)}
 .pre{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
 .pre.in{opacity:1;transform:none}
@@ -322,7 +336,11 @@ footer{margin-top:56px}
 <body>
 
 <canvas id="factory" aria-hidden="true"></canvas>
-<div id="boot" hidden aria-hidden="true"></div>
+<div id="shutter" hidden aria-hidden="true">
+  <div class="sh-lamp"></div>
+  <div class="sh-band mono">HANGAR F. ── OPENING</div>
+  <div class="sh-skip mono">tap to open</div>
+</div>
 
 <div class="topbar">
 <div class="tape"></div>
@@ -344,7 +362,7 @@ footer{margin-top:56px}
   <p class="lead jp">ここは、ふゆとの秘密基地。機体はここで作られ、ここにしまわれ、ここから出撃していく。趣味と勢いで運営されている、製造工場を兼ねた格納庫です。</p>
 
   <div class="status mono">
-    <div class="row"><span>SYSTEM</span><b class="online">ONLINE</b></div>
+    <div class="row"><span>SYSTEM</span><b class="online" id="sysstate">ONLINE</b></div>
     <div class="row"><span>運営形態</span><b>趣味（ただし本気）</b></div>
     <div class="row"><span>人員</span><b>1名（本人）</b></div>
     <div class="row"><span>常駐AI</span><b>1名（育成中）</b></div>
@@ -741,23 +759,36 @@ function frame(now){
 </script>
 
 <script type="module">
-// 起動ブートシーケンス（1セッション1回だけ）
+// 開庫シーケンス（1セッション1回・フィジカル演出）
+// 0.45s警告灯→シャッター上昇0.7s→ロゴ滑り込み→SYSTEMがOFFLINE(灰)→1.9sでONLINE(緑)へ
 try{
-  if(!sessionStorage.getItem('hf_boot')){
-    sessionStorage.setItem('hf_boot','1');
-    const boot=document.getElementById('boot');
-    boot.hidden=false;
-    const lines=['> SYSTEM CHECK ......... OK','> HANGAR DOOR .......... OK','> POWER ................ ONLINE','> ようこそ、第F格納庫へ。'];
-    let i=0;
-    const iv=setInterval(()=>{
-      boot.textContent+=lines[i++]+'\n';
-      if(i>=lines.length){
-        clearInterval(iv);
-        setTimeout(()=>{boot.classList.add('hide');setTimeout(()=>{boot.hidden=true;},450);},430);
-      }
-    },160);
+  const store={
+    get:k=>{try{return sessionStorage.getItem(k);}catch(e){return null;}},
+    set:(k,v)=>{try{sessionStorage.setItem(k,v);}catch(e){}}
+  };
+  const shutter=document.getElementById('shutter');
+  const sys=document.getElementById('sysstate');
+  const setOnline=()=>{sys.textContent='ONLINE';sys.className='online';};
+  if(!store.get('hf_boot')){
+    store.set('hf_boot','1');
+    shutter.hidden=false;
+    document.body.classList.add('opening');
+    sys.textContent='OFFLINE';sys.className='offline';
+    let lifted=false,timerA,timerB;
+    const lift=fast=>{
+      if(lifted)return;lifted=true;
+      if(fast)shutter.classList.add('fast');
+      shutter.classList.add('lift');
+      setTimeout(()=>{shutter.hidden=true;},fast?300:750);
+      clearTimeout(timerB);
+      setTimeout(setOnline,fast?500:1450);
+    };
+    timerA=setTimeout(()=>lift(false),450);
+    shutter.addEventListener('click',()=>{clearTimeout(timerA);lift(true);},{once:true});
   }
-}catch(e){document.getElementById('boot').hidden=true;}
+}catch(e){
+  const sh=document.getElementById('shutter');if(sh)sh.hidden=true;
+}
 
 // ロゴタップ＝金の隠し機体スクランブル発進／5連打 or コナミコマンド＝非常出力モード
 {
