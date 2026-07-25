@@ -54,8 +54,22 @@ p{text-wrap:pretty}
 .nw{white-space:nowrap}
 
 /* ===== factory background ===== */
+#floor{
+  position:fixed;left:0;right:0;bottom:0;height:180px;z-index:44;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(8,11,17,0) 0,rgba(8,11,17,1) 26px),
+    repeating-linear-gradient(0deg,rgba(148,163,199,.05) 0 1px,transparent 1px 18px),
+    #080b11;
+  border-top:1px solid var(--line);
+  box-shadow:0 -10px 22px rgba(0,0,0,.5);
+}
+#floor::before{
+  content:"";position:absolute;left:0;right:0;top:-1px;height:3px;
+  background:repeating-linear-gradient(90deg,var(--accent) 0 18px,transparent 18px 44px);
+  opacity:.35;
+}
 #factory{
-  position:fixed;inset:0;z-index:45;pointer-events:none;
+  position:fixed;inset:0;z-index:46;pointer-events:none;
 }
 /* ===== status ticker（天井の稼働表示＝スクロールしても付いてくる） ===== */
 .topbar{position:sticky;top:0;z-index:50;box-shadow:0 4px 14px rgba(0,0,0,.45)}
@@ -392,6 +406,7 @@ footer{margin-top:56px}
 </head>
 <body>
 
+<div id="floor" aria-hidden="true"></div>
 <canvas id="factory" aria-hidden="true"></canvas>
 <div id="doors" hidden aria-hidden="true">
   <div class="dpanel" id="dL"></div>
@@ -694,15 +709,19 @@ const NAMES=['marshaller_blue_A','marshaller_blue_B','marshaller_green_A','marsh
  'marshaller_red_A','marshaller_red_B','plane_long','plane_short','beacon_red','beacon_blue',
  'crate_a','crate_b','barrel','belt_l','belt_m','belt_r','machine_a','machine_pc','machine_b',
  'machine_ctrl','hook','sign_warn','pole','hangar','plane_gold_long','plane_gold_short'];
-const IMG={};let loaded=0;
+const IMG={};let loaded=0,started=false;
+const start=()=>{ if(started)return; started=true; rafId=requestAnimationFrame(frame); };
 NAMES.forEach(n=>{
   const i=new Image();
-  i.onload=()=>{ if(++loaded===NAMES.length) rafId=requestAnimationFrame(frame); };
-  i.onerror=()=>{ if(++loaded===NAMES.length) rafId=requestAnimationFrame(frame); };
+  i.onload=()=>{ if(++loaded===NAMES.length) start(); };
+  i.onerror=()=>{ if(++loaded===NAMES.length) start(); };
   i.src='assets/px/'+n+'.png';
   IMG[n]=i;
 });
+setTimeout(start,1200);   // 画像が揃わなくても必ず動き出す
 const S=2, T=18*S;
+// 安全描画: 未ロード/壊れた画像でも例外でループを止めない
+const D=(im,...a)=>{ if(im&&im.complete&&im.naturalWidth>0){ try{D(im,...a);}catch(e){} } };
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const WANDS=['blue','green','red'];
 
@@ -718,7 +737,7 @@ const puffs=[],sparks=[];
 let sparkTimer=0,flash=0,craneT=0,animT=0,last=performance.now(),rafId=0;
 // 省電力モード等でrAFが止まる端末向けの保険: 1秒以上フレームが来なければ駆動を継ぎ足す
 setInterval(()=>{
-  if(loaded===NAMES.length && !document.hidden && performance.now()-last>1000){
+  if(started && !document.hidden && performance.now()-last>1000){
     cancelAnimationFrame(rafId);
     frame(performance.now());
   }
@@ -759,14 +778,14 @@ function frame(now){
   const sw=Math.sin(craneT*1.6)*5;
   cx.strokeStyle='#5b6478';cx.lineWidth=2;
   cx.beginPath();cx.moveTo(crX,B+28);cx.lineTo(crX+sw,B+50);cx.stroke();
-  cx.drawImage(IMG.hook,crX+sw-9,B+46,T/2,T/2);
-  cx.drawImage(IMG.crate_a,crX+sw-13,B+62,26,26);
+  D(IMG.hook,crX+sw-9,B+46,T/2,T/2);
+  D(IMG.crate_a,crX+sw-13,B+62,26,26);
 
   // 機械列＋警告標識
   for(const[m,fx]of [['machine_ctrl',.30],['machine_a',.41],['machine_pc',.52],['machine_b',.63]]){
-    cx.drawImage(IMG[m],W*fx,gy+8-T,T,T);
+    D(IMG[m],W*fx,gy+8-T,T,T);
   }
-  cx.drawImage(IMG.sign_warn,W*.72,gy+8-T,T,T);
+  D(IMG.sign_warn,W*.72,gy+8-T,T,T);
 
   // 溶接（火花＋閃光）
   const bayX=W*.52+T/2;
@@ -783,21 +802,21 @@ function frame(now){
 
   // コンベア＋流れる貨物
   const beltL=W*.28, beltR=W*.74;
-  cx.drawImage(IMG.belt_l,beltL,beltY,T,T);
-  for(let x=beltL+T;x<beltR-T;x+=T)cx.drawImage(IMG.belt_m,x,beltY,T,T);
-  cx.drawImage(IMG.belt_r,beltR-T,beltY,T,T);
+  D(IMG.belt_l,beltL,beltY,T,T);
+  for(let x=beltL+T;x<beltR-T;x+=T)D(IMG.belt_m,x,beltY,T,T);
+  D(IMG.belt_r,beltR-T,beltY,T,T);
   for(const it of items){
     it.f-=dt*.03; if(it.f<-.06)it.f=1.02;
     const x=beltL+(beltR-beltL)*it.f;
-    if(x>beltL-30&&x<beltR)cx.drawImage(IMG[it.type],x,beltY-26,26,26);
+    if(x>beltL-30&&x<beltR)D(IMG[it.type],x,beltY-26,26,26);
   }
 
   // 格納庫（左）＋回転灯
   const hangarH=IMG.hangar.height*S||80;
-  cx.drawImage(IMG.hangar,8,gy+6-hangarH,IMG.hangar.width*S,hangarH);
+  D(IMG.hangar,8,gy+6-hangarH,IMG.hangar.width*S,hangarH);
   for(const[bx,lamp,ph]of [[8+IMG.hangar.width*S+10,'beacon_red',0],[W-20,'beacon_blue',2]]){
-    cx.drawImage(IMG.pole,bx,gy+6-T*1.5,T/2,T*1.5);
-    cx.drawImage(IMG[lamp],bx-4,gy+6-T*1.9,T*.7,T*.7);
+    D(IMG.pole,bx,gy+6-T*1.5,T/2,T*1.5);
+    D(IMG[lamp],bx-4,gy+6-T*1.9,T*.7,T*.7);
     if(Math.sin(t*5+ph)>0){
       cx.fillStyle=lamp==='beacon_red'?'rgba(255,80,60,.32)':'rgba(80,140,255,.32)';
       cx.beginPath();cx.arc(bx+8,gy+6-T*1.6,12,0,7);cx.fill();
@@ -825,13 +844,13 @@ function frame(now){
     const pref=plane.gold?'plane_gold_':'plane_';
     const fl=IMG[pref+((Math.floor(animT*8)%2===0&&plane.phase!=='hold')?'long':'short')];
     cx.save();cx.translate(plane.x+24,plane.y+12);cx.rotate(plane.tilt);
-    cx.drawImage(fl,-24,-12,48,24);cx.restore();
+    D(fl,-24,-12,48,24);cx.restore();
   }
 
   // 誘導員（右側・発進のたびに誘導灯の色が変わる）
   const busy=plane.phase==='hold';
   const mf=Math.floor(animT*(busy?7:1.6))%2===0?'A':'B';
-  cx.drawImage(IMG['marshaller_'+plane.wand+'_'+mf],mX,gy+6-32,32,32);
+  D(IMG['marshaller_'+plane.wand+'_'+mf],mX,gy+6-32,32,32);
 
   // 地面ライン
   cx.strokeStyle='#242c42';cx.lineWidth=2;
