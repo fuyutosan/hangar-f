@@ -153,8 +153,16 @@ section{padding:44px 0 8px;break-inside:avoid}
 .wrap.lowered{transform:translateY(14vh);opacity:.35;filter:brightness(.55)}
 .wrap.rumble{animation:rumble .12s linear 6}
 @keyframes rumble{25%{transform:translateY(14vh) translateX(-2px)}75%{transform:translateY(14vh) translateX(2px)}}
-.wrap.risen{transform:none;opacity:1;filter:none;
+.wrap.lowered,.wrap.risen{
   transition:transform 1s cubic-bezier(.22,1.2,.36,1),opacity .8s ease,filter .8s ease}
+.wrap.risen{transform:none;opacity:1;filter:none}
+#close-hangar{
+  display:block;margin:34px auto 0;cursor:pointer;
+  background:var(--panel2);color:var(--sub);border:1px solid var(--line);
+  border-radius:10px;padding:13px 30px;font-size:13px;letter-spacing:.2em;
+  transition:color .2s,border-color .2s;
+}
+#close-hangar:hover{color:var(--accent);border-color:var(--accent-dim)}
 .status .row b.offline{color:var(--sub);text-shadow:none}
 .btn:active,.door-btn:active{transform:translateY(2px) scale(.98)}
 .pre{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
@@ -635,6 +643,8 @@ footer{margin-top:56px}
 
 </main><!-- /cols -->
 
+<button id="close-hangar" class="mono">⏏ 格納庫を閉じる</button>
+
 </div><!-- /wrap -->
 
 <div id="sortie-fx" hidden aria-hidden="true">
@@ -821,7 +831,8 @@ function frame(now){
 </script>
 
 <script type="module">
-// 開庫シーケンス（マジンガー式：縦開き→横開き→基地がゴゴゴとセリ上がる。1セッション1回）
+// 開庫シーケンス（マジンガー式：縦開き→横開き→基地がゴゴゴとセリ上がる）
+// 初回訪問=自動発進。フッターの「⏏ 格納庫を閉じる」で意味もなく閉じて、タップでまた開ける
 try{
   const store={
     get:k=>{try{return sessionStorage.getItem(k);}catch(e){return null;}},
@@ -830,31 +841,59 @@ try{
   const doors=document.getElementById('doors');
   const wrap=document.querySelector('.wrap');
   const sys=document.getElementById('sysstate');
+  const wskip=document.querySelector('.wskip');
   const setOnline=()=>{sys.textContent='ONLINE';sys.className='online';};
+  const setOffline=()=>{sys.textContent='OFFLINE';sys.className='offline';};
+  let state='open', timers=[];
+  const clearT=()=>{timers.forEach(clearTimeout);timers=[];};
+  const T=(fn,ms)=>timers.push(setTimeout(fn,ms));
+
+  function playLaunch(){
+    if(state==='launching')return;
+    state='launching';clearT();
+    wskip.textContent='TAP TO SKIP';
+    doors.hidden=false;
+    doors.classList.remove('fast','open1','open2');
+    wrap.classList.add('lowered');wrap.classList.remove('risen','rumble');
+    setOffline();
+    void doors.offsetWidth;
+    T(()=>doors.classList.add('open1'),700);   // 縦開き
+    T(()=>doors.classList.add('open2'),1000);  // 奥が見えたら即・横開き
+    T(()=>wrap.classList.add('rumble'),1150);  // ゴゴゴ…
+    T(()=>{wrap.classList.remove('rumble');wrap.classList.add('risen');},1850); // セリ上がり
+    T(setOnline,2050);
+    T(()=>{doors.hidden=true;state='open';},2150);
+  }
+  function skipLaunch(){
+    clearT();
+    doors.classList.add('fast','open1','open2');
+    wrap.classList.remove('rumble');wrap.classList.add('lowered','risen');
+    setOnline();
+    T(()=>{doors.hidden=true;doors.classList.remove('fast');state='open';},650);
+  }
+  function closeHangar(){
+    if(state!=='open')return;
+    state='closing';clearT();
+    doors.hidden=false;
+    doors.classList.remove('fast');
+    doors.classList.add('open1','open2'); // 扉を画面外に待機させてから…
+    void doors.offsetWidth;
+    setOffline();
+    wrap.classList.remove('risen');       // 基地が沈む
+    T(()=>doors.classList.remove('open2'),250);  // 横扉が閉まる
+    T(()=>doors.classList.remove('open1'),700);  // 縦扉が閉まる
+    T(()=>{wskip.textContent='▶ TAP TO OPEN';state='closed';},1550);
+  }
+  doors.addEventListener('pointerdown',()=>{
+    if(state==='closed')playLaunch();
+    else if(state==='launching')skipLaunch();
+  });
+  document.getElementById('close-hangar').addEventListener('click',closeHangar);
+  window.__hangarLaunch=playLaunch;window.__hangarClose=closeHangar;
+
   if(!store.get('hf_boot')){
     store.set('hf_boot','1');
-    doors.hidden=false;
-    wrap.classList.add('lowered');
-    sys.textContent='OFFLINE';sys.className='offline';
-    let done=false;
-    const timers=[];
-    const rise=()=>{wrap.classList.remove('rumble');wrap.classList.add('risen');};
-    const skip=()=>{
-      if(done)return;done=true;
-      timers.forEach(clearTimeout);
-      doors.classList.add('fast','open1','open2');
-      rise();setOnline();
-      setTimeout(()=>{doors.hidden=true;},650);
-    };
-    window.__hangarOpen=skip;
-    timers.push(setTimeout(()=>doors.classList.add('open1'),700));   // 縦開き
-    timers.push(setTimeout(()=>doors.classList.add('open2'),1000));  // 奥が見えたら即・横開き
-    timers.push(setTimeout(()=>wrap.classList.add('rumble'),1150));  // ゴゴゴ…
-    timers.push(setTimeout(rise,1850));                              // セリ上がり
-    timers.push(setTimeout(setOnline,2050));                         // OFFLINE→ONLINE
-    timers.push(setTimeout(()=>{done=true;doors.hidden=true;},2150));
-    doors.addEventListener('pointerdown',skip);
-    doors.addEventListener('click',skip);
+    playLaunch();
   }
 }catch(e){
   const d=document.getElementById('doors');if(d)d.hidden=true;
