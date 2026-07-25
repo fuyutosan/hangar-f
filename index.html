@@ -29,6 +29,24 @@
   --accent-dim:#b8901f;
   --green:#3ddc84;
   --danger:#161006;
+  /* 床の住人の配置（スマホでまとめて詰める） */
+  --floor-h:180px;
+  --mei-rest:168px;
+  --mei-pc:250px;
+  --marsh-right:56px;
+  --guide-right:98px;
+  --mei-guide:calc(100vw - var(--guide-right) - 32px);
+  --plane-stop:calc(100vw - 250px);
+}
+@media (max-width:640px){
+  :root{
+    --floor-h:140px;
+    --mei-rest:96px;
+    --mei-pc:150px;
+    --marsh-right:44px;
+    --guide-right:84px;
+    --plane-stop:calc(100vw - 170px);
+  }
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -44,7 +62,7 @@ body{
     linear-gradient(rgba(148,163,199,.045) 1px,transparent 1px),
     linear-gradient(90deg,rgba(148,163,199,.045) 1px,transparent 1px);
   background-size:36px 36px;
-  padding-bottom:196px;
+  padding-bottom:calc(var(--floor-h) + 16px);
 }
 .mono{font-family:ui-monospace,"Cascadia Mono",Consolas,Menlo,monospace}
 .wrap{max-width:640px;margin:0 auto;padding:0 20px}
@@ -55,7 +73,7 @@ p{text-wrap:pretty}
 
 /* ===== factory background ===== */
 #floor{
-  position:fixed;left:0;right:0;bottom:0;height:180px;z-index:44;pointer-events:none;overflow:hidden;
+  position:fixed;left:0;right:0;bottom:0;height:var(--floor-h);z-index:44;pointer-events:none;overflow:hidden;
   background:
     linear-gradient(180deg,rgba(8,11,17,0) 0,rgba(8,11,17,1) 26px),
     repeating-linear-gradient(0deg,rgba(148,163,199,.05) 0 1px,transparent 1px 18px),
@@ -84,29 +102,48 @@ p{text-wrap:pretty}
 .fl-hookwrap{top:44px;left:0;width:26px;height:52px;animation:trolley 16s ease-in-out infinite alternate}
 @keyframes trolley{from{transform:translateX(12vw)}to{transform:translateX(74vw)}}
 .fl-hook{width:18px;height:18px;top:0;left:4px;animation:swing 3.4s ease-in-out infinite alternate}
-.fl-load{width:26px;height:26px;top:20px;left:0;animation:swing 3.4s ease-in-out infinite alternate}
+.fl-load{width:26px;height:26px;top:20px;left:0;animation:swing 3.4s ease-in-out infinite alternate,loadCrate 32s steps(1) infinite}
+.fl-load.face{width:26px;height:24px;animation:swing 3.4s ease-in-out infinite alternate,loadFace 32s steps(1) infinite}
+@keyframes loadCrate{0%,70%{opacity:1}71%,100%{opacity:0}}
+@keyframes loadFace{0%,70%{opacity:0}71%,97%{opacity:1}98%,100%{opacity:0}}
 @keyframes swing{from{transform:translateX(-5px)}to{transform:translateX(5px)}}
 /* 機械列・標識・格納庫 */
 .fl-mc{width:36px;height:36px;bottom:34px}
 .fl-hangar{width:108px;height:80px;bottom:26px;left:8px}
 /* 溶接の火花＋閃光 */
-.fl-weld{width:22px;height:16px;bottom:52px;left:calc(52% + 8px);background:#dff1ff;border-radius:3px;
+.fl-weld{width:34px;height:26px;bottom:44px;left:calc(52% - 2px);border-radius:50%;
+  background:radial-gradient(circle,#ffffff 0%,#dff1ff 35%,rgba(120,190,255,.35) 62%,transparent 75%);
   opacity:0;animation:weld 1.6s steps(1) infinite}
-@keyframes weld{0%,88%{opacity:0}90%{opacity:.55}92%{opacity:.15}94%{opacity:.45}100%{opacity:0}}
-.fl-spark{width:3px;height:3px;bottom:56px;left:calc(52% + 18px);background:#ffd97a;opacity:0}
-.fl-spark.s1{animation:spark1 1.6s linear infinite}
-.fl-spark.s2{animation:spark2 1.6s linear infinite .1s}
-.fl-spark.s3{animation:spark3 1.6s linear infinite .05s}
-@keyframes spark1{0%,88%{opacity:0;transform:none}90%{opacity:1}100%{opacity:0;transform:translate(-26px,-20px)}}
-@keyframes spark2{0%,88%{opacity:0;transform:none}90%{opacity:1}100%{opacity:0;transform:translate(22px,-26px)}}
-@keyframes spark3{0%,88%{opacity:0;transform:none}90%{opacity:1}100%{opacity:0;transform:translate(4px,-32px)}}
+@keyframes weld{0%,84%{opacity:0}86%{opacity:1}88%{opacity:.35}90%{opacity:.95}92%{opacity:.3}94%{opacity:.8}97%{opacity:.2}100%{opacity:0}}
+.fl-glow{width:120px;height:60px;bottom:30px;left:calc(52% - 44px);border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse,rgba(160,210,255,.30) 0%,transparent 70%);
+  opacity:0;animation:weldglow 1.6s ease-out infinite}
+@keyframes weldglow{0%,84%{opacity:0}86%{opacity:1}100%{opacity:0}}
+.fl-spark{width:3px;height:3px;bottom:52px;left:calc(52% + 10px);background:#ffe08a;
+  border-radius:1px;opacity:0;box-shadow:0 0 4px #ffb347}
+.fl-spark.s1{width:3px;height:3px;animation:spark1 1.6s linear infinite 0s}
+@keyframes spark1{0%,84%{opacity:0;transform:none}86%{opacity:1;transform:none}100%{opacity:0;transform:translate(-58px,-34px)}}
+.fl-spark.s2{width:4px;height:4px;animation:spark2 1.6s linear infinite 0.03s}
+@keyframes spark2{0%,84%{opacity:0;transform:none}86%{opacity:1;transform:none}100%{opacity:0;transform:translate(-34px,-52px)}}
+.fl-spark.s3{width:3px;height:3px;animation:spark3 1.6s linear infinite 0.06s}
+@keyframes spark3{0%,84%{opacity:0;transform:none}86%{opacity:1;transform:none}100%{opacity:0;transform:translate(-12px,-62px)}}
+.fl-spark.s4{width:4px;height:4px;animation:spark4 1.6s linear infinite 0.02s}
+@keyframes spark4{0%,84%{opacity:0;transform:none}86%{opacity:1;transform:none}100%{opacity:0;transform:translate(16px,-58px)}}
+.fl-spark.s5{width:3px;height:3px;animation:spark5 1.6s linear infinite 0.05s}
+@keyframes spark5{0%,84%{opacity:0;transform:none}86%{opacity:1;transform:none}100%{opacity:0;transform:translate(40px,-44px)}}
+.fl-spark.s6{width:3px;height:3px;animation:spark6 1.6s linear infinite 0.08s}
+@keyframes spark6{0%,84%{opacity:0;transform:none}86%{opacity:1;transform:none}100%{opacity:0;transform:translate(62px,-24px)}}
+.fl-spark.s7{width:2px;height:2px;animation:spark7 1.6s linear infinite 0.1s}
+@keyframes spark7{0%,84%{opacity:0;transform:none}86%{opacity:1;transform:none}100%{opacity:0;transform:translate(-70px,-8px)}}
+.fl-spark.s8{width:2px;height:2px;animation:spark8 1.6s linear infinite 0.12s}
+@keyframes spark8{0%,84%{opacity:0;transform:none}86%{opacity:1;transform:none}100%{opacity:0;transform:translate(74px,-6px)}}
 /* 回転灯 */
 .fl-pole{width:18px;height:54px;bottom:26px}
 .fl-lamp{width:25px;height:25px;bottom:76px}
 .fl-lamp.red{animation:blink .9s steps(1) infinite}
 .fl-lamp.blue{animation:blink .9s steps(1) infinite .45s}
 /* 誘導員（2フレーム交互＝誘導棒を振る） */
-.fl-marsh{width:32px;height:32px;bottom:30px;right:56px}
+.fl-marsh{width:32px;height:32px;bottom:30px;right:var(--marsh-right)}
 .fl-marsh.a{animation:swap .44s steps(1) infinite}
 .fl-marsh.b{animation:swap .44s steps(1) infinite .22s}
 @keyframes swap{0%,49%{opacity:1}50%,100%{opacity:0}}
@@ -119,30 +156,59 @@ p{text-wrap:pretty}
 @keyframes sortie{
   0%{transform:translate(-70px,0) rotate(0deg);opacity:0}
   3%{opacity:1}
-  38%{transform:translate(calc(100vw - 150px),0) rotate(0deg);opacity:1}
-  56%{transform:translate(calc(100vw - 150px),0) rotate(0deg);opacity:1}
+  38%{transform:translate(var(--plane-stop),0) rotate(0deg);opacity:1}
+  56%{transform:translate(var(--plane-stop),0) rotate(0deg);opacity:1}
   74%{transform:translate(calc(100vw + 60px),-120px) rotate(-16deg);opacity:1}
   78%,100%{transform:translate(calc(100vw + 120px),-190px) rotate(-18deg);opacity:0}
 }
-/* メイメイ: 60秒周期で3つの仕事 — 笹パクパク→デスクでPCカタカタ→誘導員と一緒に誘導 */
+/* メイメイの1日（60秒）: 笹30s → 移動 → PC5s → 移動 → 誘導15s → 移動 */
 .fl-mei{position:absolute;bottom:32px;width:32px;height:32px}
 .fl-mei img{position:absolute;inset:0;width:100%;height:100%}
-.fl-mei.rest{left:168px;animation:meiRest 60s linear infinite}
+.fl-mei.rest{left:var(--mei-rest);animation:meiRest 60s linear infinite}
 .fl-mei.rest img{animation:swap .6s steps(1) infinite}
 .fl-mei.rest img.b{animation-delay:.3s}
-.fl-mei.pc{left:calc(42% + 34px);width:48px;animation:meiPC 60s linear infinite}
+.fl-mei.pc{left:var(--mei-pc);width:48px;animation:meiPC 60s linear infinite}
 .fl-mei.pc img{animation:swap .34s steps(1) infinite}
 .fl-mei.pc img.b{animation-delay:.17s}
-.fl-mei.guide{right:98px;animation:meiGuide 60s linear infinite}
+.fl-mei.guide{right:var(--guide-right);animation:meiGuide 60s linear infinite}
 .fl-mei.guide img{animation:swap .44s steps(1) infinite}
 .fl-mei.guide img.b{animation-delay:.22s}
-@keyframes meiRest{0%,56%{opacity:1}58%,100%{opacity:0}}
-@keyframes meiPC{0%,57%{opacity:0}59%,76%{opacity:1}78%,100%{opacity:0}}
-@keyframes meiGuide{0%,77%{opacity:0}79%,96%{opacity:1}98%,100%{opacity:0}}
+.fl-mei.walk{left:0;animation:meiWalk 60s linear infinite}
+.fl-mei.walk img{animation:swap .26s steps(1) infinite}
+.fl-mei.walk img.b{animation-delay:.13s}
+@keyframes meiRest{0%,49.8%{opacity:1}50%,100%{opacity:0}}
+@keyframes meiPC{0%,54.8%{opacity:0}55%,63.2%{opacity:1}63.4%,100%{opacity:0}}
+@keyframes meiGuide{0%,69.8%{opacity:0}70%,94.8%{opacity:1}95%,100%{opacity:0}}
+@keyframes meiWalk{
+  0%,49.8%{opacity:0;transform:translateX(var(--mei-rest))}
+  50%{opacity:1;transform:translateX(var(--mei-rest))}
+  55%{opacity:1;transform:translateX(var(--mei-pc))}
+  55.2%,63.2%{opacity:0;transform:translateX(var(--mei-pc))}
+  63.4%{opacity:1;transform:translateX(var(--mei-pc))}
+  70%{opacity:1;transform:translateX(var(--mei-guide))}
+  70.2%,94.8%{opacity:0;transform:translateX(var(--mei-guide))}
+  95%{opacity:1;transform:translateX(var(--mei-guide))}
+  100%{opacity:1;transform:translateX(var(--mei-rest))}
+}
 /* 溶接工: 火花の出るベイで作業（2フレーム交互） */
 .fl-welder{width:32px;height:32px;bottom:32px;left:calc(52% - 26px)}
 .fl-welder.a{animation:swap .5s steps(1) infinite}
 .fl-welder.b{animation:swap .5s steps(1) infinite .25s}
+@media (max-width:640px){
+  .fl-hangar{width:80px;height:60px}
+  .fl-crane{top:16px}
+  .fl-trolley{top:14px;width:28px;height:16px}
+  .fl-hookwrap{top:30px}
+  .fl-mc{width:30px;height:30px}
+  .fl-mc.m2,.fl-mc.m4,.fl-led{display:none}      /* 機械2台と壁LEDは間引く */
+  .fl-belt{left:30%;right:22%}
+  .fl-cargo{left:76%}
+  .fl-welder{left:calc(52% - 20px);width:28px;height:28px}
+  .fl-weld{left:calc(52% + 2px)}
+  .fl-pole{height:44px}
+  .fl-lamp{bottom:66px}
+  .fl-plane{width:42px;height:21px}
+}
 /* 壁のLED */
 .fl-led{width:2px;height:2px;background:var(--accent);opacity:.5}
 .fl-led.l1{top:56px;left:22%;animation:blink 2.2s steps(1) infinite}
@@ -489,6 +555,7 @@ footer{margin-top:56px}
   <div class="fl-hookwrap">
     <img class="fl-hook" src="assets/px/hook.png" alt="">
     <img class="fl-load" src="assets/px/crate_a.png" alt="">
+    <img class="fl-load face" src="assets/px/panda_face.png" alt="">
   </div>
   <div class="fl-led l1"></div><div class="fl-led l2"></div><div class="fl-led l3"></div>
   <img class="fl-hangar" src="assets/px/hangar.png" alt="">
@@ -496,22 +563,32 @@ footer{margin-top:56px}
   <img class="fl-lamp red" src="assets/px/beacon_red.png" style="left:122px" alt="">
   <img class="fl-pole" src="assets/px/pole.png" style="right:18px" alt="">
   <img class="fl-lamp blue" src="assets/px/beacon_blue.png" style="right:14px" alt="">
-  <img class="fl-mc" src="assets/px/machine_a.png" style="left:31%" alt="">
-  <img class="fl-mc" src="assets/px/machine_pc.png" style="left:42%" alt="">
-  <img class="fl-mc" src="assets/px/machine_b.png" style="left:53%" alt="">
-  <img class="fl-mc" src="assets/px/sign_warn.png" style="left:70%" alt="">
+  <img class="fl-mc m1" src="assets/px/machine_a.png" style="left:31%" alt="">
+  <img class="fl-mc m2" src="assets/px/machine_pc.png" style="left:42%" alt="">
+  <img class="fl-mc m3" src="assets/px/machine_b.png" style="left:53%" alt="">
+  <img class="fl-mc m4" src="assets/px/sign_warn.png" style="left:70%" alt="">
   <div class="fl-belt"></div>
   <img class="fl-cargo" src="assets/px/crate_a.png" alt="">
   <img class="fl-cargo" src="assets/px/barrel.png" style="animation-delay:-4.6s" alt="">
   <img class="fl-cargo" src="assets/px/crate_b.png" style="animation-delay:-9.3s" alt="">
+  <div class="fl-glow"></div>
   <div class="fl-weld"></div>
-  <div class="fl-spark s1"></div><div class="fl-spark s2"></div><div class="fl-spark s3"></div>
+  <div class="fl-spark s1"></div>
+  <div class="fl-spark s2"></div>
+  <div class="fl-spark s3"></div>
+  <div class="fl-spark s4"></div>
+  <div class="fl-spark s5"></div>
+  <div class="fl-spark s6"></div>
+  <div class="fl-spark s7"></div>
+  <div class="fl-spark s8"></div>
+
   <img class="fl-marsh a" src="assets/px/marshaller_blue_A.png" alt="">
   <img class="fl-marsh b" src="assets/px/marshaller_blue_B.png" alt="">
   <img class="fl-plane panda" src="assets/px/plane_long.png" alt="">
   <img class="fl-plane gold" src="assets/px/plane_gold_long.png" alt="">
   <div class="fl-mei rest"><img class="a" src="assets/px/mei_bite_a.png" alt=""><img class="b" src="assets/px/mei_bite_b.png" alt=""></div>
   <div class="fl-mei pc"><img class="a" src="assets/px/mei_desk_a.png" alt=""><img class="b" src="assets/px/mei_desk_b.png" alt=""></div>
+  <div class="fl-mei walk"><img class="a" src="assets/px/mei_walk_a.png" alt=""><img class="b" src="assets/px/mei_walk_b.png" alt=""></div>
   <div class="fl-mei guide"><img class="a" src="assets/px/mei_guide_a.png" alt=""><img class="b" src="assets/px/mei_guide_b.png" alt=""></div>
   <img class="fl-welder a" src="assets/px/welder_a.png" alt="">
   <img class="fl-welder b" src="assets/px/welder_b.png" alt="">
