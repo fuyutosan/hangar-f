@@ -194,7 +194,37 @@ p{text-wrap:pretty}
 .fl-welder{width:32px;height:32px;bottom:32px;left:calc(52% - 26px)}
 .fl-welder.a{animation:swap .5s steps(1) infinite}
 .fl-welder.b{animation:swap .5s steps(1) infinite .25s}
+.fl-crew2{position:absolute;bottom:32px;width:32px;height:32px}
+.fl-crew2 img{position:absolute;inset:0;width:100%;height:100%}
+.fl-crew2 img.b{animation-delay:.28s}
+.fl-crew2 img{animation:swap .56s steps(1) infinite}
+.fl-mech{left:130px}
+.fl-painter{left:742px}
+.fl-painter img{animation-duration:.4s}
+.fl-painter img.b{animation-delay:.2s}
+/* 塗料のミスト */
+.fl-mist{width:26px;height:16px;bottom:52px;left:770px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,108,180,.55) 0%,transparent 70%);
+  animation:mist 1.2s ease-out infinite}
+@keyframes mist{0%{opacity:0;transform:translateX(0) scale(.6)}30%{opacity:1}
+  100%{opacity:0;transform:translateX(16px) scale(1.5)}}
+/* フォークリフト（木箱を積んで往復） */
+.fl-fork{position:absolute;bottom:28px;width:48px;height:32px;left:0;
+  animation:forkdrive 26s ease-in-out infinite alternate}
+.fl-fork img{position:absolute;inset:0;width:100%;height:100%;animation:swap .2s steps(1) infinite}
+.fl-fork img.b{animation-delay:.1s}
+@keyframes forkdrive{from{transform:translateX(330px)}to{transform:translateX(900px)}}
+/* 煙突の蒸気 */
+.fl-steam{width:12px;height:12px;bottom:60px;left:402px;border-radius:50%;
+  background:radial-gradient(circle,rgba(190,200,220,.5) 0%,transparent 70%)}
+.fl-steam.p1{animation:steam 3.4s linear infinite}
+.fl-steam.p2{animation:steam 3.4s linear infinite 1.1s}
+.fl-steam.p3{animation:steam 3.4s linear infinite 2.2s}
+@keyframes steam{0%{opacity:0;transform:translate(0,0) scale(.5)}
+  20%{opacity:.9}100%{opacity:0;transform:translate(-14px,-72px) scale(2.2)}}
+
 @media (max-width:640px){
+  .fl-crew2,.fl-fork,.fl-mist,.fl-steam{display:none}   /* PC限定の増員はスマホでは非表示 */
   .fl-hangar{width:80px;height:60px}
   .fl-crane{top:16px}
   .fl-trolley{top:14px;width:28px;height:16px}
@@ -586,6 +616,11 @@ footer{margin-top:56px}
   <img class="fl-marsh b" src="assets/px/marshaller_blue_B.png" alt="">
   <img class="fl-plane panda" src="assets/px/plane_long.png" alt="">
   <img class="fl-plane gold" src="assets/px/plane_gold_long.png" alt="">
+  <div class="fl-crew2 fl-mech"><img class="a" src="assets/px/mech_a.png" alt=""><img class="b" src="assets/px/mech_b.png" alt=""></div>
+  <div class="fl-crew2 fl-painter"><img class="a" src="assets/px/painter_a.png" alt=""><img class="b" src="assets/px/painter_b.png" alt=""></div>
+  <div class="fl-mist"></div>
+  <div class="fl-steam p1"></div><div class="fl-steam p2"></div><div class="fl-steam p3"></div>
+  <div class="fl-fork"><img class="a" src="assets/px/forklift_a.png" alt=""><img class="b" src="assets/px/forklift_b.png" alt=""></div>
   <div class="fl-mei rest"><img class="a" src="assets/px/mei_bite_a.png" alt=""><img class="b" src="assets/px/mei_bite_b.png" alt=""></div>
   <div class="fl-mei pc"><img class="a" src="assets/px/mei_desk_a.png" alt=""><img class="b" src="assets/px/mei_desk_b.png" alt=""></div>
   <div class="fl-mei walk"><img class="a" src="assets/px/mei_walk_a.png" alt=""><img class="b" src="assets/px/mei_walk_b.png" alt=""></div>
@@ -609,7 +644,7 @@ footer{margin-top:56px}
 <div class="topbar">
 <div class="tape"></div>
 <div class="ticker mono" aria-hidden="true"><div class="ticker-inner">
-<span>◉ 第F格納庫 24時間稼働中</span><span>溶接班: 火花良好</span><span>塗装ライン: いい色出てます</span><span>誘導員: 本日も絶好調</span><span>管制塔: 異常なし（平和）</span><span>次期機体: 構想中 → まもなく製造</span><span>パンダさん: 笹休憩中</span><span>整備記録: 自動転記オンライン</span>
+<span>◉ 第F格納庫 24時間稼働中</span><span>溶接班: 火花良好</span><span>塗装ライン: いい色出てます</span><span>誘導員: 本日も絶好調</span><span>管制塔: 異常なし（平和）</span><span>次期機体: 構想中 → まもなく製造</span><span>パンダさん: 笹休憩中</span><span>整備記録: 自動転記オンライン</span><span>フォークリフト: 積み込み中</span><span>整備員: レンチ回してます</span>
 <span>◉ 第F格納庫 24時間稼働中</span><span>溶接班: 火花良好</span><span>塗装ライン: いい色出てます</span><span>誘導員: 本日も絶好調</span><span>管制塔: 異常なし（平和）</span><span>次期機体: 構想中 → まもなく製造</span><span>パンダさん: 笹休憩中</span><span>整備記録: 自動転記オンライン</span>
 </div></div>
 </div><!-- /topbar -->
