@@ -684,8 +684,8 @@ const NAMES=['marshaller_blue_A','marshaller_blue_B','marshaller_green_A','marsh
 const IMG={};let loaded=0;
 NAMES.forEach(n=>{
   const i=new Image();
-  i.onload=()=>{ if(++loaded===NAMES.length) requestAnimationFrame(frame); };
-  i.onerror=()=>{ if(++loaded===NAMES.length) requestAnimationFrame(frame); };
+  i.onload=()=>{ if(++loaded===NAMES.length) rafId=requestAnimationFrame(frame); };
+  i.onerror=()=>{ if(++loaded===NAMES.length) rafId=requestAnimationFrame(frame); };
   i.src='assets/px/'+n+'.png';
   IMG[n]=i;
 });
@@ -704,7 +704,14 @@ window.__scramble=()=>{
   return true;
 };
 const puffs=[],sparks=[];
-let sparkTimer=0,flash=0,craneT=0,animT=0,last=performance.now();
+let sparkTimer=0,flash=0,craneT=0,animT=0,last=performance.now(),rafId=0;
+// 省電力モード等でrAFが止まる端末向けの保険: 1秒以上フレームが来なければ10fps相当で駆動継続
+setInterval(()=>{
+  if(loaded===NAMES.length && !document.hidden && performance.now()-last>1000){
+    cancelAnimationFrame(rafId);
+    frame(performance.now());
+  }
+},500);
 
 function frame(now){
   const dt=Math.min((now-last)/1000,.05);last=now;animT+=dt;
@@ -808,7 +815,7 @@ function frame(now){
   cx.strokeStyle='#242c42';cx.lineWidth=2;
   cx.beginPath();cx.moveTo(0,gy+8);cx.lineTo(W,gy+8);cx.stroke();
 
-  requestAnimationFrame(frame);
+  rafId=requestAnimationFrame(frame);
 }
 })();
 </script>
