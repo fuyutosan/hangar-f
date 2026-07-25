@@ -124,6 +124,17 @@ p{text-wrap:pretty}
   74%{transform:translate(calc(100vw + 60px),-120px) rotate(-16deg);opacity:1}
   78%,100%{transform:translate(calc(100vw + 120px),-190px) rotate(-18deg);opacity:0}
 }
+/* メイメイ: だいたい笹休憩、48秒周期でたまにPC作業へ */
+.fl-mei{width:32px;height:32px;bottom:32px}
+.fl-mei.rest{left:168px;animation:meiRest 48s linear infinite,bob 2.8s ease-in-out infinite alternate}
+.fl-mei.pc{left:calc(42% + 42px);animation:meiPC 48s linear infinite}
+@keyframes meiRest{0%,76%{opacity:1}78%,100%{opacity:0}}
+@keyframes meiPC{0%,77%{opacity:0}79%,96%{opacity:1}98%,100%{opacity:0}}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-2px)}}
+/* 溶接工: 火花の出るベイで作業（2フレーム交互） */
+.fl-welder{width:32px;height:32px;bottom:32px;left:calc(52% - 26px)}
+.fl-welder.a{animation:swap .5s steps(1) infinite}
+.fl-welder.b{animation:swap .5s steps(1) infinite .25s}
 /* 壁のLED */
 .fl-led{width:2px;height:2px;background:var(--accent);opacity:.5}
 .fl-led.l1{top:56px;left:22%;animation:blink 2.2s steps(1) infinite}
@@ -491,6 +502,10 @@ footer{margin-top:56px}
   <img class="fl-marsh b" src="assets/px/marshaller_blue_B.png" alt="">
   <img class="fl-plane panda" src="assets/px/plane_long.png" alt="">
   <img class="fl-plane gold" src="assets/px/plane_gold_long.png" alt="">
+  <img class="fl-mei rest" src="assets/px/mei_rest.png" alt="">
+  <img class="fl-mei pc" src="assets/px/mei_pc.png" alt="">
+  <img class="fl-welder a" src="assets/px/welder_a.png" alt="">
+  <img class="fl-welder b" src="assets/px/welder_b.png" alt="">
   <div class="fl-ground"></div>
 </div>
 <div id="doors" hidden aria-hidden="true">
