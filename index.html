@@ -44,6 +44,7 @@ body{
     linear-gradient(rgba(148,163,199,.045) 1px,transparent 1px),
     linear-gradient(90deg,rgba(148,163,199,.045) 1px,transparent 1px);
   background-size:36px 36px;
+  padding-bottom:196px;
 }
 .mono{font-family:ui-monospace,"Cascadia Mono",Consolas,Menlo,monospace}
 .wrap{max-width:640px;margin:0 auto;padding:0 20px}
@@ -54,7 +55,7 @@ p{text-wrap:pretty}
 
 /* ===== factory background ===== */
 #factory{
-  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  position:fixed;inset:0;z-index:45;pointer-events:none;
 }
 /* ===== status ticker（天井の稼働表示＝スクロールしても付いてくる） ===== */
 .topbar{position:sticky;top:0;z-index:50;box-shadow:0 4px 14px rgba(0,0,0,.45)}
@@ -673,10 +674,12 @@ footer{margin-top:56px}
 </footer>
 
 <script>
-// ===== 24時間稼働の工場背景（ドット絵版 v2）=====
-// 自作スプライト（誘導員・パンダさん機・格納庫）＋ Kenney CC0 工場パーツ
+// ===== 24時間稼働の工場「床」（ドット絵版 v3・前面フロアバンド）=====
+// v2は z-index:-1 で不透明カードの裏に隠れて見えなかった → 画面下端の“床”として前面に出す。
+// 床バンドだけ不透明に塗り、その上は透明のまま（離陸した機体だけが上空を飛べる）。
 (()=>{
 const cv=document.getElementById('factory'), cx=cv.getContext('2d');
+const FLOOR=180;                 // 床バンドの高さ（CSSと合わせる）
 let W=0,H=0;
 function resize(){
   const d=Math.min(devicePixelRatio||1,2);
@@ -699,15 +702,13 @@ NAMES.forEach(n=>{
   i.src='assets/px/'+n+'.png';
   IMG[n]=i;
 });
-const S=2, T=18*S; // ドット2倍表示・タイル36px
+const S=2, T=18*S;
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const WANDS=['blue','green','red'];
 
-// 状態
-const leds=Array.from({length:12},()=>({x:Math.random(),y:rnd(.12,.5),p:rnd(2,7),g:Math.random()<.7}));
+const leds=Array.from({length:10},()=>({x:Math.random(),dy:rnd(10,86),p:rnd(2,7),g:Math.random()<.7}));
 const items=Array.from({length:5},(_,i)=>({f:i/5,type:['crate_a','crate_b','barrel','crate_a','crate_b'][i]}));
 const plane={phase:'wait',x:-120,y:0,vx:0,tilt:0,t:0,wait:rnd(.5,2),wand:WANDS[0],gold:false};
-// 隠し機体（金のスクランブル発進）: ロゴタップから呼ばれる
 window.__scramble=()=>{
   if(plane.phase!=='wait') return false;
   plane.gold=true; plane.wait=-1;
@@ -715,7 +716,7 @@ window.__scramble=()=>{
 };
 const puffs=[],sparks=[];
 let sparkTimer=0,flash=0,craneT=0,animT=0,last=performance.now(),rafId=0;
-// 省電力モード等でrAFが止まる端末向けの保険: 1秒以上フレームが来なければ10fps相当で駆動継続
+// 省電力モード等でrAFが止まる端末向けの保険: 1秒以上フレームが来なければ駆動を継ぎ足す
 setInterval(()=>{
   if(loaded===NAMES.length && !document.hidden && performance.now()-last>1000){
     cancelAnimationFrame(rafId);
@@ -726,50 +727,61 @@ setInterval(()=>{
 function frame(now){
   const dt=Math.min((now-last)/1000,.05);last=now;animT+=dt;
   cx.clearRect(0,0,W,H);
-  cx.globalAlpha=.66;
   const t=now/1000;
-  const gy=H-46;             // 滑走ライン（スプライトの足元）
-  const beltY=H-40;          // コンベア上端
-  const mX=W-64;             // 誘導員（右側）
-  const hangarX=8, hangarY=gy+6-IMG.hangar.height*S;
+  const B=H-FLOOR;          // 床バンドの上端
+  const gy=H-40;            // 地面ライン
+  const beltY=H-34;         // コンベア
+  const mX=W-64;            // 誘導員（右側）
 
-  // 遠景LED
+  // --- 床バンドの下地（ここだけ不透明にしてコンテンツの前に出す）---
+  cx.globalAlpha=1;
+  cx.fillStyle='#080b11';
+  cx.fillRect(0,B,W,FLOOR);
+  const grad=cx.createLinearGradient(0,B,0,B+26);
+  grad.addColorStop(0,'rgba(11,14,20,0)');grad.addColorStop(1,'rgba(8,11,17,1)');
+  cx.fillStyle=grad;cx.fillRect(0,B-26,W,26);      // 上端をふわっと繋ぐ
+  cx.strokeStyle='#26304a';cx.lineWidth=1;
+  cx.beginPath();cx.moveTo(0,B+.5);cx.lineTo(W,B+.5);cx.stroke();
+
+  cx.globalAlpha=.92;
+  // 壁の遠景LED
   for(const L of leds){
     if(Math.sin(t*L.p)>0.2){
-      cx.fillStyle=L.g?'#ffc93c':'#3ddc84';cx.globalAlpha=.35;
-      cx.fillRect(L.x*W,L.y*H,2,2);cx.globalAlpha=.66;
+      cx.fillStyle=L.g?'#ffc93c':'#3ddc84';cx.globalAlpha=.45;
+      cx.fillRect(L.x*W,B+L.dy,2,2);cx.globalAlpha=.92;
     }
   }
-  // クレーン（レール＋フックに吊られたクレートが往復）
+  // クレーン（床バンド内で往復・吊り荷が揺れる）
   craneT+=dt;
   const crX=W*(.5+.3*Math.sin(craneT*.2));
   cx.strokeStyle='#3a4258';cx.lineWidth=3;
-  cx.beginPath();cx.moveTo(0,H-150);cx.lineTo(W,H-150);cx.stroke();
+  cx.beginPath();cx.moveTo(0,B+26);cx.lineTo(W,B+26);cx.stroke();
   const sw=Math.sin(craneT*1.6)*5;
   cx.strokeStyle='#5b6478';cx.lineWidth=2;
-  cx.beginPath();cx.moveTo(crX,H-148);cx.lineTo(crX+sw,H-124);cx.stroke();
-  cx.drawImage(IMG.hook,crX+sw-9,H-130,T/2,T/2);
-  cx.drawImage(IMG.crate_a,crX+sw-13,H-116,26,26);
+  cx.beginPath();cx.moveTo(crX,B+28);cx.lineTo(crX+sw,B+50);cx.stroke();
+  cx.drawImage(IMG.hook,crX+sw-9,B+46,T/2,T/2);
+  cx.drawImage(IMG.crate_a,crX+sw-13,B+62,26,26);
 
-  // 機械列（コンベアの奥）＋警告標識
-  const mrow=[['machine_ctrl',.30],['machine_a',.41],['machine_pc',.52],['machine_b',.63]];
-  for(const[m,fx]of mrow){ cx.drawImage(IMG[m],W*fx,gy+8-T,T,T); }
+  // 機械列＋警告標識
+  for(const[m,fx]of [['machine_ctrl',.30],['machine_a',.41],['machine_pc',.52],['machine_b',.63]]){
+    cx.drawImage(IMG[m],W*fx,gy+8-T,T,T);
+  }
   cx.drawImage(IMG.sign_warn,W*.72,gy+8-T,T,T);
 
-  // 溶接（machine_pc の位置で火花＋閃光）
+  // 溶接（火花＋閃光）
   const bayX=W*.52+T/2;
   sparkTimer-=dt;
   if(sparkTimer<0){sparkTimer=rnd(.4,1.5);flash=.13;
     for(let i=0;i<7;i++)sparks.push({x:bayX,y:gy-6,vx:rnd(-40,40),vy:rnd(-75,-15),l:rnd(.3,.7)});}
-  if(flash>0){flash-=dt;cx.fillStyle='#dff1ff';cx.globalAlpha=Math.min(flash*4,.5);
-    cx.fillRect(bayX-8,gy-14,16,12);cx.globalAlpha=.66;}
+  if(flash>0){flash-=dt;cx.fillStyle='#dff1ff';cx.globalAlpha=Math.min(flash*4,.55);
+    cx.fillRect(bayX-8,gy-14,16,12);cx.globalAlpha=.92;}
   for(let i=sparks.length-1;i>=0;i--){const s=sparks[i];
     s.l-=dt;if(s.l<0){sparks.splice(i,1);continue;}
     s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=200*dt;
     cx.fillStyle=Math.random()<.5?'#ffd97a':'#fff2c9';
-    cx.globalAlpha=Math.min(s.l*2.5,1)*.7;cx.fillRect(s.x,s.y,2,2);cx.globalAlpha=.66;}
+    cx.globalAlpha=Math.min(s.l*2.5,1)*.85;cx.fillRect(s.x,s.y,2,2);cx.globalAlpha=.92;}
 
-  // コンベア（キャタピラタイル）＋流れる貨物
+  // コンベア＋流れる貨物
   const beltL=W*.28, beltR=W*.74;
   cx.drawImage(IMG.belt_l,beltL,beltY,T,T);
   for(let x=beltL+T;x<beltR-T;x+=T)cx.drawImage(IMG.belt_m,x,beltY,T,T);
@@ -781,18 +793,18 @@ function frame(now){
   }
 
   // 格納庫（左）＋回転灯
-  cx.drawImage(IMG.hangar,hangarX,hangarY,IMG.hangar.width*S,IMG.hangar.height*S);
-  const towers=[[hangarX+IMG.hangar.width*S+8,'beacon_red',0],[W-20,'beacon_blue',2]];
-  for(const[bx,lamp,ph]of towers){
+  const hangarH=IMG.hangar.height*S||80;
+  cx.drawImage(IMG.hangar,8,gy+6-hangarH,IMG.hangar.width*S,hangarH);
+  for(const[bx,lamp,ph]of [[8+IMG.hangar.width*S+10,'beacon_red',0],[W-20,'beacon_blue',2]]){
     cx.drawImage(IMG.pole,bx,gy+6-T*1.5,T/2,T*1.5);
     cx.drawImage(IMG[lamp],bx-4,gy+6-T*1.9,T*.7,T*.7);
     if(Math.sin(t*5+ph)>0){
-      cx.fillStyle=lamp==='beacon_red'?'rgba(255,80,60,.3)':'rgba(80,140,255,.3)';
+      cx.fillStyle=lamp==='beacon_red'?'rgba(255,80,60,.32)':'rgba(80,140,255,.32)';
       cx.beginPath();cx.arc(bx+8,gy+6-T*1.6,12,0,7);cx.fill();
     }
   }
 
-  // 発進サイクル（タキシング→誘導→離陸）
+  // 発進サイクル（離陸すると床バンドを抜けて上空へ）
   plane.t+=dt;
   if(plane.phase==='wait'){plane.wait-=dt;
     if(plane.wait<0){plane.phase='taxi';plane.x=-120;plane.y=gy-18;plane.vx=plane.gold?95:50;plane.tilt=0;
@@ -808,7 +820,7 @@ function frame(now){
   for(let i=puffs.length-1;i>=0;i--){const p=puffs[i];
     p.l-=dt;if(p.l<0){puffs.splice(i,1);continue;}
     p.r+=10*dt;cx.fillStyle='#8e97ad';cx.globalAlpha=p.l*.22;
-    cx.fillRect(p.x-p.r,p.y-p.r,p.r*2,p.r*2);cx.globalAlpha=.66;}
+    cx.fillRect(p.x-p.r,p.y-p.r,p.r*2,p.r*2);cx.globalAlpha=.92;}
   if(plane.phase!=='wait'){
     const pref=plane.gold?'plane_gold_':'plane_';
     const fl=IMG[pref+((Math.floor(animT*8)%2===0&&plane.phase!=='hold')?'long':'short')];
@@ -816,12 +828,12 @@ function frame(now){
     cx.drawImage(fl,-24,-12,48,24);cx.restore();
   }
 
-  // 誘導員（右側・発進サイクルごとに誘導灯の色が変わる）
+  // 誘導員（右側・発進のたびに誘導灯の色が変わる）
   const busy=plane.phase==='hold';
   const mf=Math.floor(animT*(busy?7:1.6))%2===0?'A':'B';
   cx.drawImage(IMG['marshaller_'+plane.wand+'_'+mf],mX,gy+6-32,32,32);
 
-  // 滑走ライン
+  // 地面ライン
   cx.strokeStyle='#242c42';cx.lineWidth=2;
   cx.beginPath();cx.moveTo(0,gy+8);cx.lineTo(W,gy+8);cx.stroke();
 
