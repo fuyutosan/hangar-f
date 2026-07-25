@@ -124,29 +124,37 @@ section{padding:44px 0 8px;break-inside:avoid}
 }
 
 /* ===== 遊び心ギミック第2弾 ===== */
-/* 開庫シーケンス（フィジカル演出・ふゆと案） */
-#shutter{
-  position:fixed;inset:0;z-index:999;cursor:pointer;
-  background:repeating-linear-gradient(0deg,#232c44 0 16px,#182034 16px 20px);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
-  transition:transform .7s cubic-bezier(.65,0,.35,1);
-}
-#shutter::after{
-  content:"";position:absolute;left:0;right:0;bottom:0;height:16px;
-  background:repeating-linear-gradient(-45deg,var(--accent) 0 14px,#151515 14px 28px);
-}
-#shutter.lift{transform:translateY(-101%)}
-#shutter.fast{transition-duration:.25s}
+/* 開庫シーケンス（マジンガー式二重扉＋セリ上がり・2026-07-24ふゆと発案） */
+#doors{position:fixed;inset:0;z-index:999;cursor:pointer}
+.dpanel{position:absolute;transition:transform .8s cubic-bezier(.7,0,.3,1)}
+#doors.fast .dpanel{transition-duration:.3s}
+#dT,#dB{z-index:2;background:repeating-linear-gradient(0deg,#232c44 0 16px,#182034 16px 20px)}
+#dL,#dR{z-index:1;background:repeating-linear-gradient(90deg,#232c44 0 16px,#182034 16px 20px)}
+#dT{inset:0 0 50% 0}#dB{inset:50% 0 0 0}
+#dT::after,#dB::after{content:"";position:absolute;left:0;right:0;height:14px;
+  background:repeating-linear-gradient(-45deg,var(--accent) 0 12px,#151515 12px 24px)}
+#dT::after{bottom:0}#dB::after{top:0}
+#dL{inset:0 50% 0 0}#dR{inset:0 0 0 50%}
+#dL::after,#dR::after{content:"";position:absolute;top:0;bottom:0;width:14px;
+  background:repeating-linear-gradient(-45deg,var(--accent) 0 12px,#151515 12px 24px)}
+#dL::after{right:0}#dR::after{left:0}
+#doors.open1 #dT{transform:translateY(-102%)}
+#doors.open1 #dB{transform:translateY(102%)}
+#doors.open2 #dL{transform:translateX(-102%)}
+#doors.open2 #dR{transform:translateX(102%)}
+#launch-warn{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;padding-top:24vh;gap:14px;z-index:5;transition:opacity .3s}
+#doors.open1 #launch-warn{opacity:0}
 .sh-lamp{width:16px;height:16px;border-radius:50%;background:#ff5a3c;
-  box-shadow:0 0 18px #ff5a3c;animation:blink .5s infinite}
-.sh-band{color:var(--accent);font-size:clamp(17px,4.6vw,24px);letter-spacing:.28em;text-align:center}
-.sh-skip{
-  margin-top:10px;color:var(--accent);font-size:clamp(15px,4.2vw,20px);letter-spacing:.24em;
-  border:2px solid var(--accent-dim);border-radius:10px;padding:13px 26px;
-  animation:blink 1.5s infinite;
-}
-body.opening .logo{animation:logoin .55s cubic-bezier(.2,.9,.3,1.2) .85s both}
-@keyframes logoin{from{opacity:0;transform:translateX(-46px)}to{opacity:1;transform:none}}
+  box-shadow:0 0 18px #ff5a3c;animation:blink .45s infinite}
+.wtxt{color:var(--accent);font-size:clamp(16px,4.6vw,23px);letter-spacing:.28em;
+  background:rgba(11,14,20,.78);padding:10px 20px;border-radius:8px}
+.wskip{color:var(--sub);font-size:11px;letter-spacing:.22em}
+.wrap.lowered{transform:translateY(14vh);opacity:.35;filter:brightness(.55)}
+.wrap.rumble{animation:rumble .12s linear 6}
+@keyframes rumble{25%{transform:translateY(14vh) translateX(-2px)}75%{transform:translateY(14vh) translateX(2px)}}
+.wrap.risen{transform:none;opacity:1;filter:none;
+  transition:transform 1s cubic-bezier(.22,1.2,.36,1),opacity .8s ease,filter .8s ease}
 .status .row b.offline{color:var(--sub);text-shadow:none}
 .btn:active,.door-btn:active{transform:translateY(2px) scale(.98)}
 .pre{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
@@ -376,10 +384,16 @@ footer{margin-top:56px}
 <body>
 
 <canvas id="factory" aria-hidden="true"></canvas>
-<div id="shutter" hidden aria-hidden="true">
-  <div class="sh-lamp"></div>
-  <div class="sh-band mono">HANGAR F.</div>
-  <div class="sh-skip mono">▶ TAP TO OPEN</div>
+<div id="doors" hidden aria-hidden="true">
+  <div class="dpanel" id="dL"></div>
+  <div class="dpanel" id="dR"></div>
+  <div class="dpanel" id="dT"></div>
+  <div class="dpanel" id="dB"></div>
+  <div id="launch-warn">
+    <div class="sh-lamp"></div>
+    <div class="wtxt mono">HANGAR F. ── LAUNCH</div>
+    <div class="wskip mono">TAP TO SKIP</div>
+  </div>
 </div>
 
 <div class="topbar">
@@ -800,37 +814,43 @@ function frame(now){
 </script>
 
 <script type="module">
-// 開庫シーケンス（1セッション1回・フィジカル演出）
-// 0.45s警告灯→シャッター上昇0.7s→ロゴ滑り込み→SYSTEMがOFFLINE(灰)→1.9sでONLINE(緑)へ
+// 開庫シーケンス（マジンガー式：縦開き→横開き→基地がゴゴゴとセリ上がる。1セッション1回）
 try{
   const store={
     get:k=>{try{return sessionStorage.getItem(k);}catch(e){return null;}},
     set:(k,v)=>{try{sessionStorage.setItem(k,v);}catch(e){}}
   };
-  const shutter=document.getElementById('shutter');
+  const doors=document.getElementById('doors');
+  const wrap=document.querySelector('.wrap');
   const sys=document.getElementById('sysstate');
   const setOnline=()=>{sys.textContent='ONLINE';sys.className='online';};
   if(!store.get('hf_boot')){
     store.set('hf_boot','1');
-    shutter.hidden=false;
-    document.body.classList.add('opening');
+    doors.hidden=false;
+    wrap.classList.add('lowered');
     sys.textContent='OFFLINE';sys.className='offline';
-    let lifted=false,timerA;
-    const lift=fast=>{
-      if(lifted)return;lifted=true;
-      clearTimeout(timerA);
-      if(fast)shutter.classList.add('fast');
-      shutter.classList.add('lift');
-      setTimeout(()=>{shutter.hidden=true;},fast?320:750);
-      setTimeout(setOnline,fast?600:1450);
+    let done=false;
+    const timers=[];
+    const rise=()=>{wrap.classList.remove('rumble');wrap.classList.add('risen');};
+    const skip=()=>{
+      if(done)return;done=true;
+      timers.forEach(clearTimeout);
+      doors.classList.add('fast','open1','open2');
+      rise();setOnline();
+      setTimeout(()=>{doors.hidden=true;},650);
     };
-    window.__hangarOpen=lift; // タップ主導。自動開庫は2.6秒後の保険
-    timerA=setTimeout(()=>lift(false),2600);
-    shutter.addEventListener('pointerdown',()=>lift(true));
-    shutter.addEventListener('click',()=>lift(true));
+    window.__hangarOpen=skip;
+    timers.push(setTimeout(()=>doors.classList.add('open1'),700));   // 縦開き
+    timers.push(setTimeout(()=>doors.classList.add('open2'),1000));  // 奥が見えたら即・横開き
+    timers.push(setTimeout(()=>wrap.classList.add('rumble'),1150));  // ゴゴゴ…
+    timers.push(setTimeout(rise,1850));                              // セリ上がり
+    timers.push(setTimeout(setOnline,2050));                         // OFFLINE→ONLINE
+    timers.push(setTimeout(()=>{done=true;doors.hidden=true;},2150));
+    doors.addEventListener('pointerdown',skip);
+    doors.addEventListener('click',skip);
   }
 }catch(e){
-  const sh=document.getElementById('shutter');if(sh)sh.hidden=true;
+  const d=document.getElementById('doors');if(d)d.hidden=true;
 }
 
 // ロゴタップ＝金の隠し機体スクランブル発進／5連打 or コナミコマンド＝非常出力モード
