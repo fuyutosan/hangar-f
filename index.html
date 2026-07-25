@@ -124,13 +124,21 @@ p{text-wrap:pretty}
   74%{transform:translate(calc(100vw + 60px),-120px) rotate(-16deg);opacity:1}
   78%,100%{transform:translate(calc(100vw + 120px),-190px) rotate(-18deg);opacity:0}
 }
-/* メイメイ: だいたい笹休憩、48秒周期でたまにPC作業へ */
-.fl-mei{width:32px;height:32px;bottom:32px}
-.fl-mei.rest{left:168px;animation:meiRest 48s linear infinite,bob 2.8s ease-in-out infinite alternate}
-.fl-mei.pc{left:calc(42% + 42px);animation:meiPC 48s linear infinite}
-@keyframes meiRest{0%,76%{opacity:1}78%,100%{opacity:0}}
-@keyframes meiPC{0%,77%{opacity:0}79%,96%{opacity:1}98%,100%{opacity:0}}
-@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-2px)}}
+/* メイメイ: 60秒周期で3つの仕事 — 笹パクパク→デスクでPCカタカタ→誘導員と一緒に誘導 */
+.fl-mei{position:absolute;bottom:32px;width:32px;height:32px}
+.fl-mei img{position:absolute;inset:0;width:100%;height:100%}
+.fl-mei.rest{left:168px;animation:meiRest 60s linear infinite}
+.fl-mei.rest img{animation:swap .6s steps(1) infinite}
+.fl-mei.rest img.b{animation-delay:.3s}
+.fl-mei.pc{left:calc(42% + 34px);width:48px;animation:meiPC 60s linear infinite}
+.fl-mei.pc img{animation:swap .34s steps(1) infinite}
+.fl-mei.pc img.b{animation-delay:.17s}
+.fl-mei.guide{right:98px;animation:meiGuide 60s linear infinite}
+.fl-mei.guide img{animation:swap .44s steps(1) infinite}
+.fl-mei.guide img.b{animation-delay:.22s}
+@keyframes meiRest{0%,56%{opacity:1}58%,100%{opacity:0}}
+@keyframes meiPC{0%,57%{opacity:0}59%,76%{opacity:1}78%,100%{opacity:0}}
+@keyframes meiGuide{0%,77%{opacity:0}79%,96%{opacity:1}98%,100%{opacity:0}}
 /* 溶接工: 火花の出るベイで作業（2フレーム交互） */
 .fl-welder{width:32px;height:32px;bottom:32px;left:calc(52% - 26px)}
 .fl-welder.a{animation:swap .5s steps(1) infinite}
@@ -502,8 +510,9 @@ footer{margin-top:56px}
   <img class="fl-marsh b" src="assets/px/marshaller_blue_B.png" alt="">
   <img class="fl-plane panda" src="assets/px/plane_long.png" alt="">
   <img class="fl-plane gold" src="assets/px/plane_gold_long.png" alt="">
-  <img class="fl-mei rest" src="assets/px/mei_rest.png" alt="">
-  <img class="fl-mei pc" src="assets/px/mei_pc.png" alt="">
+  <div class="fl-mei rest"><img class="a" src="assets/px/mei_bite_a.png" alt=""><img class="b" src="assets/px/mei_bite_b.png" alt=""></div>
+  <div class="fl-mei pc"><img class="a" src="assets/px/mei_desk_a.png" alt=""><img class="b" src="assets/px/mei_desk_b.png" alt=""></div>
+  <div class="fl-mei guide"><img class="a" src="assets/px/mei_guide_a.png" alt=""><img class="b" src="assets/px/mei_guide_b.png" alt=""></div>
   <img class="fl-welder a" src="assets/px/welder_a.png" alt="">
   <img class="fl-welder b" src="assets/px/welder_b.png" alt="">
   <div class="fl-ground"></div>
