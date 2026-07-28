@@ -244,6 +244,21 @@ p{text-wrap:pretty}
 .fl-led.l1{top:56px;left:22%;animation:blink 2.2s steps(1) infinite}
 .fl-led.l2{top:78px;left:44%;background:var(--green);animation:blink 1.7s steps(1) infinite .3s}
 .fl-led.l3{top:48px;left:66%;animation:blink 2.9s steps(1) infinite .8s}
+/* ===== 奥行き（レイヤー）設計 =====
+   床のドット絵は全部 position:absolute。z-index を書かないと「HTMLに書いた順」で
+   重なってしまい、飛行機が人とコンベアの間を通るような矛盾が起きる。
+   カメラから見た奥→手前の5段に固定する。新しい絵を足すときは必ずどれかに入れること。
+   L1 奥の壁（格納庫・機械・標識・回転灯・天井クレーン・蒸気）
+   L2 中景の設備（コンベアと流れる貨物）
+   L3 その設備で働く人（整備士・塗装工・溶接工と火花・ミスト）
+   L4 手前の通路（フォークリフト・メイメイ・誘導員）
+   L5 滑走路レーン（飛行機）＝いちばん手前。人にも設備にも隠れない          */
+.fl-crane,.fl-trolley,.fl-hookwrap,.fl-led,
+.fl-hangar,.fl-pole,.fl-lamp,.fl-mc,.fl-steam{z-index:1}
+.fl-belt,.fl-cargo{z-index:2}
+.fl-welder,.fl-crew2,.fl-weld,.fl-glow,.fl-spark,.fl-mist{z-index:3}
+.fl-fork,.fl-mei,.fl-marsh{z-index:4}
+.fl-plane{z-index:5}
 /* ===== status ticker（天井の稼働表示＝スクロールしても付いてくる） ===== */
 .topbar{position:sticky;top:0;z-index:50;box-shadow:0 4px 14px rgba(0,0,0,.45)}
 .ticker{
