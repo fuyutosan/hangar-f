@@ -402,11 +402,23 @@ body.overdrive .logo{text-shadow:0 0 20px rgba(255,201,60,.75)}
   border:1px solid var(--accent-dim);border-radius:12px;overflow:hidden;
   background:linear-gradient(160deg,#1a1a10 0%,var(--panel) 45%);
 }
-.latest-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.18em;color:var(--accent)}
-.badge-new{background:var(--accent);color:#131313;font-weight:800;padding:1px 8px;border-radius:4px;letter-spacing:.12em}
+.latest-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:10px 16px;border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.18em;color:var(--accent)}
+/* flex-shrinkを止めないと、隣の日付が長いときスマホで札の中の文字が2行に割れる */
+.badge-new{background:var(--accent);color:#131313;font-weight:800;padding:1px 8px;border-radius:4px;letter-spacing:.12em;white-space:nowrap;flex:0 0 auto}
 .latest-body{padding:20px 18px 22px}
 .latest-body h3{font-size:24px;font-weight:800}
 .latest-body p{margin-top:8px;color:var(--sub);font-size:14px}
+.latest-body p b{color:var(--text);font-weight:700}
+/* 最新機の記録映像。preload="none"なので、押されるまで通信はしない（基地は軽いまま） */
+.sortie-film{
+  margin-top:14px;border:1px solid var(--accent-dim);border-radius:10px;
+  overflow:hidden;background:#000;position:relative;
+}
+.sortie-film video{display:block;width:100%;height:auto;background:#000}
+.sortie-film-cap{
+  padding:7px 12px;border-top:1px solid var(--line);background:var(--panel2);
+  font-size:10.5px;letter-spacing:.16em;color:var(--accent)
+}
 
 /* ===== ship cards ===== */
 .ship{
@@ -738,10 +750,18 @@ footer{margin-top:56px}
 <section>
   <div class="sec-head"><span class="en mono">LATEST SORTIE</span><h2>最新発進機</h2></div>
   <div class="latest">
-    <div class="latest-bar mono"><span class="badge-new">NEW</span> 2026-07-23 発進</div>
+    <div class="latest-bar mono"><span class="badge-new">NEW</span> 2026-07-23 発進 ／ 2026-07-30 OP搭載</div>
     <div class="latest-body">
       <h3 class="nw">笹友キャラバン</h3>
-      <p class="jp">パンダさんたちが世界に元気を配りにいく、ドット絵×放置×ハクスラゲーム。育てて、眺めて、また育てる。</p>
+      <p class="jp">パンダさんたちが世界に元気を配りにいく、ドット絵×放置×ハクスラゲーム。育てて、眺めて、また育てる。<b>オープニングアニメーション（音つき・31秒）を搭載しました。</b></p>
+      <div class="sortie-film">
+        <video controls preload="none" playsinline
+               poster="https://fuyutosan.github.io/sasatomo-caravan/movie/sasatomo_op_poster.jpg">
+          <source src="https://fuyutosan.github.io/sasatomo-caravan/movie/sasatomo_op_wide.mp4" type="video/mp4">
+          この端末では映像を再生できないみたいです。
+        </video>
+        <div class="sortie-film-cap mono">SORTIE FILM ／ 記録映像 31s</div>
+      </div>
       <a class="btn" data-sortie href="https://fuyutosan.github.io/sasatomo-caravan/" target="_blank" rel="noopener">出撃（遊んでみる）</a>
     </div>
   </div>
