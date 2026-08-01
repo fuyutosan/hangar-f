@@ -1,0 +1,1107 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="名古屋市港区・築地口。提案を持っていくつもりはありません。あなたが見ている景色を聞かせてください。それを形にする手伝いなら、できるかもしれません。">
+<!-- 検索には出さない。URLを知っている人だけが見られる状態にする -->
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#09151a">
+<!-- LINEなどでリンクを貼ったときに出る見出し -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="この街を、どうしたいですか。">
+<meta property="og:description" content="名古屋市港区・築地口。あなたが見ている景色を、聞かせてください。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2309151a'/%3E%3Ccircle cx='16' cy='22' r='9' fill='%23f0a93c'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<title>この街を、どうしたいですか。</title>
+<style>
+  /* =========================================================
+     築地口 ／ 2026.08.02
+     ---------------------------------------------------------
+     見立て：閉まったシャッターが上がり、夜の街を歩きはじめる。
+     読み進めるほど空が白んでいき、最後に朝が来る。
+     ページを下へ進む行為が、そのまま夜明けまでの道のりになる。
+     ========================================================= */
+
+  /* スクロールの進み具合（0＝いちばん上／1＝いちばん下）。
+     この数字ひとつで、空の色も灯りの色も動く。 */
+  @property --p{
+    syntax:'<number>';
+    initial-value:0;
+    inherits:true;
+  }
+
+  :root{
+    --p:0;
+
+    --lamp-night: #f0a93c;   /* 灯り。夜のあいだの唯一の暖色 */
+    --lamp-dawn:  #ffd98f;   /* 夜が明けるにつれ、白っぽく澄んでいく */
+    --lamp: color-mix(in oklab, var(--lamp-night), var(--lamp-dawn) calc(var(--p) * 100%));
+    --lamp-line: color-mix(in oklab, rgba(240,169,60,.22), rgba(255,217,143,.4) calc(var(--p) * 100%));
+
+    --text:   #ece7db;
+    --text-2: #9fb0b4;
+    --text-3: #61767c;
+    --hair: color-mix(in oklab, rgba(236,231,219,.13), rgba(255,214,150,.3) calc(var(--p) * 100%));
+
+    --display: "Hiragino Mincho ProN","HiraMinProN-W3","Yu Mincho","YuMincho","Noto Serif JP","Songti SC",serif;
+    --body: "Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic Medium","Yu Gothic",Meiryo,system-ui,sans-serif;
+    --mono: ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+
+    --shell: 64rem;
+    --read: 36rem;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; background:#050d12; }
+
+  body{
+    margin:0;
+    background:transparent;
+    color:var(--text);
+    font-family:var(--body);
+    font-size:16.5px;
+    line-height:1.95;
+    letter-spacing:.025em;
+    /* 単語や文節の途中で改行させない */
+    word-break:keep-all;
+    overflow-wrap:anywhere;
+    text-wrap:pretty;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  p{ margin:0; }
+  h1,h2,h3{ margin:0; font-weight:600; text-wrap:balance; }
+
+  .shell{
+    width:100%;
+    max-width:var(--shell);
+    margin-inline:auto;
+    padding-inline:1.5rem;
+  }
+
+  /* =========================================================
+     空（そら）── 画面の後ろに敷きっぱなしの背景。
+     5枚の色を重ねておいて、スクロールの進み具合に応じて
+     順ぐりに濃くしていく。これで夜が少しずつ明けていく。
+     ========================================================= */
+  .sky{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:#050d12;      /* 深い夜。ずっと下に敷いてある */
+    pointer-events:none;
+  }
+  .sky span{
+    position:absolute;
+    inset:0;
+    display:block;
+  }
+  /* 藍がさす */
+  .sky .s1{
+    background:linear-gradient(180deg,#071a2e 0%,#0a2338 100%);
+    opacity:clamp(0, calc((var(--p) - .08) / .22), 1);
+  }
+  /* 群青から青紫へ */
+  .sky .s2{
+    background:linear-gradient(180deg,#101a3c 0%,#221a3c 100%);
+    opacity:clamp(0, calc((var(--p) - .30) / .22), 1);
+  }
+  /* 葡萄色。夜明け前がいちばん濃い */
+  .sky .s3{
+    background:linear-gradient(180deg,#331a35 0%,#4d2035 100%);
+    opacity:clamp(0, calc((var(--p) - .52) / .20), 1);
+  }
+  /* 朝焼け */
+  .sky .s4{
+    background:linear-gradient(180deg,#5f2833 0%,#8a3a28 100%);
+    opacity:clamp(0, calc((var(--p) - .70) / .18), 1);
+  }
+  /* 陽が差す直前 */
+  .sky .s5{
+    background:linear-gradient(180deg,#8a4a2a 0%,#c0703a 100%);
+    opacity:clamp(0, calc((var(--p) - .86) / .12), 1);
+  }
+
+  /* 地平線の光。進むほど強く、大きくなる */
+  .horizon{
+    position:fixed;
+    left:50%;
+    bottom:0;
+    z-index:-1;
+    width:min(160vw,1800px);
+    height:min(70vh,620px);
+    transform:translateX(-50%) scaleY(calc(.45 + var(--p) * .55));
+    transform-origin:bottom center;
+    background:radial-gradient(60% 100% at 50% 100%,
+      rgba(255,190,110,.55) 0%,
+      rgba(255,160,80,.22) 38%,
+      rgba(255,150,70,0) 72%);
+    opacity:clamp(.18, calc(.18 + var(--p) * .95), 1);
+    pointer-events:none;
+  }
+
+  /* ---------- 節 ---------- */
+  .sec{
+    position:relative;
+    border-top:1px solid var(--hair);
+    padding-block:4.8rem;
+  }
+  .sec-head{
+    display:flex;
+    flex-direction:column;
+    gap:1.2rem;
+    margin-bottom:2.8rem;
+  }
+  .sec-label{
+    font-family:var(--mono);
+    font-size:.68rem;
+    letter-spacing:.34em;
+    color:var(--lamp);
+  }
+  .sec h2{
+    font-family:var(--display);
+    font-size:clamp(1.6rem,5.2vw,2.35rem);
+    line-height:1.55;
+    letter-spacing:.02em;
+  }
+  .sec-lead{
+    max-width:var(--read);
+    color:var(--text-2);
+    font-size:1rem;
+  }
+  .sec-lead + .sec-lead{ margin-top:1.1em; }
+  .sec b{ color:var(--text); font-weight:700; }
+
+  /* 広い画面では、節の名前を左の余白に縦組みで立てる（看板のように） */
+  @media (min-width:72rem){
+    .sec-label{
+      position:absolute;
+      left:calc(50% - var(--shell)/2 - 1.2rem);
+      top:5.2rem;
+      writing-mode:vertical-rl;
+      letter-spacing:.4em;
+      margin:0;
+    }
+  }
+
+  /* 下から静かに立ち上がってくる（見えた瞬間に一度だけ）。
+     ※ 隠すのは JS が動く環境だけ。メールの簡易ビューアなどで
+       JS が動かないときは、最初から全部見えている状態になる。 */
+  html.js .in{
+    opacity:0;
+    transform:translateY(1.1rem);
+    transition:opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1);
+  }
+  html.js .in.on{ opacity:1; transform:none; }
+
+  /* =========================================================
+     ヒーロー ── シャッターが上がる
+     ========================================================= */
+  .hero{
+    position:relative;
+    overflow:hidden;
+    padding-block:min(22vh,9rem) 5.5rem;
+  }
+  .hero::before{        /* いちばん暗いのは、いちばん最初 */
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg, rgba(3,8,11,.92) 0%, rgba(4,11,15,.55) 70%, rgba(4,11,15,0) 100%);
+    pointer-events:none;
+  }
+  .hero::after{         /* 足元にこぼれる灯り */
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:1px;
+    background:linear-gradient(90deg,
+      transparent 0%, var(--lamp-night) 22%, #ffd79a 50%, var(--lamp-night) 78%, transparent 100%);
+    opacity:.55;
+  }
+
+  .shutter{
+    position:absolute;
+    inset:0;
+    z-index:3;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.15)),
+      repeating-linear-gradient(180deg, #1b2f37 0 7px, #0e1f26 7px 14px);
+    border-bottom:2px solid #2c4954;
+    transform-origin:top center;
+    transform:translateY(-101%);
+  }
+  html.js .shutter{
+    transform:none;
+    animation:shutter-up 1.15s cubic-bezier(.62,.02,.2,1) .25s forwards;
+  }
+  @keyframes shutter-up{ to{ transform:translateY(-101%); } }
+
+  .hero-inner{ position:relative; z-index:2; }
+
+  .hero-meta{
+    font-family:var(--mono);
+    font-size:.7rem;
+    letter-spacing:.3em;
+    color:var(--text-3);
+    margin-bottom:2.2rem;
+  }
+  /* 宛名。このページは一人に宛てた手紙である、という合図 */
+  .hero-to{
+    font-family:var(--display);
+    font-size:clamp(1.02rem,3.4vw,1.2rem);
+    letter-spacing:.1em;
+    color:var(--lamp-night);
+    margin-bottom:1.4rem;
+    padding-bottom:1.2rem;
+    border-bottom:1px solid rgba(240,169,60,.22);
+    display:inline-block;
+  }
+  .hero-to .org{
+    display:block;
+    font-family:var(--body);
+    font-size:.78rem;
+    letter-spacing:.16em;
+    color:var(--text-3);
+    margin-bottom:.35rem;
+  }
+
+  /* いただいた名刺。手紙にクリップで留めた一枚、のつもり。
+     このフォルダに「名刺.png」を置いたときだけ出る。
+     置いていなければ枠ごと消えるので、リンクで送る版には入らない。 */
+  .meishi{
+    display:none;
+    width:min(20rem,72vw);
+    margin:0 0 1.8rem;
+    padding:.45rem;
+    background:#f6f1e6;
+    border:1px solid rgba(240,169,60,.3);
+    box-shadow:0 14px 34px rgba(0,0,0,.45);
+    transform:rotate(-1.4deg);
+  }
+  html.js .meishi{ display:block; }
+  .meishi img{ display:block; width:100%; height:auto; }
+  .meishi .cap{
+    display:block;
+    margin-top:.4rem;
+    font-family:var(--mono);
+    font-size:.58rem;
+    letter-spacing:.18em;
+    color:#7a6a52;
+    text-align:right;
+  }
+
+  .hero h1{
+    font-family:var(--display);
+    font-size:clamp(1.95rem,8.4vw,4.2rem);
+    line-height:1.38;
+    letter-spacing:.03em;
+    margin-bottom:2.2rem;
+  }
+  .hero h1 .ln{ display:block; }
+  .hero h1 .lamp{
+    color:var(--lamp-night);
+    text-shadow:0 0 38px rgba(240,169,60,.35);
+  }
+  .hero-sub{
+    max-width:32rem;
+    color:var(--text-2);
+    font-size:1.05rem;
+    margin-bottom:2.6rem;
+  }
+  .hero-sub b{ color:var(--text); font-weight:700; }
+  .hero-sig{
+    display:inline-flex;
+    flex-direction:column;
+    gap:.15rem;
+    padding-left:1rem;
+    border-left:1px solid rgba(240,169,60,.22);
+    font-size:.9rem;
+    color:var(--text-3);
+  }
+  .hero-sig .who{ color:var(--text); font-weight:700; letter-spacing:.08em; }
+
+  /* 右端に立てる看板（広い画面だけ） */
+  .hero-sign{ display:none; }
+  @media (min-width:60rem){
+    .hero-sign{
+      display:block;
+      position:absolute;
+      right:max(1.5rem, calc(50% - var(--shell)/2));
+      top:min(22vh,9rem);
+      z-index:2;
+      writing-mode:vertical-rl;
+      text-orientation:upright;
+      white-space:nowrap;
+      font-family:var(--display);
+      font-size:.95rem;
+      line-height:1;
+      letter-spacing:.34em;
+      color:var(--lamp-night);
+      padding:1.4rem .55rem;
+      border:1px solid rgba(240,169,60,.22);
+      background:rgba(240,169,60,.05);
+    }
+  }
+
+  /* 読み込み時に一行ずつ立ち上がる */
+  html.js .rise{
+    opacity:0;
+    transform:translateY(.55em);
+    animation:rise .85s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  @keyframes rise{ to{ opacity:1; transform:none; } }
+  .d1{ animation-delay:1.05s; }
+  .d2{ animation-delay:1.18s; }
+  .d3{ animation-delay:1.34s; }
+  .d4{ animation-delay:1.52s; }
+  .d5{ animation-delay:1.68s; }
+
+  @media (prefers-reduced-motion:reduce){
+    .shutter{ display:none; }
+    html.js .rise{ opacity:1; transform:none; animation:none; }
+    html.js .in{ opacity:1; transform:none; transition:none; }
+    .horizon{ transform:translateX(-50%); }
+    .sun{ transform:none !important; }
+  }
+
+  /* =========================================================
+     引用（この人の立ち位置を一行で）
+     ========================================================= */
+  .quote{
+    max-width:44rem;
+    margin-top:2.8rem;
+    padding-left:1.6rem;
+    border-left:2px solid var(--lamp);
+    font-family:var(--display);
+    font-size:clamp(1.15rem,3.6vw,1.5rem);
+    line-height:1.85;
+    letter-spacing:.04em;
+  }
+
+  /* =========================================================
+     聞かせてほしいこと ── このページの中心
+     ========================================================= */
+  .asks{ list-style:none; margin:0; padding:0; max-width:46rem; }
+  .asks li{
+    border-top:1px solid var(--hair);
+    padding:1.6rem 0 1.6rem 2.4rem;
+    position:relative;
+    font-family:var(--display);
+    font-size:clamp(1.08rem,3.2vw,1.22rem);
+    line-height:1.75;
+    letter-spacing:.03em;
+  }
+  .asks li:last-child{ border-bottom:1px solid var(--hair); }
+  .asks li::before{
+    content:"";
+    position:absolute;
+    left:.25rem; top:2.3rem;
+    width:.85rem; height:1px;
+    background:var(--lamp);
+  }
+  /* 質問のまとまりに付ける小見出し */
+  .ask-group{
+    font-family:var(--mono);
+    font-size:.68rem;
+    letter-spacing:.26em;
+    color:var(--lamp);
+    margin:3.4rem 0 .2rem;
+  }
+  .ask-note{
+    max-width:var(--read);
+    font-size:.9rem;
+    color:var(--text-3);
+    margin-top:1rem;
+  }
+
+  /* =========================================================
+     できること
+     ========================================================= */
+  .modes{ display:grid; gap:0; }
+  @media (min-width:56rem){
+    .modes{ grid-template-columns:repeat(3,1fr); column-gap:2.5rem; }
+  }
+  .mode{
+    border-top:1px solid var(--hair);
+    padding:1.8rem 0;
+    display:grid;
+    gap:.6rem;
+  }
+  .mode h3{
+    font-family:var(--display);
+    font-size:1.32rem;
+    letter-spacing:.1em;
+  }
+  .mode p{ font-size:.94rem; color:var(--text-2); }
+
+  /* ---------- 正直な但し書き ---------- */
+  .note{
+    margin-top:3rem;
+    max-width:44rem;
+    border:1px solid var(--hair);
+    padding:1.7rem;
+    display:grid;
+    gap:.9rem;
+  }
+  .note .k{
+    font-family:var(--mono);
+    font-size:.66rem;
+    letter-spacing:.26em;
+    color:var(--text-3);
+  }
+  .note p{ font-size:.96rem; color:var(--text-2); }
+  .note b{ color:var(--text); }
+
+  /* ---------- 実績 ---------- */
+  .proof{
+    max-width:var(--read);
+    border:1px solid var(--lamp-line);
+    background:rgba(255,200,130,.06);
+    padding:1.7rem;
+    display:grid;
+    gap:1.1rem;
+  }
+  .proof p{ font-size:.96rem; color:var(--text-2); }
+  .proof b{ color:var(--text); }
+  .proof a{
+    justify-self:start;
+    display:grid;
+    gap:.2rem;
+    color:var(--lamp);
+    text-decoration:none;
+    font-weight:700;
+    border-bottom:1px solid var(--lamp-line);
+    padding-bottom:.35rem;
+  }
+  .proof a:hover{ border-bottom-color:var(--lamp); }
+  .proof a:focus-visible{ outline:2px solid var(--lamp); outline-offset:4px; }
+  .proof .u{
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.04em;
+    color:var(--text-3);
+    font-weight:400;
+    word-break:break-all;
+  }
+
+  /* ---------- 資格 ---------- */
+  .cert{
+    margin-top:2.2rem;
+    max-width:44rem;
+    border:1px solid var(--hair);
+    padding:1.7rem;
+    display:grid;
+    gap:1.4rem;
+  }
+  /* 認定証の画像があるときだけ2列にする。
+     画像を置いていないと枠ごと消えるので、そのときは1列のまま。 */
+  @media (min-width:44rem){
+    .cert:has(.cert-shot){
+      grid-template-columns:15rem 1fr;
+      align-items:start;
+      gap:2rem;
+    }
+  }
+  .cert-shot{
+    display:none;
+    border:1px solid var(--lamp-line);
+    background:rgba(255,255,255,.04);
+    padding:.5rem;
+  }
+  html.js .cert-shot{ display:block; }
+  .cert-shot img{ display:block; width:100%; height:auto; }
+  .cert .k{
+    font-family:var(--mono);
+    font-size:.66rem;
+    letter-spacing:.26em;
+    color:var(--text-3);
+    margin-bottom:.7rem;
+  }
+  .cert p.t{ font-size:1.02rem; margin-bottom:1rem; }
+  .cert p.t b{ color:var(--lamp); font-weight:700; }
+  .cert p.s{ font-size:.94rem; color:var(--text-2); }
+
+  .cert-meta{
+    list-style:none;
+    margin:0 0 1.2rem;
+    padding:0;
+    display:grid;
+    gap:.35rem;
+    font-size:.88rem;
+    color:var(--text-2);
+    line-height:1.75;
+  }
+  .cert-meta li{
+    display:grid;
+    grid-template-columns:5rem 1fr;
+    gap:.8rem;
+    align-items:baseline;
+  }
+  .cert-meta span{
+    font-family:var(--mono);
+    font-size:.62rem;
+    letter-spacing:.2em;
+    color:var(--text-3);
+  }
+
+  .cert .verify{
+    display:grid;
+    gap:.2rem;
+    justify-self:start;
+    margin-top:1.2rem;
+    color:var(--lamp);
+    text-decoration:none;
+    font-weight:700;
+    font-size:.94rem;
+    border-bottom:1px solid var(--lamp-line);
+    padding-bottom:.3rem;
+  }
+  .cert .verify:hover{ border-bottom-color:var(--lamp); }
+  .cert .verify:focus-visible{ outline:2px solid var(--lamp); outline-offset:4px; }
+  .cert .verify .u{
+    font-family:var(--mono);
+    font-size:.68rem;
+    letter-spacing:.02em;
+    color:var(--text-3);
+    font-weight:400;
+    word-break:break-all;
+  }
+
+  /* =========================================================
+     進め方 ── ここは本当に順番があるので番号を使う
+     ========================================================= */
+  .steps{ list-style:none; margin:0; padding:0; }
+  .steps li{
+    border-top:1px solid var(--hair);
+    padding:2rem 0;
+    display:grid;
+    gap:.6rem;
+  }
+  @media (min-width:50rem){
+    .steps li{
+      grid-template-columns:9rem 1fr;
+      column-gap:2.5rem;
+      align-items:start;
+    }
+  }
+  .steps .n{
+    font-family:var(--mono);
+    font-size:.68rem;
+    letter-spacing:.24em;
+    color:var(--lamp);
+    padding-top:.5rem;
+  }
+  .steps h3{
+    font-family:var(--display);
+    font-size:1.28rem;
+    letter-spacing:.06em;
+    margin-bottom:.5rem;
+  }
+  .steps p{ font-size:.95rem; color:var(--text-2); max-width:var(--read); }
+
+  /* =========================================================
+     夜明け ── ここだけ、明るい側に反転する
+     ========================================================= */
+  .dawn{
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+    padding-block:8rem 5rem;
+    text-align:center;
+    background:linear-gradient(180deg,
+      rgba(120,60,45,0) 0%,
+      #a85c36 11%,
+      #dd9453 24%,
+      #f3c68d 42%,
+      #fbe8cd 66%,
+      #fdf6ea 100%);
+    color:#2a1d12;
+  }
+  /* 昇ってくる陽 */
+  .dawn .sun{
+    position:absolute;
+    left:50%;
+    bottom:28%;
+    z-index:-1;
+    width:min(64vw,420px);
+    aspect-ratio:1;
+    border-radius:50%;
+    background:radial-gradient(circle,
+      #fffdf6 0%, #ffeec4 42%, rgba(255,215,150,.55) 62%, rgba(255,200,120,0) 72%);
+    transform:translate(-50%,18%) scale(1);
+    opacity:1;
+    transition:transform 2.2s cubic-bezier(.22,.7,.2,1), opacity 1.6s ease-out;
+  }
+  html.js .dawn .sun{
+    transform:translate(-50%,55%) scale(.82);
+    opacity:0;
+  }
+  html.js .dawn.on .sun{
+    transform:translate(-50%,18%) scale(1);
+    opacity:1;
+  }
+
+  .dawn h2{
+    font-family:var(--display);
+    font-size:clamp(1.9rem,6.8vw,3.1rem);
+    line-height:1.5;
+    letter-spacing:.05em;
+    margin-bottom:1.5rem;
+    color:#20150c;
+  }
+  .dawn p.msg{
+    max-width:30rem;
+    margin-inline:auto;
+    color:#452e1b;
+    margin-bottom:3.2rem;
+  }
+
+  /* 締めの連絡先は、名刺にせず一行だけ静かに置く */
+  .signoff{
+    display:inline-grid;
+    justify-items:center;
+    gap:.5rem;
+    padding-top:1.8rem;
+    border-top:1px solid rgba(90,60,35,.22);
+  }
+  .signoff .k{
+    font-family:var(--mono);
+    font-size:.64rem;
+    letter-spacing:.26em;
+    color:#8a6b4c;
+  }
+  .signoff a{
+    font-size:1.1rem;
+    font-weight:700;
+    color:#a3540c;
+    text-decoration:none;
+    border-bottom:1px solid rgba(163,84,12,.35);
+    padding-bottom:.2rem;
+  }
+  .signoff a:hover{ border-bottom-color:#a3540c; }
+  .signoff a:focus-visible{ outline:2px solid #a3540c; outline-offset:4px; }
+
+  footer{
+    background:#fdf6ea;
+    color:#9a8467;
+    padding:2.5rem 0 3.5rem;
+    text-align:center;
+    font-family:var(--mono);
+    font-size:.66rem;
+    letter-spacing:.24em;
+  }
+
+  /* =========================================================
+     印刷するときは、紙にあわせて明るく反転する
+     ========================================================= */
+  @media print{
+    body{ background:#fff; color:#14181a; font-size:10.5pt; line-height:1.8; }
+    .sky,.horizon,.shutter,.hero-sign,.dawn .sun{ display:none; }
+    .hero{ padding-block:0 2rem; }
+    .hero::before,.hero::after{ display:none; }
+    .hero h1{ font-size:26pt; }
+    .hero h1 .lamp,.hero-to{ color:#a75f10; text-shadow:none; }
+    .hero-to .org{ color:#7a6a52; }
+    /* 紙に落とすときは、立ち上がる演出の途中でも必ず見えるようにする */
+    .in,.rise{ opacity:1 !important; transform:none !important; animation:none !important; }
+    .sec{ padding-block:1.7rem; break-inside:avoid; }
+    .sec h2{ font-size:15pt; }
+    .sec-label,.hero-meta,.steps .n,.signoff .k,.note .k,.cert-meta span,.cert .verify .u,footer{
+      color:#7a6a52; position:static; writing-mode:horizontal-tb;
+    }
+    .proof a,.mode h3,.steps h3,.cert p.t b,.cert .verify{ color:#a75f10; }
+    .hero-sub b,.sec b,.proof b,.note b{ color:#14181a; }
+    .sec-lead,.mode p,.steps p,.proof p,.note p,.dawn p.msg,.hero-sub,.cert p.s,.cert-meta{ color:#3c4448; }
+    .hero-sig{ color:#5a6166; }
+    .hero-sig .who{ color:#14181a; }
+    .signoff a{ color:#a75f10; }
+    .quote{ border-left-color:#a75f10; }
+    .asks li::before{ background:#a75f10; }
+    .hero-sig,.asks li,.mode,.steps li,.signoff,.sec,.note,.cert,.cert-shot,.hero-to{ border-color:#d8d2c6; }
+    .proof{ background:#fdf6ea; border-color:#e0c79a; }
+    .dawn{ background:#fff; color:#14181a; padding-block:2rem; }
+    .dawn h2{ color:#14181a; }
+    footer{ background:#fff; }
+    .asks li,.mode,.steps li,.note,.proof,.cert{ break-inside:avoid; }
+  }
+</style>
+
+<!-- 空。ページの後ろに敷きっぱなしにして、スクロールで明けていく -->
+<div class="sky" aria-hidden="true">
+  <span class="s1"></span>
+  <span class="s2"></span>
+  <span class="s3"></span>
+  <span class="s4"></span>
+  <span class="s5"></span>
+</div>
+<div class="horizon" aria-hidden="true"></div>
+
+<!-- ==================== ヒーロー ==================== -->
+<header class="hero">
+  <div class="shutter" aria-hidden="true"></div>
+  <p class="hero-sign rise d5" aria-hidden="true">聞いて、形にする</p>
+
+  <div class="shell hero-inner">
+    <p class="hero-meta rise d1">NAGOYA MINATO ／ TSUKIJIGUCHI ／ 2026.08.02</p>
+
+    <!--
+      名刺を出したいときは、このフォルダに「名刺.png」を置いてください。
+      置いていないあいだは、この枠ごと自動で消えます。
+      （リンクで送る版には入りません。手元のファイルを直接渡したときだけ出ます）
+    -->
+    <span class="meishi rise d1">
+      <img src="名刺.png" alt="日ノ出工房 廣田隆詳さんの名刺"
+           onerror="this.closest('.meishi').remove()">
+      <span class="cap">いただいた名刺</span>
+    </span>
+
+    <p class="hero-to rise d1">
+      <span class="org">水平線からの街づくり ／ 日ノ出工房</span>
+      廣田 隆詳 さんへ
+    </p>
+
+    <h1>
+      <span class="ln rise d2">この街を、</span>
+      <span class="ln lamp rise d3">どうしたいですか。</span>
+    </h1>
+
+    <p class="hero-sub rise d4">
+      提案を持っていくつもりはありません。
+      あなたの頭の中にある景色を、聞かせてください。
+      <b>それを形にする手伝いなら、できるかもしれません。</b>
+    </p>
+
+    <p class="hero-sig rise d5">
+      <span class="who">ふゆと</span>
+      <span>港栄4丁目在住 ／ 聞いて、形にする人</span>
+      <span>Google AI Professional Certificate 取得</span>
+    </p>
+  </div>
+</header>
+
+<!-- ==================== 1 ==================== -->
+<section class="sec">
+  <div class="shell">
+    <p class="sec-label">01 ── はじめに</p>
+    <div class="sec-head in">
+      <h2>案は、持っていきません</h2>
+      <p class="sec-lead">
+        築地口のことは、ぼくよりあなたのほうが百倍詳しい。
+        どこが変わってしまったのかも、何を試して続かなかったのかも、
+        たぶんもう分かっているはずです。
+      </p>
+      <p class="sec-lead">
+        ぼくは港栄4丁目に住んでいるので、この街の空気は知っています。
+        ただ、住んでいることと、商売をしていることは別です。
+        よそで当たった話に型を当てはめても、だいたい外れる。
+        だから当日、持っていくのは案ではなく、<b>耳と、手</b>です。
+      </p>
+    </div>
+
+    <p class="quote in">
+      この街をどうするかを決めるのは、あなたです。<br>
+      ぼくは、それを形にする側にいます。
+    </p>
+  </div>
+</section>
+
+<!-- ==================== 2 ==================== -->
+<section class="sec">
+  <div class="shell">
+    <p class="sec-label">02 ── まず、ゴールを決める</p>
+    <div class="sec-head in">
+      <h2>いちばん大事なのは、<br>「本当は何をしたいか」です</h2>
+      <p class="sec-lead">
+        何かを始めるとき、いちばん多いつまずきは、
+        <b>やりたいことより先に、やり方から決めてしまうこと</b>です。
+        AIでも、SNSでも、イベントでも同じ。
+        何をしたいのかが決まっていないと、道具に何をさせればいいかも決まりません。
+      </p>
+      <p class="sec-lead">
+        そして、ゴールが決まらないまま始まるのは、まったく珍しいことではありません。
+        決めなくてはいけないと思っていない、あるいは
+        <b>決めたつもりで決まっていない</b>。そのほうがむしろ普通です。
+        ぼくも、放っておくとそうなります。
+      </p>
+    </div>
+
+    <p class="quote in">
+      ゴールさえ決まれば、<br>
+      そこへ行く道は、いくらでも用意できます。
+    </p>
+
+    <div class="in">
+      <p class="ask-group">まず、ここを決めたい</p>
+      <ul class="asks">
+        <li>いちばん叶えたいことは、何ですか</li>
+        <li>それが叶ったとき、何がどうなっていたら「できた」と言えますか</li>
+        <li>いつごろまでに、そうなっていたいですか</li>
+      </ul>
+
+      <p class="ask-group">そのうえで、聞かせてほしいこと</p>
+      <ul class="asks">
+        <li>「街を元気に」の一言では、まだ言い切れていないものはありませんか</li>
+        <li>この街がいちばん元気だった頃、どんな景色でしたか</li>
+        <li>やってみて続かなかったことは何ですか。なぜ続かなかったと思いますか</li>
+        <li>一緒にやってくれそうな顔は、誰が浮かびますか</li>
+        <li>逆に、これだけは変えたくない、というものは何ですか</li>
+      </ul>
+
+      <p class="ask-note">
+        答えを用意しておく必要はありません。
+        うまく言葉にならなくて構いませんし、途中で変わってもかまいません。
+        話しながら、一緒に形にしていきます。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 3 ==================== -->
+<section class="sec">
+  <div class="shell">
+    <p class="sec-label">03 ── ぼくにできること</p>
+    <div class="sec-head in">
+      <h2>思いついたことを、<br>その日のうちに形にします</h2>
+      <p class="sec-lead">
+        ぼくの仕事は、頭の中にあるものを、人に見せられる形にすることです。
+        話しているうちに出てきた思いつきを、その場でページやチラシや看板の案にしてしまう。
+      </p>
+      <p class="sec-lead">
+        形になると、話が進みます。
+        <b>賛成も反対も、具体的になる。</b>
+        「なんとなくいい気がする」で止まっていたものが、
+        「ここをこう変えたい」に変わる。それがいちばん大きい違いです。
+      </p>
+    </div>
+
+    <div class="modes in">
+      <div class="mode">
+        <h3>聞く</h3>
+        <p>
+          頭の中にあってまだ言葉になっていないものを、一緒に引っぱり出して整理します。
+          まずはここだけでも構いません。
+        </p>
+      </div>
+      <div class="mode">
+        <h3>形にする</h3>
+        <p>
+          出てきたものを、見える形にして持っていきます。
+          ページ、チラシ、看板の案、告知、地図、書類の下書き。
+          気に入らなければ、何度でも作り直します。
+        </p>
+      </div>
+      <div class="mode">
+        <h3>続くようにする</h3>
+        <p>
+          一度きりで終わらせないための段取りを作ります。
+          必要なら、みんなで覚える会も開きます。
+          ぼくがいなくても回る状態が、いちばんいい。
+        </p>
+      </div>
+    </div>
+
+    <div class="note in">
+      <p class="k">AIについて、正直なところ</p>
+      <p>
+        ぼくはよく「AIの人」として紹介されます。
+        たしかに道具としてよく使いますし、そのおかげで形にするのが速い。
+      </p>
+      <p>
+        ただ、<b>AIを入れること自体が目的になった話は、たいてい失敗します。</b>
+        使わないほうが早ければ使いません。
+        紙を配ったほうが届くならそうするし、人が歩いて回ったほうが早いならそうする。
+        決めるのは、あなたがやりたいことのほうです。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 4 ==================== -->
+<section class="sec">
+  <div class="shell">
+    <p class="sec-label">04 ── これまで作ったもの</p>
+    <div class="sec-head in">
+      <h2>口で言うより、<br>見てもらったほうが早い</h2>
+      <p class="sec-lead">
+        「形にします」と言われても、どの程度のものが出てくるか分からないと思います。
+        これまで作ってきたものを、1枚のページにまとめてあります。
+      </p>
+    </div>
+
+    <div class="proof in">
+      <p>
+        ここに載っているものは、<b>ほとんど一人で、短い時間で作ったもの</b>です。
+        同じ速さで、この街のものを作れます。
+      </p>
+      <a href="https://fuyutosan.github.io/hangar-f/" target="_blank" rel="noopener">
+        これまで作ったものを見る
+        <span class="u">fuyutosan.github.io/hangar-f/</span>
+      </a>
+    </div>
+
+    <!--
+      認定証。画像ファイル「認定証.png」をこのフォルダに置くと出ます。
+      置いていないあいだは、この枠ごと消えるようにしてあります。
+    -->
+    <div class="cert in">
+      <div class="cert-shot">
+        <img src="認定証.png" alt="Googleの認定証"
+             onerror="this.closest('.cert-shot').remove()">
+      </div>
+      <div>
+        <p class="k">資格</p>
+        <p class="t">Googleの <b>AI プロフェッショナル認定</b> を取得しています。</p>
+        <ul class="cert-meta">
+          <li><span>正式名称</span>Google AI Professional Certificate</li>
+          <li><span>発行</span>Google ／ Coursera</li>
+          <li><span>取得</span>2026年5月2日</li>
+          <li><span>内容</span>7講座を修了（AIの基礎、アイデア出し、調べもの、
+            文章、制作、データ分析、アプリづくり）</li>
+        </ul>
+        <p class="s">
+          とはいえ、<b>資格がないとできない、という話ではありません。</b>
+          ぼくが遠回りした分を、近道にして渡せる、というだけです。
+          覚えたい人がいれば、そのやり方ごとお渡しします。
+        </p>
+        <a class="verify" href="https://coursera.org/verify/professional-cert/T6BFEKAJHIVH"
+           target="_blank" rel="noopener">
+          認定を確認する
+          <span class="u">coursera.org/verify/professional-cert/T6BFEKAJHIVH</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 5 ==================== -->
+<section class="sec">
+  <div class="shell">
+    <p class="sec-label">05 ── 進め方</p>
+    <div class="sec-head in">
+      <h2>まず聞いて、次に形にして<br>持っていきます</h2>
+      <p class="sec-lead">
+        最初から街全体を巻き込むと、たいてい重くなって止まります。
+        小さく、早く、見せながら進めるのがいちばん失敗しにくい。
+      </p>
+    </div>
+
+    <ul class="steps in">
+      <li>
+        <span class="n">1回目 ／ 8.02</span>
+        <div>
+          <h3>ゴールを、はっきりさせます</h3>
+          <p>
+            この日は提案をしません。売り込みもしません。
+            あなたが本当は何をしたいのかを、ぼくがちゃんと分かるまで聞きます。
+            その日の終わりに、<b>ゴールが一行で言える</b>ところまで行けたら十分です。
+          </p>
+        </div>
+      </li>
+      <li>
+        <span class="n">2回目 ／ 1〜2週後</span>
+        <div>
+          <h3>聞いたことを、ひとつ形にして持っていきます</h3>
+          <p>
+            話に出たものの中から、いちばん効きそうなものを一つ選んで、
+            実物を作って持っていきます。見て、違ったら遠慮なく言ってください。
+            そこから直していきます。
+          </p>
+        </div>
+      </li>
+      <li>
+        <span class="n">3回目 ／ その後</span>
+        <div>
+          <h3>続く形にして、人を増やす</h3>
+          <p>
+            手ごたえがあれば、組合の集まりなどで関わる人を増やします。
+            やり方を覚えたい人がいれば、その会も開きます。
+            最後は、ぼくがいなくても回る状態を目指します。
+          </p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================== 夜明け ==================== -->
+<section class="dawn">
+  <div class="sun" aria-hidden="true"></div>
+  <div class="shell">
+    <h2>また、灯りのつく街に。</h2>
+    <p class="msg">
+      声をかけていただいて、ありがとうございます。
+      当日は、売り込みも提案もしません。
+      あなたがこの街をどうしたいのかを、聞きに行きます。
+    </p>
+
+    <p class="signoff">
+      <span class="k">8月2日より前に何かあれば</span>
+      <a href="mailto:aofuyu67@gmail.com">aofuyu67@gmail.com</a>
+    </p>
+  </div>
+</section>
+
+<footer>NAGOYA MINATO ／ TSUKIJIGUCHI</footer>
+
+<!--
+  日本語が、単語や文節の途中で改行されないようにする部品。
+  同じフォルダに置いてあるので、ネットにつながっていなくても動きます。
+-->
+<script src="budoux.min.js"></script>
+<script>
+  /* この印がついているあいだだけ、演出が有効になる。
+     JSが動かない環境（メールの簡易ビューアなど）では
+     印がつかないので、最初から全部見えている。 */
+  document.documentElement.className += ' js';
+
+  /* --- 日本語の改行を整える --- */
+  try{
+    var parser = budoux.loadDefaultJapaneseParser();
+    document.querySelectorAll('.shell').forEach(function(el){
+      parser.applyToElement(el);
+    });
+  }catch(e){ /* 読み込めなくてもCSSだけで最低限は効いている */ }
+
+  /* --- スクロールの進み具合を --p（0〜1）として渡す ---
+     新しいCSSだけでも書けるが、少し前のiPhoneで効かないため、
+     どの端末でも同じに見えるこの方法にしてある。 */
+  (function(){
+    var root = document.documentElement, ticking = false;
+    function update(){
+      var max = root.scrollHeight - window.innerHeight;
+      var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      root.style.setProperty('--p', p.toFixed(4));
+      ticking = false;
+    }
+    function request(){
+      if(!ticking){ ticking = true; requestAnimationFrame(update); }
+    }
+    addEventListener('scroll', request, { passive:true });
+    addEventListener('resize', request);
+    update();
+  })();
+
+  /* --- 見えたところから順に、静かに立ち上がる --- */
+  (function(){
+    var targets = document.querySelectorAll('.in, .dawn');
+    if(!('IntersectionObserver' in window)){
+      targets.forEach(function(el){ el.classList.add('on'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          en.target.classList.add('on');
+          io.unobserve(en.target);
+        }
+      });
+    }, { rootMargin:'0px 0px -12% 0px', threshold:.12 });
+    targets.forEach(function(el){ io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>
