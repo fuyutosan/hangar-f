@@ -6,7 +6,7 @@
 <title>HANGAR F. ── 第F格納庫</title>
 <meta name="description" content="思いついたら、すぐつくる。ふゆとの秘密基地・個人製作機の格納庫。">
 <meta property="og:title" content="HANGAR F. ── 第F格納庫">
-<meta property="og:description" content="思いついたら、すぐつくる。趣味と勢いで運営される個人製作機の格納庫。">
+<meta property="og:description" content="思いついたら、すぐつくる。勢いと本気で運営される個人製作機の格納庫。">
 <meta property="og:image" content="https://fuyutosan.github.io/hangar-f/assets/ogp.png">
 <meta property="og:url" content="https://fuyutosan.github.io/hangar-f/">
 <meta property="og:type" content="website">
@@ -371,7 +371,7 @@ section{padding:44px 0 8px;break-inside:avoid}
 .pre{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
 .pre.in{opacity:1;transform:none}
 body.overdrive .online::before,body.overdrive .badge-live::before{animation-duration:.3s}
-body.overdrive .tape,body.overdrive .door-stripes,body.overdrive .sfx-tape{filter:brightness(1.6) saturate(1.5)}
+body.overdrive .tape,body.overdrive .door-stripes,body.overdrive .sfx-tape,body.overdrive .nfx-tape{filter:brightness(1.6) saturate(1.5)}
 body.overdrive .ticker-inner{animation-duration:7s}
 body.overdrive .logo{text-shadow:0 0 20px rgba(255,201,60,.75)}
 .logo{cursor:pointer;user-select:none;-webkit-user-select:none}
@@ -409,6 +409,15 @@ body.overdrive .logo{text-shadow:0 0 20px rgba(255,201,60,.75)}
 .latest-body h3{font-size:24px;font-weight:800}
 .latest-body p{margin-top:8px;color:var(--sub);font-size:14px}
 .latest-body p b{color:var(--text);font-weight:700}
+.latest-body .type-sub{font-size:11px;color:var(--sub);letter-spacing:.12em;margin-top:2px}
+/* ステッカー棚。白フチ付きの透過PNGなので、暗い床にそのまま置くとシールらしく見える */
+.latest-body{container-type:inline-size}
+.stickers{margin-top:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;align-items:center}
+@container (min-width:460px){.stickers{grid-template-columns:repeat(4,1fr)}}
+.stickers a{display:block;border-radius:10px;padding:6px;background:var(--panel2);border:1px solid var(--line);transition:.2s}
+.stickers a:hover{border-color:var(--accent-dim);transform:translateY(-2px) rotate(-2deg)}
+.stickers a.wide{grid-column:1 / -1;max-width:320px;justify-self:center;width:100%}
+.stickers img{display:block;width:100%;height:auto}
 /* 最新機の記録映像。preload="none"なので、押されるまで通信はしない（基地は軽いまま） */
 .sortie-film{
   margin-top:14px;border:1px solid var(--accent-dim);border-radius:10px;
@@ -445,6 +454,8 @@ body.overdrive .logo{text-shadow:0 0 20px rgba(255,201,60,.75)}
 .btn.ghost{border-color:var(--line);color:var(--text)}
 .btn.ghost::before{content:"𝕏"}
 .btn.mail::before{content:"✉"}
+.btn.works::before{content:"🐼"}
+.tower p b{color:var(--text)}
 
 /* ===== crew ===== */
 .crew{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:18px;position:relative}
@@ -564,6 +575,7 @@ body.overdrive .logo{text-shadow:0 0 20px rgba(255,201,60,.75)}
 .cat-page{color:#b48cff;background:rgba(180,140,255,.14)}
 .cat-tool{color:#57d9a3;background:rgba(87,217,163,.14)}
 .cat-learn{color:#ffa94d;background:rgba(255,169,77,.14)}
+.cat-goods{color:#f2f2f2;background:rgba(242,242,242,.14)}
 /* ===== control tower ===== */
 .tower{
   border:1px solid var(--line);border-radius:12px;background:var(--panel);
@@ -602,6 +614,43 @@ body.overdrive .logo{text-shadow:0 0 20px rgba(255,201,60,.75)}
 .sfx-text{position:absolute;left:50%;top:72%;transform:translateX(-50%);
   color:var(--accent);letter-spacing:.3em;font-size:15px;white-space:nowrap;
   animation:blink .5s infinite}
+
+/* ===== 新型機 発進カットイン（開庫直後に1訪問1回・2026-09-14 A案採用。B案WARNINGの見本は pixel/mock_cutin.html） ===== */
+#new-fx{position:fixed;inset:0;z-index:100;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  background:rgba(8,10,15,.72);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);animation:nfx-in .2s ease-out}
+#new-fx[hidden]{display:none}
+#new-fx.leaving{animation:nfx-out .25s ease-in forwards}
+@keyframes nfx-in{from{opacity:0}to{opacity:1}}
+@keyframes nfx-out{to{opacity:0}}
+.nfx-tape{position:absolute;left:0;right:0;height:22px;background:repeating-linear-gradient(-45deg,var(--accent) 0 16px,#151515 16px 32px)}
+.nfx-tape.t{top:0;animation:sfxin-t .25s ease-out}
+.nfx-tape.b{bottom:0;animation:sfxin-b .25s ease-out}
+.nfx-band{position:absolute;left:-10%;right:-10%;top:50%;height:230px;margin-top:-115px;transform:rotate(-6deg);
+  background:
+    linear-gradient(var(--accent),var(--accent)) top/100% 5px no-repeat,
+    linear-gradient(var(--accent),var(--accent)) bottom/100% 5px no-repeat,
+    repeating-linear-gradient(90deg,rgba(255,201,60,.07) 0 2px,transparent 2px 38px),
+    linear-gradient(180deg,#1b2233,#0f1522);
+  box-shadow:0 0 60px rgba(0,0,0,.6);animation:nfx-band .3s cubic-bezier(.2,.9,.3,1)}
+@keyframes nfx-band{from{transform:rotate(-6deg) scaleX(0)}}
+.nfx-speed{position:absolute;inset:0;opacity:.5;
+  background:repeating-linear-gradient(0deg,transparent 0 22px,rgba(255,201,60,.35) 22px 23px);
+  background-size:140px 100%;animation:nfx-speed .35s linear infinite}
+@keyframes nfx-speed{from{background-position:0 0}to{background-position:-140px 0}}
+.nfx-inner{position:relative;text-align:center;transform:rotate(-6deg);padding:0 16px}
+.nfx-kick{font-size:12px;letter-spacing:.32em;color:var(--accent);animation:nfx-in .2s ease-out .15s backwards,nfx-blink .5s steps(2) .15s 4}
+@keyframes nfx-blink{50%{opacity:.2}}
+/* おみくじ（メイメイのお家）と同じ「くるくる飛び込み→ぷるっ」 */
+.nfx-sticker{display:block;width:132px;height:132px;margin:4px auto 2px;filter:drop-shadow(0 8px 14px rgba(0,0,0,.55));
+  animation:nfx-dash .55s cubic-bezier(.2,.8,.35,1) .2s backwards,nfx-purun .5s ease-in-out .78s}
+@keyframes nfx-dash{from{transform:translate(-80vw,40px) rotate(-340deg) scale(.6)}to{transform:none}}
+@keyframes nfx-purun{0%,100%{transform:none}25%{transform:scale(1.12,.9)}50%{transform:scale(.94,1.06)}75%{transform:scale(1.03,.98)}}
+.nfx-name{font-size:22px;font-weight:900;letter-spacing:.04em;line-height:1.3;animation:nfx-in .3s ease-out .75s backwards}
+.nfx-sub{font-size:13px;color:var(--accent);font-weight:700;letter-spacing:.12em;animation:nfx-in .3s ease-out .9s backwards}
+.nfx-skip{position:absolute;bottom:34px;left:0;right:0;text-align:center;font-size:11px;letter-spacing:.3em;color:var(--sub);animation:nfx-in .3s ease-out .9s backwards}
+.latest{scroll-margin-top:84px}
+.latest.flash{animation:nfx-flash 1.2s ease-out}
+@keyframes nfx-flash{0%{box-shadow:0 0 0 0 rgba(255,201,60,.9)}100%{box-shadow:0 0 0 18px rgba(255,201,60,0)}}
 
 /* ===== footer ===== */
 footer{margin-top:56px}
@@ -690,11 +739,11 @@ footer{margin-top:56px}
   <div class="logo-sub mono">DAI-F KAKUNOUKO</div>
 
   <p class="catch jp">思いついたら、<em>すぐつくる。</em></p>
-  <p class="lead jp">ここは、ふゆとの秘密基地。機体はここで作られ、ここにしまわれ、ここから出撃していく。趣味と勢いで運営されている、製造工場を兼ねた格納庫です。</p>
+  <p class="lead jp">ここは、ふゆとの秘密基地。機体はここで作られ、ここにしまわれ、ここから出撃していく。勢いと本気で運営されている、製造工場を兼ねた格納庫です。</p>
 
   <div class="status mono">
     <div class="row"><span>SYSTEM</span><b class="online" id="sysstate">ONLINE</b></div>
-    <div class="row"><span>運営形態</span><b>趣味（ただし本気）</b></div>
+    <div class="row"><span>運営形態</span><b>本気（相談も受付中）</b></div>
     <div class="row"><span>人員</span><b>1名（本人）</b></div>
     <div class="row"><span>常駐AI</span><b>1名（育成中）</b></div>
     <div class="row"><span>製造ペース</span><b>週1機</b></div>
@@ -754,14 +803,21 @@ footer{margin-top:56px}
 <!-- ================= LATEST ================= -->
 <section>
   <div class="sec-head"><span class="en mono">LATEST SORTIE</span><h2>最新発進機</h2></div>
-  <div class="latest">
-    <div class="latest-bar mono"><span class="badge-new">NEW</span> 2026-08-17 発進 ／ CASE STUDY 6機搭載</div>
+  <div class="latest" id="latest">
+    <div class="latest-bar mono"><span class="badge-new">NEW</span> 2026-09-12 発進 ／ STICKER 5種搭載</div>
     <div class="latest-body">
-      <h3 class="nw">ひだまり珈琲店</h3>
-      <p class="jp">架空の自家焙煎コーヒーショップを、<b>「実際にお客さんが来る店」</b>として考えたWebサイトのケーススタディ。同じ一軒の店を、想定客・課題・来店につなげたい行動から逆算して、6つの営業戦略でデザインしました。</p>
-      <div class="sortie-film-cap mono">WEB CASE STUDY ／ 6 FLAGSHIP DIRECTIONS</div>
-      <a class="btn" data-sortie href="https://fuyutosan.github.io/sample-sites/" target="_blank" rel="noopener">出撃（6つのサイトを見る）</a>
-      <a class="btn" href="https://github.com/fuyutosan/sample-sites" target="_blank" rel="noopener" style="margin-left:8px">⌘ 設計・ソースを見る</a>
+      <h3 class="nw">パンダさんワークス</h3>
+      <div class="type-sub mono">SUZURI STICKER SHOP</div>
+      <p class="jp">基地のパンダさんが、ステッカーになりました。<b>「AIを使う人の“しるし”」</b>がテーマ。ノートPCやスマホに貼っておくと、知っている人だけが気づくマークです。</p>
+      <div class="stickers">
+        <a href="https://suzuri.jp/pandasan-works/20896773/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/soudanchu.webp" alt="AIと相談中 ステッカー" width="320" height="320" loading="lazy"></a>
+        <a href="https://suzuri.jp/pandasan-works/20894542/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/panda.webp" alt="AIパンダさん ステッカー" width="320" height="320" loading="lazy"></a>
+        <a href="https://suzuri.jp/pandasan-works/20894548/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/emblem.webp" alt="丸エンブレム ステッカー" width="320" height="320" loading="lazy"></a>
+        <a href="https://suzuri.jp/pandasan-works/20894331/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/logo.webp" alt="パンダさんワークス ロゴ ステッカー" width="320" height="320" loading="lazy"></a>
+        <a class="wide" href="https://suzuri.jp/pandasan-works/20894549/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/strip.webp" alt="パンダさんワークス 横長 ステッカー" width="480" height="167" loading="lazy"></a>
+      </div>
+      <div class="sortie-film-cap mono">SUZURI ／ 各622円（税込）</div>
+      <a class="btn" data-sortie href="https://suzuri.jp/pandasan-works" target="_blank" rel="noopener">出撃（ショップを見る）</a>
     </div>
   </div>
 </section>
@@ -871,17 +927,17 @@ footer{margin-top:56px}
 <section>
   <div class="sec-head"><span class="en mono">SORTIE LOG</span><h2>発進記録</h2></div>
   <div class="log">
-    <div class="log-row"><span class="log-date mono">2026-08-17</span><a href="https://fuyutosan.github.io/sample-sites/" target="_blank" rel="noopener">ひだまり珈琲店｜6つの営業戦略でつくるWebサイト</a><span class="cat cat-page">ホームページ</span><span class="log-tag mono">NEW</span></div>
-    <div class="log-row"><span class="log-date mono">2026-07-23</span><a href="https://fuyutosan.github.io/sasatomo-caravan/" target="_blank" rel="noopener">笹友キャラバン</a><span class="cat cat-game">ゲーム</span><span class="log-tag mono">NEW</span></div>
+    <div class="log-row"><span class="log-date mono">2026-09-13</span><a href="https://pandasan-works.pages.dev/" target="_blank" rel="noopener">パンダさんワークス｜AI活用の相談窓口</a><span class="cat cat-page">ホームページ</span><span class="log-tag mono">NEW</span></div>
+    <div class="log-row"><span class="log-date mono">2026-09-12</span><a href="https://suzuri.jp/pandasan-works" target="_blank" rel="noopener">パンダさんワークス｜SUZURIステッカー</a><span class="cat cat-goods">グッズ</span><span class="log-tag mono">NEW</span></div>
+    <div class="log-row"><span class="log-date mono">2026-08-17</span><a href="https://fuyutosan.github.io/sample-sites/" target="_blank" rel="noopener">ひだまり珈琲店｜6つの営業戦略でつくるWebサイト</a><span class="cat cat-page">ホームページ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-23</span><a href="https://fuyutosan.github.io/sasatomo-caravan/" target="_blank" rel="noopener">笹友キャラバン</a><span class="cat cat-game">ゲーム</span></div>
     <div class="log-row"><span class="log-date mono">2026-07-19</span><a href="https://fuyutosan.github.io/Mei-library/" target="_blank" rel="noopener">めいちゃん図書館</a><span class="cat cat-page">ホームページ</span></div>
-    <div class="log-row"><span class="log-date mono">2026-07-13</span><a href="https://fuyutosan.github.io/sales-study/" target="_blank" rel="noopener">特殊鋼学習プログラム（全60回）</a><span class="cat cat-learn">学習</span></div>
     <div class="log-row"><span class="log-date mono">2026-07-12</span><a href="https://github.com/fuyutosan/daitoshokan-ai-library" target="_blank" rel="noopener">大図書館（AIの記憶システム）</a><span class="cat cat-tool">ツール</span></div>
     <div class="log-row"><span class="log-date mono">2026-07-11</span><a href="https://fuyutosan.github.io/sumiyomi/" target="_blank" rel="noopener">墨詠み</a><span class="cat cat-app">アプリ</span></div>
     <div class="log-row"><span class="log-date mono">2026-07-11</span><span>メイメイ秘書室（公演カレンダー自動同期）</span><span class="cat cat-tool">ツール</span><span class="log-tag mono">運用中</span></div>
     <div class="log-row"><span class="log-date mono">2026-07-05</span><a href="https://fuyutosan.github.io/nemuri-hoshizora/" target="_blank" rel="noopener">ねむり星空</a><span class="cat cat-app">アプリ</span></div>
     <div class="log-row"><span class="log-date mono">2026-07-03</span><a href="https://fuyutosan.github.io/fable5-guide/" target="_blank" rel="noopener">Fable 5のトリセツ大ぼうけん</a><span class="cat cat-learn">学習</span></div>
     <div class="log-row"><span class="log-date mono">2026-07-01</span><a href="https://fuyutosan.github.io/mei-hakase/" target="_blank" rel="noopener">愛生博士クイズ</a><span class="cat cat-game">ゲーム</span></div>
-    <div class="log-row"><span class="log-date mono">2026-06-11</span><a href="https://fuyutosan.github.io/tokushu-ko-study/" target="_blank" rel="noopener">特殊鋼3か月独学プログラム</a><span class="cat cat-learn">学習</span></div>
     <div class="log-row"><span class="log-date mono">2026-06-06</span><a href="https://fuyutosan.github.io/panda-charger/" target="_blank" rel="noopener">パンダさん充電器</a><span class="cat cat-app">アプリ</span></div>
     <div class="log-row"><span class="log-date mono">2026-06-05</span><a href="https://fuyutosan.github.io/meimei/" target="_blank" rel="noopener">メイメイのお家</a><span class="cat cat-page">ホームページ</span></div>
     <div class="log-row"><span class="log-date mono">2026-05-28</span><a href="https://fuyutosan.github.io/mei-news/" target="_blank" rel="noopener">デイリーめいちゃんニュース</a><span class="cat cat-page">ホームページ</span></div>
@@ -906,7 +962,9 @@ footer{margin-top:56px}
   <div class="tower">
     <div class="q jp"><span>「これ、どうやって作ってるの？」</span><br><span>「うちの困りごとも、こういうので解決できる？」</span></div>
     <p class="jp">管制塔は、いつでも通信を受け付けています。感想ひとことでも、うれしい燃料になります。</p>
+    <p class="jp">仕事の相談は、<b class="nw">パンダさんワークス</b>の窓口で受け付けています。</p>
     <div class="tower-btns">
+      <a class="btn works" href="https://pandasan-works.pages.dev/" target="_blank" rel="noopener">相談窓口を見る</a>
       <a class="btn ghost" href="https://x.com/fuyutopandasan" target="_blank" rel="noopener">ふゆとをフォローする</a>
       <a class="btn mail" href="https://x.com/fuyutopandasan" target="_blank" rel="noopener">管制塔に通信する（DM）</a>
     </div>
@@ -918,6 +976,19 @@ footer{margin-top:56px}
 <button id="close-hangar" class="mono">⏏ 格納庫を閉じる</button>
 
 </div><!-- /wrap -->
+
+<div id="new-fx" hidden role="dialog" aria-label="新作のお知らせ：パンダさんワークスのステッカー">
+  <div class="nfx-tape t"></div>
+  <div class="nfx-band"><div class="nfx-speed"></div></div>
+  <div class="nfx-inner">
+    <div class="nfx-kick mono nw">NEW MACHINE ── 新型機 発進</div>
+    <img class="nfx-sticker" src="assets/suzuri/panda.webp" alt="" width="320" height="320">
+    <div class="nfx-name nw">パンダさんワークス</div>
+    <div class="nfx-sub nw">ステッカー 発売中</div>
+  </div>
+  <div class="nfx-skip mono">TAP ▶ 見に行く</div>
+  <div class="nfx-tape b"></div>
+</div>
 
 <div id="sortie-fx" hidden aria-hidden="true">
   <div class="sfx-tape top"></div>
@@ -938,7 +1009,7 @@ footer{margin-top:56px}
   <div class="tape"></div>
   <div class="wrap foot-inner">
     <div class="foot-logo nw">HANGAR F. ── 第F格納庫</div>
-    動力源：趣味 ／ 設計・指揮：ふゆと（人間1名） ／ 製造班：相棒のAI<br>
+    動力源：好奇心 ／ 設計・指揮：ふゆと（人間1名） ／ 製造班：相棒のAI<br>
     <span style="font-size:10px">背景の工場パーツの一部: Kenney.nl（CC0）</span><br>
     <span class="mono">© 2026 HANGAR F.</span>
   </div>
@@ -964,6 +1035,32 @@ try{
   const clearT=()=>{timers.forEach(clearTimeout);timers=[];};
   const T=(fn,ms)=>timers.push(setTimeout(fn,ms));
 
+  // 開庫が終わった直後に「新型機 発進」カットインを1訪問1回だけ出す（押す＝最新発進機へ／放置＝2.4秒で消える）
+  const nfx=document.getElementById('new-fx');
+  let nfxTimer=null;
+  function closeNewFx(goToLatest){
+    if(nfx.hidden||nfx.classList.contains('leaving'))return;
+    clearTimeout(nfxTimer);
+    nfx.classList.add('leaving');
+    setTimeout(()=>{nfx.hidden=true;nfx.classList.remove('leaving');},250);
+    if(goToLatest){
+      const card=document.getElementById('latest');
+      card.scrollIntoView({block:'start'});
+      card.classList.remove('flash');void card.offsetWidth;card.classList.add('flash');
+    }
+  }
+  function showNewFx(){
+    if(!nfx||store.get('hf_newfx'))return;
+    store.set('hf_newfx','1');
+    nfx.hidden=false;
+    nfxTimer=setTimeout(()=>closeNewFx(false),2400);
+  }
+  if(nfx){
+    nfx.addEventListener('click',()=>closeNewFx(true));
+    addEventListener('keydown',e=>{if(e.key==='Escape')closeNewFx(false);});
+  }
+  window.__newFx=()=>{try{sessionStorage.removeItem('hf_newfx');}catch(e){} showNewFx();};
+
   function playLaunch(){
     if(state==='launching')return;
     state='launching';clearT();
@@ -978,14 +1075,14 @@ try{
     T(()=>wrap.classList.add('rumble'),1150);  // ゴゴゴ…
     T(()=>{wrap.classList.remove('rumble');wrap.classList.add('risen');},1850); // セリ上がり
     T(setOnline,2050);
-    T(()=>{doors.hidden=true;state='open';},2150);
+    T(()=>{doors.hidden=true;state='open';showNewFx();},2150);
   }
   function skipLaunch(){
     clearT();
     doors.classList.add('fast','open1','open2');
     wrap.classList.remove('rumble');wrap.classList.add('lowered','risen');
     setOnline();
-    T(()=>{doors.hidden=true;doors.classList.remove('fast');state='open';},650);
+    T(()=>{doors.hidden=true;doors.classList.remove('fast');state='open';showNewFx();},650);
   }
   function closeHangar(){
     if(state!=='open')return;
@@ -1145,4 +1242,3 @@ window.__scramble=()=>{
 </script>
 </body>
 </html>
-
