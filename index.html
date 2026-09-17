@@ -436,6 +436,23 @@ body.overdrive .logo{text-shadow:0 0 20px rgba(255,201,60,.75)}
   font-size:10.5px;letter-spacing:.16em;color:var(--accent)
 }
 
+/* ===== 記録映像室（YouTube）。開いた時点ではサムネだけ出し、押されてから再生プレーヤーを読み込む（基地を重くしない） ===== */
+.theater{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:18px}
+.yt{aspect-ratio:16/9;margin-top:0}
+.yt-play{all:unset;display:block;position:relative;width:100%;height:100%;cursor:pointer}
+.yt-play img{display:block;width:100%;height:100%;object-fit:cover}
+.yt-play::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.55))}
+.yt-btn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1;
+  width:68px;height:68px;border-radius:50%;display:grid;place-items:center;
+  background:var(--accent);color:#131313;font-size:24px;padding-left:4px;box-shadow:0 6px 20px rgba(0,0,0,.5);transition:.2s}
+.yt-play:hover .yt-btn,.yt-play:focus-visible .yt-btn{transform:translate(-50%,-50%) scale(1.1)}
+.yt-play:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.yt-label{position:absolute;left:12px;bottom:10px;z-index:1;font-size:11px;letter-spacing:.2em;color:var(--accent)}
+.yt iframe{display:block;width:100%;height:100%;border:0}
+.theater p{margin-top:12px;font-size:14px;color:var(--sub)}
+.theater p b{color:var(--text)}
+.theater-btns{display:flex;flex-wrap:wrap;gap:0 10px}
+
 /* ===== ship cards ===== */
 .ship{
   border:1px solid var(--line);border-radius:12px;background:var(--panel);
@@ -777,7 +794,7 @@ footer{margin-top:56px}
     <p class="jp">この秘密基地の主。思いついたアイデアを、相棒のメイメイとバイブコーディングで形にしては、この格納庫にしまって出撃させている。</p>
     <div class="crew-links">
       <a class="btn" href="https://x.com/fuyutopandasan" target="_blank" rel="noopener">𝕏 ものづくり・AI</a>
-      <a class="btn" href="https://x.com/Powerofpandasan" target="_blank" rel="noopener">𝕏 ハロプロ活動</a>
+      <a class="btn" href="https://note.com/fuyutopandasan" target="_blank" rel="noopener">note（AI活用の記事）</a>
     </div>
   </div>
 
@@ -825,6 +842,26 @@ footer{margin-top:56px}
       </div>
       <div class="sortie-film-cap mono">SUZURI ／ 各622円（税込）</div>
       <a class="btn" data-sortie href="https://suzuri.jp/pandasan-works" target="_blank" rel="noopener">出撃（ショップを見る）</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= THEATER ================= -->
+<section>
+  <div class="sec-head"><span class="en mono">THEATER</span><h2>記録映像室</h2></div>
+  <div class="theater">
+    <div class="sortie-film yt" id="yt-op">
+      <button type="button" class="yt-play" data-yt="5diwayjSREY" data-title="笹友キャラバン オープニング映像" aria-label="笹友キャラバンのオープニング映像を再生する">
+        <img src="https://i.ytimg.com/vi/5diwayjSREY/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy">
+        <span class="yt-btn" aria-hidden="true">▶</span>
+        <span class="yt-label mono" aria-hidden="true">PLAY ／ 上映開始</span>
+      </button>
+    </div>
+    <div class="sortie-film-cap mono">OPENING MOVIE ／ 笹友キャラバン</div>
+    <p class="jp">プログラミング未経験のふゆとが、AIと作ったゲームのオープニング。<b>カメラワーク8カットと、専用のBGM</b>まで自作しました。</p>
+    <div class="theater-btns">
+      <a class="btn" data-sortie href="https://fuyutosan.github.io/sasatomo-caravan/" target="_blank" rel="noopener">出撃（ゲームで遊ぶ）</a>
+      <a class="btn" href="https://www.youtube.com/watch?v=5diwayjSREY" target="_blank" rel="noopener">YouTubeで見る</a>
     </div>
   </div>
 </section>
@@ -1214,6 +1251,18 @@ try{
     }
   }
 }catch(e){/* 取得できない時はセクションごと出さない（基地は壊れない） */}
+
+// 記録映像室：押されたらYouTubeのプレーヤーに差し替える（クッキー控えめの youtube-nocookie を使う）
+document.querySelectorAll('.yt-play').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const f=document.createElement('iframe');
+    f.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(btn.dataset.yt)+'?autoplay=1&rel=0&playsinline=1';
+    f.title=btn.dataset.title||'動画';
+    f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';
+    f.allowFullscreen=true;
+    btn.replaceWith(f);
+  });
+});
 
 // BudouX：日本語の文節改行（全ブラウザ対応方式）
 try{
