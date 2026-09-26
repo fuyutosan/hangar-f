@@ -11,15 +11,15 @@ if(location.hostname==='fuyutosan.github.io'){
 </script>
 <link rel="canonical" href="https://hangar-f.pages.dev/">
 <title>HANGAR F. ── 第F格納庫</title>
-<meta name="description" content="思いついたら、すぐつくる。ふゆとの秘密基地・個人製作機の格納庫。">
+<meta name="description" content="思いついたら　すぐつくる。ふゆとの秘密基地・個人製作機の格納庫。">
 <meta property="og:title" content="HANGAR F. ── 第F格納庫">
-<meta property="og:description" content="思いついたら、すぐつくる。勢いと本気で運営される個人製作機の格納庫。">
+<meta property="og:description" content="思いついたら　すぐつくる。勢いと本気で運営される個人製作機の格納庫。">
 <meta property="og:image" content="https://hangar-f.pages.dev/assets/ogp.png">
 <meta property="og:url" content="https://hangar-f.pages.dev/">
 <meta property="og:type" content="website">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="HANGAR F. ── 思いついたら、すぐつくる。">
+<meta property="og:image:alt" content="HANGAR F. ── 思いついたら　すぐつくる。">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="HANGAR F. ── 第F格納庫">
 <meta name="twitter:image" content="https://hangar-f.pages.dev/assets/ogp.png">
@@ -37,7 +37,7 @@ if(location.hostname==='fuyutosan.github.io'){
   --green:#3ddc84;
   --danger:#161006;
   /* 床の住人の配置（スマホでまとめて詰める） */
-  --floor-h:180px;
+  --floor-h:200px;
   --mei-rest:168px;
   --mei-pc:250px;
   --marsh-right:56px;
@@ -47,7 +47,7 @@ if(location.hostname==='fuyutosan.github.io'){
 }
 @media (max-width:640px){
   :root{
-    --floor-h:140px;
+    --floor-h:150px;
     --mei-rest:96px;
     --mei-pc:150px;
     --marsh-right:44px;
@@ -97,26 +97,26 @@ p{text-wrap:pretty}
 /* 地面ライン */
 .fl-ground{position:absolute;left:0;right:0;bottom:32px;height:2px;background:#242c42}
 /* コンベア（帯が流れる＋貨物が右から左へ） */
-.fl-belt{position:absolute;left:26%;right:24%;bottom:34px;height:36px;
-  background-image:var(--belt);background-repeat:repeat-x;background-size:36px 36px;
+.fl-belt{position:absolute;left:26%;right:24%;bottom:34px;height:53px;
+  background-image:var(--belt);background-repeat:repeat-x;background-size:33px 53px;
   image-rendering:pixelated;animation:beltmove 3s linear infinite}
-@keyframes beltmove{to{background-position-x:-36px}}
-.fl-cargo{width:26px;height:26px;bottom:70px;left:74%;animation:cargo 14s linear infinite}
+@keyframes beltmove{to{background-position-x:-33px}}
+.fl-cargo{width:39px;height:39px;bottom:87px;left:74%;animation:cargo 14s linear infinite}
 @keyframes cargo{from{transform:translateX(0)}to{transform:translateX(-48vw)}}
 /* クレーン（往復＋吊り荷が揺れる） */
 .fl-crane{position:absolute;left:0;right:0;top:26px;height:3px;background:#3a4258}
-.fl-trolley{width:36px;height:20px;top:24px;left:0;animation:trolley 16s ease-in-out infinite alternate}
-.fl-hookwrap{top:44px;left:0;width:26px;height:52px;animation:trolley 16s ease-in-out infinite alternate}
+.fl-trolley{width:53px;height:14px;top:21px;left:0;animation:trolley 16s ease-in-out infinite alternate}
+.fl-hookwrap{position:absolute;top:35px;left:7px;width:39px;height:74px;animation:trolley 16s ease-in-out infinite alternate}
 @keyframes trolley{from{transform:translateX(12vw)}to{transform:translateX(74vw)}}
-.fl-hook{width:18px;height:18px;top:0;left:4px;animation:swing 3.4s ease-in-out infinite alternate}
-.fl-load{width:26px;height:26px;top:20px;left:0;animation:swing 3.4s ease-in-out infinite alternate,loadCrate 32s steps(1) infinite}
-.fl-load.face{width:26px;height:24px;animation:swing 3.4s ease-in-out infinite alternate,loadFace 32s steps(1) infinite}
+.fl-hook{width:25px;height:43px;top:0;left:7px;animation:swing 3.4s ease-in-out infinite alternate}
+.fl-load{width:39px;height:39px;top:36px;left:0;animation:swing 3.4s ease-in-out infinite alternate,loadCrate 32s steps(1) infinite}
+.fl-load.face{width:38px;height:28px;top:40px;animation:swing 3.4s ease-in-out infinite alternate,loadFace 32s steps(1) infinite}
 @keyframes loadCrate{0%,70%{opacity:1}71%,100%{opacity:0}}
 @keyframes loadFace{0%,70%{opacity:0}71%,97%{opacity:1}98%,100%{opacity:0}}
 @keyframes swing{from{transform:translateX(-5px)}to{transform:translateX(5px)}}
 /* 機械列・標識・格納庫 */
-.fl-mc{width:36px;height:36px;bottom:34px}
-.fl-hangar{width:108px;height:80px;bottom:26px;left:8px}
+.fl-mc{width:auto;height:auto;bottom:34px}
+.fl-hangar{width:163px;height:104px;bottom:26px;left:8px}
 /* 溶接の火花＋閃光 */
 .fl-weld{width:34px;height:26px;bottom:44px;left:calc(52% - 2px);border-radius:50%;
   background:radial-gradient(circle,#ffffff 0%,#dff1ff 35%,rgba(120,190,255,.35) 62%,transparent 75%);
@@ -145,17 +145,17 @@ p{text-wrap:pretty}
 .fl-spark.s8{width:2px;height:2px;animation:spark8 1.6s linear infinite 0.12s}
 @keyframes spark8{0%,84%{opacity:0;transform:none}86%{opacity:1;transform:none}100%{opacity:0;transform:translate(74px,-6px)}}
 /* 回転灯 */
-.fl-pole{width:18px;height:54px;bottom:26px}
-.fl-lamp{width:25px;height:25px;bottom:76px}
+.fl-pole{width:24px;height:82px;bottom:26px}
+.fl-lamp{width:35px;height:34px;bottom:104px}
 .fl-lamp.red{animation:blink .9s steps(1) infinite}
 .fl-lamp.blue{animation:blink .9s steps(1) infinite .45s}
 /* 誘導員（2フレーム交互＝誘導棒を振る） */
-.fl-marsh{width:32px;height:32px;bottom:30px;right:var(--marsh-right)}
+.fl-marsh{width:64px;height:48px;bottom:30px;right:var(--marsh-right)}
 .fl-marsh.a{animation:swap .44s steps(1) infinite}
 .fl-marsh.b{animation:swap .44s steps(1) infinite .22s}
 @keyframes swap{0%,49%{opacity:1}50%,100%{opacity:0}}
 /* 機体（タキシング→誘導待ち→離陸のループ） */
-.fl-plane{width:48px;height:24px;bottom:44px;left:0;animation:sortie 15s linear infinite}
+.fl-plane{width:71px;height:28px;bottom:44px;left:0;animation:sortie 15s linear infinite}
 .fl-plane.gold{display:none}
 #floor.scramble .fl-plane.panda{display:none}
 #floor.scramble .fl-plane.gold{display:block}
@@ -169,7 +169,7 @@ p{text-wrap:pretty}
   78%,100%{transform:translate(calc(100vw + 120px),-190px) rotate(-18deg);opacity:0}
 }
 /* メイメイの1日（60秒）: 笹30s → 移動 → PC5s → 移動 → 誘導15s → 移動 */
-.fl-mei{position:absolute;bottom:32px;width:32px;height:32px}
+.fl-mei{position:absolute;bottom:32px;width:48px;height:48px}
 .fl-mei img{position:absolute;inset:0;width:100%;height:100%}
 .fl-mei.rest{left:var(--mei-rest);animation:meiRest 60s linear infinite}
 .fl-mei.rest img{animation:swap .6s steps(1) infinite}
@@ -177,7 +177,7 @@ p{text-wrap:pretty}
 .fl-mei.pc{left:var(--mei-pc);width:48px;animation:meiPC 60s linear infinite}
 .fl-mei.pc img{animation:swap .34s steps(1) infinite}
 .fl-mei.pc img.b{animation-delay:.17s}
-.fl-mei.guide{right:var(--guide-right);animation:meiGuide 60s linear infinite}
+.fl-mei.guide{right:var(--guide-right);width:54px;animation:meiGuide 60s linear infinite}
 .fl-mei.guide img{animation:swap .44s steps(1) infinite}
 .fl-mei.guide img.b{animation-delay:.22s}
 .fl-mei.walk{left:0;animation:meiWalk 60s linear infinite}
@@ -198,15 +198,15 @@ p{text-wrap:pretty}
   100%{opacity:1;transform:translateX(var(--mei-rest))}
 }
 /* 溶接工: 火花の出るベイで作業（2フレーム交互） */
-.fl-welder{width:32px;height:32px;bottom:32px;left:calc(52% - 26px)}
+.fl-welder{width:54px;height:48px;bottom:32px;left:calc(52% - 26px)}
 .fl-welder.a{animation:swap .5s steps(1) infinite}
 .fl-welder.b{animation:swap .5s steps(1) infinite .25s}
-.fl-crew2{position:absolute;bottom:32px;width:32px;height:32px}
+.fl-crew2{position:absolute;bottom:32px;width:48px;height:48px}
 .fl-crew2 img{position:absolute;inset:0;width:100%;height:100%}
 .fl-crew2 img.b{animation-delay:.28s}
 .fl-crew2 img{animation:swap .56s steps(1) infinite}
 .fl-mech{left:130px}
-.fl-painter{left:742px}
+.fl-painter{left:742px;width:56px}
 .fl-painter img{animation-duration:.4s}
 .fl-painter img.b{animation-delay:.2s}
 /* 塗料のミスト */
@@ -216,7 +216,7 @@ p{text-wrap:pretty}
 @keyframes mist{0%{opacity:0;transform:translateX(0) scale(.6)}30%{opacity:1}
   100%{opacity:0;transform:translateX(16px) scale(1.5)}}
 /* フォークリフト（木箱を積んで往復） */
-.fl-fork{position:absolute;bottom:28px;width:48px;height:32px;left:0;
+.fl-fork{position:absolute;bottom:28px;width:66px;height:48px;left:0;
   animation:forkdrive 26s ease-in-out infinite alternate}
 .fl-fork img{position:absolute;inset:0;width:100%;height:100%;animation:swap .2s steps(1) infinite}
 .fl-fork img.b{animation-delay:.1s}
@@ -232,19 +232,19 @@ p{text-wrap:pretty}
 
 @media (max-width:640px){
   .fl-crew2,.fl-fork,.fl-mist,.fl-steam{display:none}   /* PC限定の増員はスマホでは非表示 */
-  .fl-hangar{width:80px;height:60px}
+  .fl-hangar{width:109px;height:69px}
   .fl-crane{top:16px}
-  .fl-trolley{top:14px;width:28px;height:16px}
-  .fl-hookwrap{top:30px}
-  .fl-mc{width:30px;height:30px}
+  .fl-trolley{top:13px;width:40px;height:11px}
+  .fl-hookwrap{top:24px}
+  .fl-mc{width:auto;height:32px}
   .fl-mc.m2,.fl-mc.m4,.fl-led{display:none}      /* 機械2台と壁LEDは間引く */
   .fl-belt{left:30%;right:22%}
   .fl-cargo{left:76%}
-  .fl-welder{left:calc(52% - 20px);width:28px;height:28px}
+  .fl-welder{left:calc(52% - 20px);width:36px;height:32px}
   .fl-weld{left:calc(52% + 2px)}
-  .fl-pole{height:44px}
-  .fl-lamp{bottom:66px}
-  .fl-plane{width:42px;height:21px}
+  .fl-pole{width:18px;height:60px}
+  .fl-lamp{width:26px;height:25px;bottom:82px}
+  .fl-plane{width:62px;height:24px}
 }
 /* 壁のLED */
 .fl-led{width:2px;height:2px;background:var(--accent);opacity:.5}
@@ -695,9 +695,9 @@ footer{margin-top:56px}
   <div class="fl-led l1"></div><div class="fl-led l2"></div><div class="fl-led l3"></div>
   <img class="fl-hangar" src="assets/px/hangar.png" alt="">
   <img class="fl-pole" src="assets/px/pole.png" style="left:126px" alt="">
-  <img class="fl-lamp red" src="assets/px/beacon_red.png" style="left:122px" alt="">
+  <img class="fl-lamp red" src="assets/px/beacon_red.png" style="left:120px" alt="">
   <img class="fl-pole" src="assets/px/pole.png" style="right:18px" alt="">
-  <img class="fl-lamp blue" src="assets/px/beacon_blue.png" style="right:14px" alt="">
+  <img class="fl-lamp blue" src="assets/px/beacon_blue.png" style="right:12px" alt="">
   <img class="fl-mc m1" src="assets/px/machine_a.png" style="left:31%" alt="">
   <img class="fl-mc m2" src="assets/px/machine_pc.png" style="left:42%" alt="">
   <img class="fl-mc m3" src="assets/px/machine_b.png" style="left:53%" alt="">
@@ -762,7 +762,7 @@ footer{margin-top:56px}
   <h1 class="logo nw">HANGAR F<span class="dot">.</span></h1>
   <div class="logo-sub mono">DAI-F KAKUNOUKO</div>
 
-  <p class="catch jp">思いついたら、<em>すぐつくる。</em></p>
+  <p class="catch jp"><span class="nw">思いついたら</span>　<em class="nw">すぐつくる。</em></p>
   <p class="lead jp">ここは、ふゆとの秘密基地。機体はここで作られ、ここにしまわれ、ここから出撃していく。勢いと本気で運営されている、製造工場を兼ねた格納庫です。</p>
 
   <div class="status mono">
@@ -791,7 +791,7 @@ footer{margin-top:56px}
     <div class="sortie-film-cap mono">OPENING MOVIE ／ 笹友キャラバン</div>
     <p class="jp">プログラミング未経験のふゆとが、AIと作ったゲームのオープニング。<b>カメラワーク8カットと、専用のBGM</b>まで自作しました。</p>
     <div class="theater-btns">
-      <a class="btn" data-sortie href="https://sasatomo-caravan.pages.dev/" target="_blank" rel="noopener">出撃（ゲームで遊ぶ）</a>
+      <a class="btn" data-sortie href="https://fuyutosan.github.io/sasatomo-caravan/" target="_blank" rel="noopener">出撃（ゲームで遊ぶ）</a>
       <a class="btn" href="https://www.youtube.com/watch?v=5diwayjSREY" target="_blank" rel="noopener">YouTubeで見る</a>
     </div>
   </div>
@@ -811,7 +811,7 @@ footer{margin-top:56px}
       </div>
     </div>
     <p class="jp">言の葉を三つ拾うと、墨があなたのこころを詠む。流れる水墨画の上で答える心理診断。結果は縦書きの「結果札」で持ち帰れます。</p>
-    <a class="btn" data-sortie href="https://sumiyomi.pages.dev/" target="_blank" rel="noopener">出撃</a>
+    <a class="btn" data-sortie href="https://fuyutosan.github.io/sumiyomi/" target="_blank" rel="noopener">出撃</a>
   </div>
 
   <div class="ship">
@@ -824,7 +824,7 @@ footer{margin-top:56px}
       </div>
     </div>
     <p class="jp">スマホの光で、天井を星空に変える。呼吸のリズムでゆっくり明滅する、眠れない夜のいちばん近い星。</p>
-    <a class="btn" data-sortie href="https://nemuri-hoshizora.pages.dev/" target="_blank" rel="noopener">出撃</a>
+    <a class="btn" data-sortie href="https://fuyutosan.github.io/nemuri-hoshizora/" target="_blank" rel="noopener">出撃</a>
   </div>
 
   <div class="ship">
@@ -837,7 +837,7 @@ footer{margin-top:56px}
       </div>
     </div>
     <p class="jp">充電するたび、パンダさんが元気をくれる。ただの充電時間が、ちょっとした楽しみに変わる充電画面アプリ。</p>
-    <a class="btn" data-sortie href="https://panda-charger.pages.dev/" target="_blank" rel="noopener">出撃</a>
+    <a class="btn" data-sortie href="https://fuyutosan.github.io/panda-charger/" target="_blank" rel="noopener">出撃</a>
   </div>
 </section>
 
@@ -880,8 +880,8 @@ footer{margin-top:56px}
       <div class="feat"><span class="fi">🏠</span><span class="jp">自分のお家と成長記録を持っている（季節で模様替えする）</span></div>
     </div>
     <div class="crew-links">
-      <a class="btn" href="https://meimei-56p.pages.dev/" target="_blank" rel="noopener">メイメイのお家</a>
-      <a class="btn" href="https://meimei-56p.pages.dev/growth.html" target="_blank" rel="noopener">成長記録</a>
+      <a class="btn" href="https://fuyutosan.github.io/meimei/" target="_blank" rel="noopener">メイメイのお家</a>
+      <a class="btn" href="https://fuyutosan.github.io/meimei/growth.html" target="_blank" rel="noopener">成長記録</a>
       <a class="btn" href="https://x.com/meimei_pandasan" target="_blank" rel="noopener">𝕏 @meimei_pandasan</a>
       <a class="btn" href="https://note.com/fuyutopandasan" target="_blank" rel="noopener">note</a>
     </div>
@@ -894,22 +894,22 @@ footer{margin-top:56px}
   <div class="log">
     <div class="log-row"><span class="log-date mono">2026-09-13</span><a href="https://pandasan-works.pages.dev/" target="_blank" rel="noopener">パンダさんワークス｜AI活用の相談窓口</a><span class="cat cat-page">ホームページ</span><span class="log-tag mono">NEW</span></div>
     <div class="log-row"><span class="log-date mono">2026-09-12</span><a href="https://suzuri.jp/pandasan-works" target="_blank" rel="noopener">パンダさんワークス｜SUZURIステッカー</a><span class="cat cat-goods">グッズ</span><span class="log-tag mono">NEW</span></div>
-    <div class="log-row"><span class="log-date mono">2026-08-17</span><a href="https://pandasan-samples.pages.dev/" target="_blank" rel="noopener">ひだまり珈琲店｜6つの営業戦略でつくるWebサイト</a><span class="cat cat-page">ホームページ</span></div>
-    <div class="log-row"><span class="log-date mono">2026-07-23</span><a href="https://sasatomo-caravan.pages.dev/" target="_blank" rel="noopener">笹友キャラバン</a><span class="cat cat-game">ゲーム</span></div>
-    <div class="log-row"><span class="log-date mono">2026-07-19</span><a href="https://mei-library.pages.dev/" target="_blank" rel="noopener">めいちゃん図書館</a><span class="cat cat-page">ホームページ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-08-17</span><a href="https://fuyutosan.github.io/sample-sites/" target="_blank" rel="noopener">ひだまり珈琲店｜6つの営業戦略でつくるWebサイト</a><span class="cat cat-page">ホームページ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-23</span><a href="https://fuyutosan.github.io/sasatomo-caravan/" target="_blank" rel="noopener">笹友キャラバン</a><span class="cat cat-game">ゲーム</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-19</span><a href="https://fuyutosan.github.io/Mei-library/" target="_blank" rel="noopener">めいちゃん図書館</a><span class="cat cat-page">ホームページ</span></div>
     <div class="log-row"><span class="log-date mono">2026-07-12</span><a href="https://github.com/fuyutosan/daitoshokan-ai-library" target="_blank" rel="noopener">大図書館（AIの記憶システム）</a><span class="cat cat-tool">ツール</span></div>
-    <div class="log-row"><span class="log-date mono">2026-07-11</span><a href="https://sumiyomi.pages.dev/" target="_blank" rel="noopener">墨詠み</a><span class="cat cat-app">アプリ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-11</span><a href="https://fuyutosan.github.io/sumiyomi/" target="_blank" rel="noopener">墨詠み</a><span class="cat cat-app">アプリ</span></div>
     <div class="log-row"><span class="log-date mono">2026-07-11</span><span>メイメイ秘書室（公演カレンダー自動同期）</span><span class="cat cat-tool">ツール</span><span class="log-tag mono">運用中</span></div>
-    <div class="log-row"><span class="log-date mono">2026-07-05</span><a href="https://nemuri-hoshizora.pages.dev/" target="_blank" rel="noopener">ねむり星空</a><span class="cat cat-app">アプリ</span></div>
-    <div class="log-row"><span class="log-date mono">2026-07-03</span><a href="https://fable5-torisetsu.pages.dev/" target="_blank" rel="noopener">Fable 5のトリセツ大ぼうけん</a><span class="cat cat-learn">学習</span></div>
-    <div class="log-row"><span class="log-date mono">2026-07-01</span><a href="https://mei-hakase.pages.dev/" target="_blank" rel="noopener">愛生博士クイズ</a><span class="cat cat-game">ゲーム</span></div>
-    <div class="log-row"><span class="log-date mono">2026-06-06</span><a href="https://panda-charger.pages.dev/" target="_blank" rel="noopener">パンダさん充電器</a><span class="cat cat-app">アプリ</span></div>
-    <div class="log-row"><span class="log-date mono">2026-06-05</span><a href="https://meimei-56p.pages.dev/" target="_blank" rel="noopener">メイメイのお家</a><span class="cat cat-page">ホームページ</span></div>
-    <div class="log-row"><span class="log-date mono">2026-05-28</span><a href="https://mei-news.pages.dev/" target="_blank" rel="noopener">デイリーめいちゃんニュース</a><span class="cat cat-page">ホームページ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-05</span><a href="https://fuyutosan.github.io/nemuri-hoshizora/" target="_blank" rel="noopener">ねむり星空</a><span class="cat cat-app">アプリ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-03</span><a href="https://fuyutosan.github.io/fable5-guide/" target="_blank" rel="noopener">Fable 5のトリセツ大ぼうけん</a><span class="cat cat-learn">学習</span></div>
+    <div class="log-row"><span class="log-date mono">2026-07-01</span><a href="https://fuyutosan.github.io/mei-hakase/" target="_blank" rel="noopener">愛生博士クイズ</a><span class="cat cat-game">ゲーム</span></div>
+    <div class="log-row"><span class="log-date mono">2026-06-06</span><a href="https://fuyutosan.github.io/panda-charger/" target="_blank" rel="noopener">パンダさん充電器</a><span class="cat cat-app">アプリ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-06-05</span><a href="https://fuyutosan.github.io/meimei/" target="_blank" rel="noopener">メイメイのお家</a><span class="cat cat-page">ホームページ</span></div>
+    <div class="log-row"><span class="log-date mono">2026-05-28</span><a href="https://fuyutosan.github.io/mei-news/" target="_blank" rel="noopener">デイリーめいちゃんニュース</a><span class="cat cat-page">ホームページ</span></div>
     <div class="log-row"><span class="log-date mono">2026-05-26</span><span>Hello!お知らせ（ハロプロLINE通知）</span><span class="cat cat-tool">ツール</span><span class="log-tag mono">運用中</span></div>
-    <div class="log-row"><span class="log-date mono">2026-05-22</span><a href="https://pandasanpet.pages.dev/" target="_blank" rel="noopener">パンダさんころころ（デスクトップアプリ）</a><span class="cat cat-app">アプリ</span></div>
-    <div class="log-row"><span class="log-date mono">2025-05-06</span><a href="https://pandasangame.pages.dev/" target="_blank" rel="noopener">パンダさんパワーゲーム</a><span class="cat cat-game">ゲーム</span></div>
-    <div class="log-row"><span class="log-date mono">2025-04-17</span><a href="https://panda-power.pages.dev/" target="_blank" rel="noopener">パンダさんパワー!!ゲーム</a><span class="cat cat-game">ゲーム</span><span class="log-tag mono">初号機</span></div>
+    <div class="log-row"><span class="log-date mono">2026-05-22</span><a href="https://fuyutosan.github.io/pandasanpet/" target="_blank" rel="noopener">パンダさんころころ（デスクトップアプリ）</a><span class="cat cat-app">アプリ</span></div>
+    <div class="log-row"><span class="log-date mono">2025-05-06</span><a href="https://fuyutosan.github.io/pandasangame/" target="_blank" rel="noopener">パンダさんパワーゲーム</a><span class="cat cat-game">ゲーム</span></div>
+    <div class="log-row"><span class="log-date mono">2025-04-17</span><a href="https://fuyutosan.github.io/panda-power/" target="_blank" rel="noopener">パンダさんパワー!!ゲーム</a><span class="cat cat-game">ゲーム</span><span class="log-tag mono">初号機</span></div>
   </div>
   <p class="log-note jp">※この記録は、機体が増えるたびに追記されます。だいたい週に1機のペース。</p>
 </section>
@@ -967,19 +967,19 @@ footer{margin-top:56px}
       <div class="hangar-inner-pad">
         <p class="hangar-note jp">※機密指定ですが、むしろ見てほしい区画です。この格納庫の機体は、すべて愛で動いています。</p>
 
-        <a class="mini" href="https://mei-hakase.pages.dev/" target="_blank" rel="noopener">
+        <a class="mini" href="https://fuyutosan.github.io/mei-hakase/" target="_blank" rel="noopener">
           <div class="emblem">🎓</div>
           <span><b class="nw">愛生博士クイズ</b><span class="jp">モーニング娘。'26・山﨑愛生ちゃんの非公式検定。合格すると博士号がもらえる</span></span>
           <span class="go">▶</span>
         </a>
 
-        <a class="mini" href="https://mei-library.pages.dev/" target="_blank" rel="noopener">
+        <a class="mini" href="https://fuyutosan.github.io/Mei-library/" target="_blank" rel="noopener">
           <div class="emblem">📚</div>
           <span><b class="nw">めいちゃん図書館</b><span class="jp">活動記録を収蔵する非公式ファンサイト</span></span>
           <span class="go">▶</span>
         </a>
 
-        <a class="mini" href="https://mei-news.pages.dev/" target="_blank" rel="noopener">
+        <a class="mini" href="https://fuyutosan.github.io/mei-news/" target="_blank" rel="noopener">
           <div class="emblem">📰</div>
           <span><b class="nw">デイリーめいちゃんニュース</b><span class="jp">毎日自動で発行される新聞。休刊日なし</span></span>
           <span class="go">▶</span>
@@ -992,7 +992,7 @@ footer{margin-top:56px}
           <span class="go">▶</span>
         </a>
 
-        <a class="mini" href="https://meimei-56p.pages.dev/calendar/mm26.ics" target="_blank" rel="noopener">
+        <a class="mini" href="https://fuyutosan.github.io/meimei/calendar/mm26.ics" target="_blank" rel="noopener">
           <div class="emblem">🗓️</div>
           <span><b class="nw">メイメイ秘書室</b><span class="jp">推しの公演スケジュールを毎朝自動更新する専属秘書。タップでカレンダー購読（ics）できる</span></span>
           <span class="badge-live mono">運用中</span>
