@@ -321,9 +321,9 @@ function updateStk(){
 
 /* ================= 特別格納庫（長押し開扉） ================= */
 {
-  const rs=$('#rs'),hold=$('#hold'),ring=$('.hold-ring',hold);let t0=0,h=0,holding=false,opened=false;
+  const rs=$('#rs'),hold=$('#hold'),ring=$('.hold-ring',hold);let t0=0,h=0,holding=false,opened=false,hT=0;
   const open=()=>{if(opened)return;opened=true;rs.classList.add('open','shake');setTimeout(()=>rs.classList.remove('shake'),1000);Snd.rumble();hold.setAttribute('aria-expanded','true');$$('#rs-list,.rs-note',rs).forEach(x=>x.removeAttribute('inert'))};
-  hold.addEventListener('pointerdown',e=>{holding=true;t0=performance.now();try{hold.setPointerCapture(e.pointerId)}catch(_){}Snd.tone(90,1.1,'sawtooth',.04,200)});
+  hold.addEventListener('pointerdown',e=>{holding=true;t0=performance.now();clearTimeout(hT);hT=setTimeout(()=>{if(holding)open()},1100);try{hold.setPointerCapture(e.pointerId)}catch(_){}Snd.tone(90,1.1,'sawtooth',.04,200)});
   const rel=()=>{holding=false};hold.addEventListener('pointerup',rel);hold.addEventListener('pointercancel',rel);
   hold.addEventListener('click',e=>{if(e.detail===0)open()});
   demos.push(()=>{if(opened)return;h=holding?clamp((performance.now()-t0)/1100):Math.max(0,h-.04);ring.style.setProperty('--h',h.toFixed(3));if(h>=1)open()});
@@ -405,9 +405,43 @@ addEventListener('resize',()=>{glResize();layout()});
 document.fonts&&document.fonts.ready.then(layout);
 addEventListener('load',()=>{layout();setTimeout(layout,600)});
 initGL();layout();
-if(RM||store.get('hf_boot2')){boot.hidden=true;body.classList.remove('locked');root.classList.add('is-ready')}
+const TOUR=/[?&]tour/.test(location.search);if(TOUR){store.set('hf_newfx','1');body.classList.add('tour')}
+if(!TOUR&&(RM||store.get('hf_boot2'))){boot.hidden=true;body.classList.remove('locked');root.classList.add('is-ready')}
 else{store.set('hf_boot2','1');playBoot()}
 requestAnimationFrame(frame);
+
+
+/* ================= 録画用ツアー（?tour）。画面収録しながら放置するだけで紹介映像の素材になる（約70秒） ================= */
+if(TOUR){
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  const go=(y,ms)=>new Promise(res=>{const y0=scrollY,t0=performance.now();root.style.scrollBehavior='auto';
+    const st=now=>{const k=clamp((now-t0)/ms);scrollTo(0,y0+(y-y0)*ease(k));k<1?requestAnimationFrame(st):res()};requestAnimationFrame(st)});
+  const top=id=>$(id).offsetTop;
+  const ev=(el,type,x,y)=>el.dispatchEvent(new PointerEvent(type,{bubbles:true,pointerId:9,clientX:x,clientY:y}));
+  (async()=>{
+    while(!root.classList.contains('is-ready')||!boot.hidden)await wait(200);
+    await wait(3500);                                    // ロゴ・キャッチ
+    await go(top('#manifesto')+10,2500);await go(top('#manifesto')+innerHeight*1.9,9000);await wait(1500);   // コンセプト
+    const h=$('#mainhangar'),span=h.offsetHeight-innerHeight;
+    await go(h.offsetTop,2000);
+    for(let i=0;i<3;i++){await go(h.offsetTop+span*(.1+i*.4),i?3200:2600);
+      const art=$$('.bay-art')[i],r=art.getBoundingClientRect();
+      for(let k=0;k<14;k++){ev(art.parentNode,'pointermove',r.left+r.width*(.2+.04*k),r.top+r.height*(.3+.2*Math.sin(k)));ev(art.parentNode,'pointerdown',r.left+r.width*.5,r.top+r.height*.5);await wait(220)}
+      if(i===2){ev(art.parentNode,'pointerenter',r.left+5,r.top+5);await wait(1800)}
+      await wait(900)}
+    await go(top('#theater')-20,2500);await wait(2200);
+    await go(top('#crew')-20,2000);await wait(2000);
+    await go(top('#log')-20,2000);await wait(3500);
+    await go(top('#depot')-20,2000);
+    const stk=$$('.stk');stk.forEach((s,i)=>{s.vx=(i%2?1:-1)*(14+i*3);s.vy=-10+i*4});await wait(3500);
+    await go(top('#restricted')-20,2000);
+    const hd=$('#hold');hd.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:9}));await wait(1700);hd.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:9}));await wait(2500);
+    await go(top('#tower')-20,2000);await wait(3000);
+    await go(document.documentElement.scrollHeight,3500);await wait(3000);
+    console.log('TOUR_DONE');
+  })();
+}
 
 /* BudouX：日本語の文節改行（任意） */
 (async()=>{try{const{loadDefaultJapaneseParser}=await import('https://cdn.jsdelivr.net/npm/budoux@0.6.2/+esm');const p=loadDefaultJapaneseParser();

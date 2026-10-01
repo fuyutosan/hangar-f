@@ -610,3 +610,6 @@ body.overdrive .ticker-inner{animation-duration:6s}
 @media (max-width:860px){.logo{font-size:14.2vw}.hero-lead{color:#b9c1d6}}
 .h2.rv{opacity:1;transform:none;clip-path:inset(0 0 100% 0);transition:clip-path .9s cubic-bezier(.7,0,.2,1)}
 .h2.rv.in{clip-path:inset(-10% -2% -10% -2%)}
+
+body.tour .cue,body.tour .skip,body.tour .dots{display:none}
+body.tour,body.tour *{cursor:none!important}
