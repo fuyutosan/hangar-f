@@ -124,7 +124,7 @@ function tierInfo() {
 function webglOK() { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } }
 async function boot3D() {
   if (!webglOK()) { g3dState = 'fail'; setGateReady(true); return; }
-  const Q = tierInfo(); S.q = Q; if (Q.tier === 'high') root.classList.add('hq');
+  const Q = tierInfo(); S.q = Q; if (Q.tier === 'high') root.classList.add('hq'); if (Q.tier === 'low') root.classList.add('lowfx');
   try {
     const { createGarage } = await import('./garage.js');
     G = await createGarage($('#gl'), Object.assign({}, Q, {
@@ -639,7 +639,7 @@ function frame(now) {
     G.update(dt, S.music);
     // 重い端末では自動で画質を下げる
     if (gateState === 'open' && perf.checked < 3) { perf.n++; perf.acc += dt; if (perf.n >= 90) { const avg = perf.acc / perf.n; perf.n = 0; perf.acc = 0; perf.checked++;
-      if (avg > .028) { perf.level++; const q = S.q; q.dpr = Math.max(.6, q.dpr * .78); G.setQuality(q.dpr, perf.level >= 2 ? false : undefined); } } }
+      if (avg > .028) { perf.level++; root.classList.add('lowfx'); const q = S.q; q.dpr = Math.max(.6, q.dpr * .78); G.setQuality(q.dpr, perf.level >= 2 ? false : undefined); } } }
   }
   requestAnimationFrame(frame);
 }

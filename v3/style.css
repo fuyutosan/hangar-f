@@ -652,6 +652,10 @@ body.overdrive .cctv-ticker .tk{animation-duration:6s}
   .rv{opacity:1;transform:none}
   .h2.rv{clip-path:none}
 }
+/* 端末が軽量モードのときは、すりガラスをやめて不透明寄りの板にする（3Dと二重に重くならないように） */
+.lowfx .m-sheet,.lowfx .board,.lowfx .logbook,.lowfx .share-box,.lowfx .parts-copy,.lowfx .reel,.lowfx .badge-card,.lowfx .plate,.lowfx .btn.plain,.lowfx .btn.ghost,.lowfx .btn.mail,.lowfx .btn.works,.lowfx .q span,.lowfx .lounge,.lowfx .bar-btn,.lowfx .bar::before,.lowfx .spot span,.lowfx .foot-in{backdrop-filter:none;-webkit-backdrop-filter:none}
+.lowfx .m-sheet,.lowfx .board,.lowfx .logbook,.lowfx .share-box,.lowfx .parts-copy,.lowfx .reel,.lowfx .badge-card{background:rgba(13,12,11,.9)}
+.lowfx .bar::before{background:linear-gradient(180deg,rgba(10,9,8,.96) 0%,rgba(10,9,8,.85) 60%,rgba(10,9,8,0) 100%)}
 body.tour .cue,body.tour .skip,body.tour .rail,body.tour .spots{display:none}
 body.tour,body.tour *{cursor:none!important}
 
