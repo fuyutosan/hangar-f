@@ -11,215 +11,195 @@ if(location.hostname==='fuyutosan.github.io'){
 document.documentElement.classList.add('js');
 </script>
 <link rel="canonical" href="https://hangar-f.pages.dev/">
-<title>HANGAR F. ── 第F格納庫</title>
-<meta name="description" content="思いついたら　すぐつくる。ふゆとの秘密基地・個人製作機の格納庫。スクロールで格納庫の奥へ。">
-<meta property="og:title" content="HANGAR F. ── 第F格納庫">
-<meta property="og:description" content="思いついたら　すぐつくる。勢いと本気で運営される個人製作機の格納庫。">
-<meta property="og:image" content="https://hangar-f.pages.dev/assets/ogp.png">
+<title>HANGAR F. ── 大人の秘密基地／第F格納庫</title>
+<meta name="description" content="路地の奥、シャッターの向こう。思いついたら、すぐつくる。ふゆとの大人の秘密基地＝ガレージ。長押しでシャッターを上げて、3Dのガレージを歩いて巡れます。">
+<meta property="og:title" content="HANGAR F. ── 大人の秘密基地／第F格納庫">
+<meta property="og:description" content="路地の奥、シャッターの向こう。思いついたら、すぐつくる。個人製作機18機が眠る、ふゆとの秘密のガレージ。">
+<meta property="og:image" content="https://hangar-f.pages.dev/assets/ogp-garage.jpg">
 <meta property="og:url" content="https://hangar-f.pages.dev/">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="HANGAR F.">
+<meta property="og:locale" content="ja_JP">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="HANGAR F. ── 思いついたら　すぐつくる。">
+<meta property="og:image:alt" content="HANGAR F. ── 路地裏の秘密基地。思いついたら、すぐつくる。">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="HANGAR F. ── 第F格納庫">
-<meta name="twitter:image" content="https://hangar-f.pages.dev/assets/ogp.png">
-<meta name="theme-color" content="#06080d">
+<meta name="twitter:title" content="HANGAR F. ── 大人の秘密基地／第F格納庫">
+<meta name="twitter:description" content="路地の奥、シャッターの向こう。思いついたら、すぐつくる。">
+<meta name="twitter:image" content="https://hangar-f.pages.dev/assets/ogp-garage.jpg">
+<meta name="theme-color" content="#0a0908">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230a0908'/%3E%3Cpath d='M20 14h26v9H30v7h13v9H30v13H20z' fill='%23ffb547'/%3E%3Ccircle cx='47' cy='48' r='5' fill='%23ff4f7e'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Dela+Gothic+One&family=JetBrains+Mono:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="v2.css">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Big+Shoulders+Stencil+Display:wght@700;900&family=DotGothic16&family=JetBrains+Mono:wght@400;500;700&family=Shippori+Mincho+B1:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="v3/style.css">
+<script type="importmap">{"imports":{"three":"./vendor/three/three.module.min.js","three/addons/":"./vendor/three/addons/"}}</script>
+<link rel="modulepreload" href="vendor/three/three.module.min.js">
 </head>
 <body class="locked">
-<a class="skip" href="#hero">本文へ</a>
+<a class="skip" href="#main">本文へ</a>
 <canvas id="gl" aria-hidden="true"></canvas>
-<div class="vig" aria-hidden="true"></div>
-<div class="grain" aria-hidden="true"></div>
+<div class="fx-shade" aria-hidden="true"></div>
+<div class="fx-vig" aria-hidden="true"></div>
+<div class="fx-grain" aria-hidden="true"></div>
+<div class="spots" id="spots" aria-hidden="true">
+  <div class="spot" data-anchor="car" data-sec="concept"><i></i><span><b>F-19 ／ 次期機体</b>布の下は、まだ秘密。</span></div>
+  <div class="spot" data-anchor="tv" data-sec="screening"><i></i><span><b>ON AIR</b>画面をクリックでチャンネル送り</span></div>
+  <div class="spot" data-anchor="lockers" data-sec="crew"><i></i><span><b>LOCKER × 3</b>ひとつは、まだ空き</span></div>
+  <div class="spot" data-anchor="clock" data-sec="log"><i></i><span><b>TOKYO TIME</b><em class="js-jst">--:--</em> いまの日本時間</span></div>
+  <div class="spot" data-anchor="hatch" data-sec="b1f"><i></i><span><b>B1F ↓</b>地下工場への入口</span></div>
+  <div class="spot" data-anchor="shelves" data-sec="parts"><i></i><span><b>PARTS</b>在庫はたっぷり</span></div>
+  <div class="spot" data-anchor="safe" data-sec="safe"><i></i><span><b>CLASSIFIED</b>中身は、愛</span></div>
+  <div class="spot" data-anchor="radio" data-sec="radio"><i></i><span><b>RADIO</b>クリックで1曲かかります</span></div>
+</div>
 
-<div id="floor" aria-hidden="true" style="--belt:url(assets/px/belt_m.png)">
-  <div class="fl-crane"></div>
-  <img class="fl-trolley" src="assets/px/machine_ctrl.png" alt="">
-  <div class="fl-hookwrap">
-    <img class="fl-hook" src="assets/px/hook.png" alt="">
-    <img class="fl-load" src="assets/px/crate_a.png" alt="">
-    <img class="fl-load face" src="assets/px/panda_face.png" alt="">
+<!-- ===================== シャッター（入口・ローダー） ===================== -->
+<div id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-t" aria-describedby="gate-hint">
+  <div class="gate-sky" aria-hidden="true"><i class="rain"></i></div>
+  <div class="gate-door" id="gate-door" aria-hidden="true">
+    <div class="slats"></div>
+    <div class="paint">
+      <div class="paint-no">F</div>
+      <div class="paint-name">HANGAR F<span>.</span></div>
+      <div class="paint-jp">第F格納庫 ── 関係者以外立入禁止</div>
+      <div class="paint-sub"><span>NO PARKING</span><span>シャッター前 駐車禁止</span><span>EST. 2025</span></div>
+    </div>
+    <div class="sticker s1"><img src="assets/suzuri/panda.webp" alt="" width="320" height="320"></div>
+    <div class="sticker s2"><img src="assets/suzuri/soudanchu.webp" alt="" width="320" height="320"></div>
+    <div class="bottom-bar"><i></i></div>
   </div>
-  <div class="fl-led l1"></div><div class="fl-led l2"></div><div class="fl-led l3"></div>
-  <img class="fl-hangar" src="assets/px/hangar.png" alt="">
-  <img class="fl-pole" src="assets/px/pole.png" style="left:126px" alt="">
-  <img class="fl-lamp red" src="assets/px/beacon_red.png" style="left:120px" alt="">
-  <img class="fl-pole" src="assets/px/pole.png" style="right:18px" alt="">
-  <img class="fl-lamp blue" src="assets/px/beacon_blue.png" style="right:12px" alt="">
-  <img class="fl-mc m1" src="assets/px/machine_a.png" style="left:31%" alt="">
-  <img class="fl-mc m2" src="assets/px/machine_pc.png" style="left:42%" alt="">
-  <img class="fl-mc m3" src="assets/px/machine_b.png" style="left:53%" alt="">
-  <img class="fl-mc m4" src="assets/px/sign_warn.png" style="left:70%" alt="">
-  <div class="fl-belt"></div>
-  <img class="fl-cargo" src="assets/px/crate_a.png" alt="">
-  <img class="fl-cargo" src="assets/px/barrel.png" style="animation-delay:-4.6s" alt="">
-  <img class="fl-cargo" src="assets/px/crate_b.png" style="animation-delay:-9.3s" alt="">
-  <div class="fl-glow"></div>
-  <div class="fl-weld"></div>
-  <div class="fl-spark s1"></div>
-  <div class="fl-spark s2"></div>
-  <div class="fl-spark s3"></div>
-  <div class="fl-spark s4"></div>
-  <div class="fl-spark s5"></div>
-  <div class="fl-spark s6"></div>
-  <div class="fl-spark s7"></div>
-  <div class="fl-spark s8"></div>
-
-  <img class="fl-marsh a" src="assets/px/marshaller_blue_A.png" alt="">
-  <img class="fl-marsh b" src="assets/px/marshaller_blue_B.png" alt="">
-  <img class="fl-plane panda" src="assets/px/plane_long.png" alt="">
-  <img class="fl-plane gold" src="assets/px/plane_gold_long.png" alt="">
-  <div class="fl-crew2 fl-mech"><img class="a" src="assets/px/mech_a.png" alt=""><img class="b" src="assets/px/mech_b.png" alt=""></div>
-  <div class="fl-crew2 fl-painter"><img class="a" src="assets/px/painter_a.png" alt=""><img class="b" src="assets/px/painter_b.png" alt=""></div>
-  <div class="fl-mist"></div>
-  <div class="fl-steam p1"></div><div class="fl-steam p2"></div><div class="fl-steam p3"></div>
-  <div class="fl-fork"><img class="a" src="assets/px/forklift_a.png" alt=""><img class="b" src="assets/px/forklift_b.png" alt=""></div>
-  <div class="fl-mei rest"><img class="a" src="assets/px/mei_bite_a.png" alt=""><img class="b" src="assets/px/mei_bite_b.png" alt=""></div>
-  <div class="fl-mei pc"><img class="a" src="assets/px/mei_desk_a.png" alt=""><img class="b" src="assets/px/mei_desk_b.png" alt=""></div>
-  <div class="fl-mei walk"><img class="a" src="assets/px/mei_walk_a.png" alt=""><img class="b" src="assets/px/mei_walk_b.png" alt=""></div>
-  <div class="fl-mei guide"><img class="a" src="assets/px/mei_guide_a.png" alt=""><img class="b" src="assets/px/mei_guide_b.png" alt=""></div>
-  <img class="fl-welder a" src="assets/px/welder_a.png" alt="">
-  <img class="fl-welder b" src="assets/px/welder_b.png" alt="">
-  <div class="fl-ground"></div>
+  <div class="gate-leak" aria-hidden="true"></div>
+  <div class="gate-ui">
+    <div class="gate-title" id="gate-t"><span class="k">SECRET GARAGE ─ 路地裏の第F格納庫</span><span>HANGAR F<i>.</i></span></div>
+    <div class="gate-box">
+      <p class="gate-welcome">ようこそ、大人の秘密基地へ。<small>WELCOME TO THE SECRET GARAGE</small></p>
+      <div class="gate-status" role="status" aria-live="polite"><span class="led" id="gate-led"></span><span id="gate-msg">鍵を探しています…</span><b id="gate-pct">00</b></div>
+      <button type="button" class="gate-btn" id="gate-btn" aria-label="シャッターを開ける（長押し、またはEnterキー）">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="trk" cx="60" cy="60" r="54"/><circle class="prg" id="gate-ring" cx="60" cy="60" r="54"/></svg>
+        <span class="gate-btn-in"><b>OPEN</b><small>HOLD</small></span>
+      </button>
+      <p class="gate-hint" id="gate-hint">長押しで、シャッターを上げる</p>
+      <div class="gate-opts">
+        <button type="button" class="gate-snd" id="gate-snd" aria-pressed="false"><span class="sw"><i></i></span><span>音ありで入る</span></button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="cur" aria-hidden="true"><div class="cur-ring"><span class="cur-label"></span></div><div class="cur-dot"></div></div>
-
-<!-- 起動シーケンス＝閉じた扉 -->
-<div id="boot" aria-hidden="true">
-  <div class="dpanel" id="dL"></div><div class="dpanel" id="dR"></div><div class="dpanel" id="dT"></div><div class="dpanel" id="dB"></div>
-  <div class="boot-term"><div class="boot-box">
-    <div class="boot-title">HANGAR F<i>.</i></div>
-    <div class="ln"><span>電源系統</span><span class="ok">OK</span></div>
-    <div class="ln"><span>溶接班・塗装ライン</span><span class="ok">OK</span></div>
-    <div class="ln"><span>常駐AI メイメイ</span><span class="ok">ONLINE</span></div>
-    <div class="ln"><span>格納機体 照合</span><span class="ok" id="boot-n">…</span></div>
-    <div class="boot-count"><b id="boot-num">00</b><span>/ 18 MACHINES</span></div>
-    <div class="boot-bar"><i id="boot-bar"></i></div>
-    <div class="boot-skip" id="boot-skip"><span class="lamp"></span>TAP TO SKIP</div>
-  </div></div>
-</div>
-
-<header class="topbar">
-  <div class="tape"></div>
-  <div class="tb-row">
-    <a class="brand" href="#hero">HANGAR F<i>.</i></a>
-    <div class="ticker mono" aria-hidden="true"><div class="ticker-inner">
-      <span>◉ 第F格納庫 24時間稼働中</span><span>溶接班: 火花良好</span><span>塗装ライン: いい色出てます</span><span>誘導員: 本日も絶好調</span><span>管制塔: 異常なし（平和）</span><span>次期機体: 構想中 → まもなく製造</span><span>パンダさん: 笹休憩中</span><span>整備記録: 自動転記オンライン</span><span>フォークリフト: 積み込み中</span><span>整備員: レンチ回してます</span>
-      <span>◉ 第F格納庫 24時間稼働中</span><span>溶接班: 火花良好</span><span>塗装ライン: いい色出てます</span><span>誘導員: 本日も絶好調</span><span>管制塔: 異常なし（平和）</span><span>次期機体: 構想中 → まもなく製造</span><span>パンダさん: 笹休憩中</span><span>整備記録: 自動転記オンライン</span><span>フォークリフト: 積み込み中</span><span>整備員: レンチ回してます</span>
-    </div></div>
-    <button class="tb-btn" id="snd" aria-pressed="false" type="button">SOUND OFF</button>
+<!-- ===================== ヘッダー ===================== -->
+<header class="bar">
+  <a class="brand" href="#top" aria-label="HANGAR F. トップへ">HANGAR F<i>.</i><small>SECRET GARAGE</small></a>
+  <div class="now" id="now" aria-hidden="true"><span class="now-no">00</span><span class="now-t">ENTRANCE</span></div>
+  <div class="bar-clock" aria-label="日本時間"><span class="lamp"></span>TOKYO <b class="js-clock">00:00:00</b></div>
+  <div class="bar-act">
+    <button type="button" class="bar-btn" id="snd" aria-pressed="false" aria-label="サウンド"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="lbl">SOUND</span></button>
+    <button type="button" class="bar-btn share" id="share-open" aria-haspopup="dialog" aria-controls="sheet"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v7h14v-7"/></svg><span class="lbl">SHARE</span></button>
+    <button type="button" class="bar-btn map" id="map-open" aria-haspopup="dialog" aria-controls="map" aria-expanded="false"><span class="burger" aria-hidden="true"><i></i><i></i></span><span class="lbl">MAP</span></button>
   </div>
 </header>
 
-<div class="depth" aria-hidden="true"><div class="bar"><i></i></div><b id="depth">DEPTH 0000m</b></div>
-<nav class="dots" id="dots" aria-label="セクション"></nav>
+<aside class="odo" aria-hidden="true"><span class="odo-k">ODO</span><span class="odo-d" id="odo">000000</span><span class="odo-u">mm</span></aside>
+<nav class="rail" id="rail" aria-label="ガレージの部屋"></nav>
 
 <main id="main">
 
-<!-- ================= HERO ================= -->
-<section class="hero" id="hero" data-nav="ENTRANCE" data-tint="1,.82,.45" data-dim="1">
-  <div class="hero-kick">RESTRICTED AREA // 第F格納庫</div>
-  <aside class="hero-hud panel corner" aria-label="基地ステータス">
-    <div class="row" style="--r:0"><span>SYSTEM</span><b class="online" id="sysstate">ONLINE</b></div>
-    <div class="row" style="--r:1"><span>運営形態</span><b>本気（相談も受付中）</b></div>
-    <div class="row" style="--r:2"><span>人員</span><b>1名（本人）</b></div>
-    <div class="row" style="--r:3"><span>常駐AI</span><b>1名（育成中）</b></div>
-    <div class="row" style="--r:4"><span>製造ペース</span><b>思いついたら、すぐ</b></div>
-    <div class="row" style="--r:5"><span>保有機体</span><b>18機</b></div>
-  </aside>
-  <h1 class="logo" id="logo" aria-label="HANGAR F.">HANGAR F.</h1>
-  <div class="logo-sub">DAI-F KAKUNOUKO</div>
-  <p class="catch"><span class="nw">思いついたら、</span><em class="nw">すぐつくる。</em></p>
-  <p class="hero-lead jp">ここは、ふゆとの秘密基地。機体はここで作られ、ここにしまわれ、ここから出撃していく。勢いと本気で運営されている、製造工場を兼ねた格納庫です。</p>
-  <div class="cue">SCROLL ／ 格納庫の奥へ</div>
+<!-- ===================== 00 ENTRANCE ===================== -->
+<section class="sec hero" id="top" data-cam="hero" data-nav="ENTRANCE" data-no="00">
+  <div class="hero-top pa">
+    <div class="kick"><span class="no">№ 00</span>SECRET GARAGE ─ 路地裏の第F格納庫</div>
+  </div>
+  <div class="hero-main">
+    <h1 class="hero-logo" id="logo" aria-label="HANGAR F.">HANGAR F.</h1>
+    <p class="catch"><span class="nw">思いついたら、</span><span class="nw"><em>すぐつくる。</em></span></p>
+    <p class="hero-lead jp pa">路地の奥、シャッターの向こう。ここは、ふゆとの大人の秘密基地。機体はここで作られ、ここにしまわれ、ここから出撃していく。</p>
+  </div>
+  <dl class="plate pa" aria-label="ガレージの仕様">
+    <div><dt>OWNER</dt><dd>ふゆと</dd></div>
+    <div><dt>CREW</dt><dd>人間1名・AI1名（育成中）</dd></div>
+    <div><dt>MACHINES</dt><dd><b>18</b> 機</dd></div>
+    <div><dt>PACE</dt><dd>思いついたら、すぐ</dd></div>
+    <div><dt>STATUS</dt><dd class="ok" id="sysstate">OPEN</dd></div>
+  </dl>
+  <div class="cue" aria-hidden="true"><span>SCROLL</span><i></i><span>奥へ</span></div>
 </section>
 
-<!-- ================= MANIFESTO ================= -->
-<section class="pin" id="manifesto" data-nav="CONCEPT" data-tint=".7,.8,1" data-dim=".3">
-  <div class="stage"><div class="mf">
-    <div class="eyebrow">CONCEPT</div>
-    <p class="mf-text" id="mf-text" data-hl="すぐつくる,出撃">機体はここで作られ、ここにしまわれ、ここから出撃していく。思いついたら、すぐつくる。コードが書けなかったひとりと、育成中のAIが、勢いと本気で。</p>
-    <div class="stats">
-      <div class="stat"><b data-count="18">0</b><span>保有機体</span></div>
-      <div class="stat"><b>即</b><span>製造ペース（思いついたら、すぐ）</span></div>
-      <div class="stat"><b data-count="1">0</b><span>人員（本人）</span></div>
-      <div class="stat"><b data-count="1">0</b><span>常駐AI（育成中）</span></div>
-    </div>
-  </div></div>
-</section>
-
-<!-- ================= MAIN HANGAR（横スクロール） ================= -->
-<section class="pin hs" id="mainhangar" data-nav="MAIN HANGAR" data-tint="1,.62,.38" data-dim=".3">
+<!-- ===================== 01 CONCEPT ===================== -->
+<section class="sec pin" id="concept" data-cam="concept" data-nav="CONCEPT" data-no="01">
   <div class="stage">
-    <div class="hs-track" id="hs-track">
-      <div class="hs-intro">
-        <div class="eyebrow">MAIN HANGAR</div>
-        <h2 class="h2">主力機<em>。</em></h2>
-        <p class="lead jp">格納庫の中央に並ぶ3機。台座の機体は、触れます。そのまま出撃もできます。</p>
-        <div class="hs-hint">SCROLL →</div>
+    <div class="mf">
+      <div class="label"><span class="no">№ 01</span>CONCEPT</div>
+      <p class="mf-text" id="mf-text" data-hl="すぐつくる,出撃">機体はここで作られ、ここにしまわれ、ここから出撃していく。思いついたら、すぐつくる。コードが書けなかったひとりと、育成中のAIが、勢いと本気で。</p>
+      <div class="gauges" id="gauges">
+        <div class="gauge" data-v="18" data-max="20"><svg viewBox="0 0 120 120" aria-hidden="true"></svg><b data-count="18">0</b><span>保有機体</span></div>
+        <div class="gauge red" data-v="20" data-max="20" data-txt="即"><svg viewBox="0 0 120 120" aria-hidden="true"></svg><b>即</b><span>製造ペース</span></div>
+        <div class="gauge" data-v="1" data-max="5"><svg viewBox="0 0 120 120" aria-hidden="true"></svg><b data-count="1">0</b><span>人員（本人）</span></div>
+        <div class="gauge" data-v="1" data-max="5"><svg viewBox="0 0 120 120" aria-hidden="true"></svg><b data-count="1">0</b><span>常駐AI（育成中）</span></div>
       </div>
-
-      <article class="bay" data-bay>
-        <div class="bay-no" aria-hidden="true">F-01</div>
-        <div class="bay-art art-sumi" data-cursor="墨を落とす" style="--img:var(--img-sumi)"><canvas id="cv-sumi"></canvas><span class="tag">DEMO ／ 触ると墨が落ちる</span></div>
-        <div class="bay-info panel corner">
-          <div class="ship-id">F-01 / TYPE: 気持ちの整理</div>
-          <h3>墨詠み</h3>
-          <div class="type">SUMIYOMI ─ INK THAT READS YOUR HEART</div>
-          <p class="jp">言の葉を三つ拾うと、墨があなたのこころを詠む。静かに揺れる水墨画の庭で、まだ言葉にならない気持ちをそっと整理してくれる。結果は一枚の「おみくじ札」にして持ち帰れます。</p>
-          <div class="specs"><div><span>言の葉</span><b>3つ拾う</b></div><div><span>持ち帰り</span><b>おみくじ札</b></div><div><span>最終刷新</span><b>2026-09-26</b></div></div>
-          <div class="btns"><a class="btn" data-sortie data-cursor="出撃" href="https://sumiyomi.pages.dev/" target="_blank" rel="noopener">出撃</a></div>
-        </div>
-      </article>
-
-      <article class="bay" data-bay>
-        <div class="bay-no" aria-hidden="true">F-02</div>
-        <div class="bay-art art-nemuri" data-cursor="星をともす" style="--img:var(--img-nemuri)"><canvas id="cv-star"></canvas><span class="tag">DEMO ／ タップで星がともる</span></div>
-        <div class="bay-info panel corner">
-          <div class="ship-id">F-02 / TYPE: 睡眠支援</div>
-          <h3>ねむり星空</h3>
-          <div class="type">NEMURI HOSHIZORA</div>
-          <p class="jp">スマホの光で、天井を星空に変える。呼吸のリズムでゆっくり明滅する、眠れない夜のいちばん近い星。</p>
-          <div class="specs"><div><span>明滅</span><b>呼吸のリズム</b></div><div><span>使い方</span><b>天井に向ける</b></div><div><span>就航</span><b>2026-07-05</b></div></div>
-          <div class="btns"><a class="btn" data-sortie data-cursor="出撃" href="https://nemuri-hoshizora.pages.dev/" target="_blank" rel="noopener">出撃</a></div>
-        </div>
-      </article>
-
-      <article class="bay" data-bay>
-        <div class="bay-no" aria-hidden="true">F-03</div>
-        <div class="bay-art" data-cursor="充電" style="--img:var(--img-panda)"><div class="charger" id="charger"><span class="msg">CHARGING…</span><img src="assets/px/panda_face.png" alt=""><div class="batt"><i></i><i></i><i></i><i></i><i></i></div><span class="pct" id="pct">0%</span></div><span class="tag">DEMO ／ 触れると充電</span></div>
-        <div class="bay-info panel corner">
-          <div class="ship-id">F-03 / TYPE: 癒し</div>
-          <h3>パンダさん充電器</h3>
-          <div class="type">PANDA POWER CHARGER</div>
-          <p class="jp">充電するたび、パンダさんが元気をくれる。ただの充電時間が、ちょっとした楽しみに変わる充電画面アプリ。</p>
-          <div class="specs"><div><span>動力</span><b>パンダさんの元気</b></div><div><span>用途</span><b>充電画面</b></div><div><span>就航</span><b>2026-06-06</b></div></div>
-          <div class="btns"><a class="btn" data-sortie data-cursor="出撃" href="https://panda-charger.pages.dev/" target="_blank" rel="noopener">出撃</a></div>
-        </div>
-      </article>
     </div>
-    <div class="hs-prog" aria-hidden="true"><i></i></div>
   </div>
 </section>
 
-<!-- ================= THEATER ================= -->
-<section class="sec" id="theater" data-nav="THEATER" data-tint=".5,.7,1" data-dim=".3">
-  <div class="eyebrow rv">THEATER</div>
-  <h2 class="h2 rv">記録映像<em>室</em></h2>
-  <div class="theater-grid">
-    <div class="scr rv">
+<!-- ===================== 02 THE PIT ===================== -->
+<section class="sec" id="pit" data-cam="pit" data-nav="THE PIT" data-no="02">
+  <header class="sh pa">
+    <div class="label"><span class="no">№ 02</span>THE PIT</div>
+    <h2 class="h2 rv">主力機<em>。</em></h2>
+    <p class="lead jp rv">ピットに上がっている3機。モニターの中の機体は、触れます。気に入ったら、そのまま出撃もできます。</p>
+  </header>
+
+  <article class="machine pa" data-machine="墨詠み" data-url="https://sumiyomi.pages.dev/">
+    <div class="m-screen art-sumi" data-cursor="墨を落とす"><canvas id="cv-sumi"></canvas><span class="m-tag">LIVE DEMO ／ 触ると墨が落ちる</span><span class="m-no" aria-hidden="true">F-01</span></div>
+    <div class="m-sheet">
+      <div class="m-id">F-01 ／ TYPE: 気持ちの整理</div>
+      <h3>墨詠み</h3>
+      <div class="m-en">SUMIYOMI ─ INK THAT READS YOUR HEART</div>
+      <p class="jp">言の葉を三つ拾うと、墨があなたのこころを詠む。静かに揺れる水墨画の庭で、まだ言葉にならない気持ちをそっと整理してくれる。結果は一枚の「おみくじ札」にして持ち帰れます。</p>
+      <dl class="specs"><div><dt>言の葉</dt><dd>3つ拾う</dd></div><div><dt>持ち帰り</dt><dd>おみくじ札</dd></div><div><dt>最終刷新</dt><dd>2026-09-26</dd></div></dl>
+      <div class="btns"><a class="btn" data-sortie data-cursor="出撃" href="https://sumiyomi.pages.dev/" target="_blank" rel="noopener">出撃する</a><button type="button" class="btn-ic" data-share-machine aria-label="墨詠みをシェアする"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v7h14v-7"/></svg></button></div>
+    </div>
+  </article>
+
+  <article class="machine flip pa" data-machine="ねむり星空" data-url="https://nemuri-hoshizora.pages.dev/">
+    <div class="m-screen art-nemuri" data-cursor="星をともす"><canvas id="cv-star"></canvas><span class="m-tag">LIVE DEMO ／ タップで星がともる</span><span class="m-no" aria-hidden="true">F-02</span></div>
+    <div class="m-sheet">
+      <div class="m-id">F-02 ／ TYPE: 睡眠支援</div>
+      <h3>ねむり星空</h3>
+      <div class="m-en">NEMURI HOSHIZORA</div>
+      <p class="jp">スマホの光で、天井を星空に変える。呼吸のリズムでゆっくり明滅する、眠れない夜のいちばん近い星。</p>
+      <dl class="specs"><div><dt>明滅</dt><dd>呼吸のリズム</dd></div><div><dt>使い方</dt><dd>天井に向ける</dd></div><div><dt>就航</dt><dd>2026-07-05</dd></div></dl>
+      <div class="btns"><a class="btn" data-sortie data-cursor="出撃" href="https://nemuri-hoshizora.pages.dev/" target="_blank" rel="noopener">出撃する</a><button type="button" class="btn-ic" data-share-machine aria-label="ねむり星空をシェアする"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v7h14v-7"/></svg></button></div>
+    </div>
+  </article>
+
+  <article class="machine pa" data-machine="パンダさん充電器" data-url="https://panda-charger.pages.dev/">
+    <div class="m-screen" data-cursor="充電"><div class="charger" id="charger"><span class="msg">CHARGING…</span><img src="assets/px/panda_face.png" alt="" width="38" height="28"><div class="batt"><i></i><i></i><i></i><i></i><i></i></div><span class="pct" id="pct">0%</span></div><span class="m-tag">LIVE DEMO ／ 触れると充電</span><span class="m-no" aria-hidden="true">F-03</span></div>
+    <div class="m-sheet">
+      <div class="m-id">F-03 ／ TYPE: 癒し</div>
+      <h3>パンダさん充電器</h3>
+      <div class="m-en">PANDA POWER CHARGER</div>
+      <p class="jp">充電するたび、パンダさんが元気をくれる。ただの充電時間が、ちょっとした楽しみに変わる充電画面アプリ。</p>
+      <dl class="specs"><div><dt>動力</dt><dd>パンダさんの元気</dd></div><div><dt>用途</dt><dd>充電画面</dd></div><div><dt>就航</dt><dd>2026-06-06</dd></div></dl>
+      <div class="btns"><a class="btn" data-sortie data-cursor="出撃" href="https://panda-charger.pages.dev/" target="_blank" rel="noopener">出撃する</a><button type="button" class="btn-ic" data-share-machine aria-label="パンダさん充電器をシェアする"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v7h14v-7"/></svg></button></div>
+    </div>
+  </article>
+</section>
+
+<!-- ===================== 03 SCREENING ===================== -->
+<section class="sec right" id="screening" data-cam="screening" data-nav="SCREENING" data-no="03">
+  <div class="col pa">
+    <header class="sh">
+      <div class="label"><span class="no">№ 03</span>SCREENING ROOM</div>
+      <h2 class="h2 rv">映写<em>室</em></h2>
+      <p class="lead jp rv">ブラウン管の前のソファで、記録映像をどうぞ。</p>
+    </header>
+    <div class="reel rv">
       <div class="crt" data-tilt data-cursor="PLAY">
         <button type="button" class="yt-play" data-yt="3QW_wktTM0E" data-title="第F格納庫 紹介映像" aria-label="第F格納庫の紹介映像を再生する">
           <img src="https://i.ytimg.com/vi/3QW_wktTM0E/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy">
           <span class="rec">REC ／ INTRO</span><span class="play" aria-hidden="true">▶</span>
         </button>
       </div>
-      <div class="scr-cap"><span>INTRO MOVIE ／ 第F格納庫</span><span id="tc">00:00:00</span></div>
+      <div class="reel-cap"><span>REEL 01 ／ 第F格納庫 紹介映像</span><span class="js-tc">00:00:00:00</span></div>
       <h3>基地の案内映像</h3>
       <p class="jp">コードが書けなかったふゆとが、AIと<b>18作品</b>を作るまで。基地の主とメイメイが、格納庫を案内します。</p>
       <div class="btns">
@@ -229,204 +209,340 @@ document.documentElement.classList.add('js');
         <a class="btn plain" href="https://youtube.com/shorts/JwN5fwJEzh0" target="_blank" rel="noopener">ショート③</a>
       </div>
     </div>
-    <div class="scr rv" style="--d:.15s">
+    <div class="reel rv">
       <div class="crt" data-tilt data-cursor="PLAY">
         <button type="button" class="yt-play" data-yt="5diwayjSREY" data-title="笹友キャラバン オープニング映像" aria-label="笹友キャラバンのオープニング映像を再生する">
           <img src="https://i.ytimg.com/vi/5diwayjSREY/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy">
           <span class="rec">REC ／ OPENING</span><span class="play" aria-hidden="true">▶</span>
         </button>
       </div>
-      <div class="scr-cap"><span>OPENING MOVIE ／ 笹友キャラバン</span><span>8 CUTS</span></div>
+      <div class="reel-cap"><span>REEL 02 ／ 笹友キャラバン</span><span>8 CUTS</span></div>
       <h3>ゲームのオープニング</h3>
       <p class="jp">プログラミング未経験のふゆとが、AIと作ったゲームのオープニング。<b>カメラワーク8カットと、専用のBGM</b>まで自作しました。</p>
       <div class="btns">
-        <a class="btn" data-sortie data-cursor="出撃" href="https://sasatomo-caravan.pages.dev/" target="_blank" rel="noopener">出撃（ゲームで遊ぶ）</a>
+        <a class="btn" data-sortie data-cursor="出撃" href="https://sasatomo-caravan.pages.dev/" target="_blank" rel="noopener">出撃する（ゲームで遊ぶ）</a>
         <a class="btn plain" href="https://www.youtube.com/watch?v=5diwayjSREY" target="_blank" rel="noopener">YouTubeで見る</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ================= CREW ================= -->
-<section class="sec" id="crew" data-nav="CREW" data-tint=".6,1,.75" data-dim=".3">
-  <div class="eyebrow rv">CREW</div>
-  <h2 class="h2 rv">基地スタ<em>ッフ</em></h2>
-  <div class="crew-grid">
-    <article class="idcard panel corner rv" data-tilt>
-      <div class="id-top">
-        <div class="id-photo"><img src="assets/fuyuto-x-icon.png" alt="ふゆと" width="128" height="128"></div>
-        <div><div class="ship-id">STAFF-01 / 人間（基地の主）</div><h3>ふゆと</h3><div class="type">FUYUTO ─ FOUNDER</div></div>
-      </div>
-      <p class="d jp">この秘密基地の主。思いついたアイデアを、相棒のメイメイとバイブコーディングで形にしては、この格納庫にしまって出撃させている。</p>
-      <div class="id-bar"></div>
-      <div class="btns">
-        <a class="btn ghost" href="https://x.com/fuyutopandasan" target="_blank" rel="noopener">@Fuyutopandasan</a>
-        <a class="btn plain" href="https://www.youtube.com/@Fuyutopandasan" target="_blank" rel="noopener">YouTube</a>
-        <a class="btn plain" href="https://note.com/fuyutopandasan" target="_blank" rel="noopener">note（AI活用の記事）</a>
-      </div>
-      <div class="glare"></div>
-    </article>
-    <article class="idcard panel corner rv" data-tilt style="--d:.15s">
-      <div class="id-top">
-        <div class="id-photo"><img src="assets/meimei-x-icon.png" alt="メイメイ" width="128" height="128"></div>
-        <div><div class="ship-id">STAFF-02 / AI秘書</div><h3>メイメイ</h3><div class="type">MEIMEI ─ OPERATOR <span class="badge" style="margin-left:6px">育成中</span></div></div>
-      </div>
-      <p class="d jp">育成中のAI秘書、パンダさんのメイメイ。人格から仕事の型まで、ふゆとが少しずつ育てていて、いまでは基地の運営をいくつも任されています。</p>
-      <div class="feats">
-        <div class="feat"><span>📰</span><span class="jp">新聞を毎朝ひとりで発行している（休刊日なし）</span></div>
-        <div class="feat"><span>✍️</span><span class="jp">note記事を執筆して、自分で公開している</span></div>
-        <div class="feat"><span>𝕏</span><span class="jp">自分のアカウントを持って、Xで発信している</span></div>
-        <div class="feat"><span>🏠</span><span class="jp">自分のお家と成長記録を持っている（季節で模様替えする）</span></div>
-      </div>
-      <div class="btns">
-        <a class="btn plain" href="https://meimei-56p.pages.dev/" target="_blank" rel="noopener">メイメイのお家</a>
-        <a class="btn plain" href="https://meimei-56p.pages.dev/growth.html" target="_blank" rel="noopener">成長記録</a>
-        <a class="btn ghost" href="https://x.com/meimei_pandasan" target="_blank" rel="noopener">@meimei_pandasan</a>
-        <a class="btn plain" href="https://note.com/fuyutopandasan" target="_blank" rel="noopener">note</a>
-      </div>
-      <div class="glare"></div>
-    </article>
+<!-- ===================== 04 CREW ===================== -->
+<section class="sec left" id="crew" data-cam="crew" data-nav="CREW" data-no="04">
+  <div class="col pa">
+    <header class="sh">
+      <div class="label"><span class="no">№ 04</span>LOCKER ROOM</div>
+      <h2 class="h2 rv">乗組<em>員</em></h2>
+      <p class="lead jp rv">ロッカーは3つ。ひとつは、まだ空いています。</p>
+    </header>
+    <div class="crew">
+      <article class="badge-card rv" data-tilt>
+        <div class="bc-clip" aria-hidden="true"></div>
+        <div class="bc-top"><span>STAFF-01</span><span>人間（基地の主）</span></div>
+        <div class="bc-body">
+          <div class="bc-photo"><img src="assets/fuyuto-x-icon.png" alt="ふゆと" width="128" height="128" loading="lazy"></div>
+          <div><h3>ふゆと</h3><div class="bc-en">FUYUTO ─ OWNER / FOUNDER</div></div>
+        </div>
+        <p class="jp">この秘密基地の主。思いついたアイデアを、相棒のメイメイとバイブコーディングで形にしては、この格納庫にしまって出撃させている。</p>
+        <div class="bc-code" aria-hidden="true"></div>
+        <div class="btns">
+          <a class="btn ghost" href="https://x.com/fuyutopandasan" target="_blank" rel="noopener">@Fuyutopandasan</a>
+          <a class="btn plain" href="https://www.youtube.com/@Fuyutopandasan" target="_blank" rel="noopener">YouTube</a>
+          <a class="btn plain" href="https://note.com/fuyutopandasan" target="_blank" rel="noopener">note（AI活用の記事）</a>
+        </div>
+        <div class="glare" aria-hidden="true"></div>
+      </article>
+      <article class="badge-card ai rv" data-tilt>
+        <div class="bc-clip" aria-hidden="true"></div>
+        <div class="bc-top"><span>STAFF-02</span><span>AI秘書 <em class="pill">育成中</em></span></div>
+        <div class="bc-body">
+          <div class="bc-photo"><img src="assets/meimei-x-icon.png" alt="メイメイ" width="128" height="128" loading="lazy"></div>
+          <div><h3>メイメイ</h3><div class="bc-en">MEIMEI ─ OPERATOR</div></div>
+        </div>
+        <p class="jp">育成中のAI秘書、パンダさんのメイメイ。人格から仕事の型まで、ふゆとが少しずつ育てていて、いまでは基地の運営をいくつも任されています。</p>
+        <ul class="feats">
+          <li><span aria-hidden="true">📰</span><span class="jp">新聞を毎朝ひとりで発行している（休刊日なし）</span></li>
+          <li><span aria-hidden="true">✍️</span><span class="jp">note記事を執筆して、自分で公開している</span></li>
+          <li><span aria-hidden="true">𝕏</span><span class="jp">自分のアカウントを持って、Xで発信している</span></li>
+          <li><span aria-hidden="true">🏠</span><span class="jp">自分のお家と成長記録を持っている（季節で模様替えする）</span></li>
+        </ul>
+        <div class="btns">
+          <a class="btn plain" href="https://meimei-56p.pages.dev/" target="_blank" rel="noopener">メイメイのお家</a>
+          <a class="btn plain" href="https://meimei-56p.pages.dev/growth.html" target="_blank" rel="noopener">成長記録</a>
+          <a class="btn ghost" href="https://x.com/meimei_pandasan" target="_blank" rel="noopener">@meimei_pandasan</a>
+          <a class="btn plain" href="https://note.com/fuyutopandasan" target="_blank" rel="noopener">note</a>
+        </div>
+        <div class="glare" aria-hidden="true"></div>
+      </article>
+      <div class="vacant rv"><b>STAFF-03 ／ VACANT</b><span class="jp">空きロッカー。いつか、誰かの名札が入るかもしれません。</span></div>
+    </div>
   </div>
 </section>
 
-<!-- ================= SORTIE LOG（発着案内板） ================= -->
-<section class="sec" id="log" data-nav="SORTIE LOG" data-tint="1,.9,.5" data-dim=".26">
-  <div class="eyebrow rv">SORTIE LOG</div>
-  <h2 class="h2 rv">発進<em>記録</em></h2>
-  <div class="board rv" id="board">
-    <div class="board-head" role="group" aria-label="種別フィルタ">
-      <span class="t">DEPARTURES ／ 全18機</span>
-      <button class="chip on" data-f="all" type="button">すべて</button>
-      <button class="chip" data-f="game" type="button">ゲーム</button>
-      <button class="chip" data-f="app" type="button">アプリ</button>
-      <button class="chip" data-f="page" type="button">ホームページ</button>
-      <button class="chip" data-f="tool" type="button">ツール</button>
-      <button class="chip" data-f="other" type="button">学習・グッズ</button>
+<!-- ===================== 05 LOGBOOK ===================== -->
+<section class="sec" id="log" data-cam="log" data-nav="LOGBOOK" data-no="05">
+  <header class="sh pa">
+    <div class="label"><span class="no">№ 05</span>LOGBOOK</div>
+    <h2 class="h2 rv">出庫<em>記録</em></h2>
+    <p class="lead jp rv">このガレージから出ていった機体の、発着案内板。パタパタと、行き先が変わります。</p>
+  </header>
+  <div class="board pa rv" id="board">
+    <div class="board-head" role="group" aria-label="種別で絞り込む">
+      <span class="t">DEPARTURES ／ 全<b id="board-n">18</b>機</span>
+      <button class="chip on" data-f="all" type="button" aria-pressed="true">すべて</button>
+      <button class="chip" data-f="game" type="button" aria-pressed="false">ゲーム</button>
+      <button class="chip" data-f="app" type="button" aria-pressed="false">アプリ</button>
+      <button class="chip" data-f="page" type="button" aria-pressed="false">ホームページ</button>
+      <button class="chip" data-f="tool" type="button" aria-pressed="false">ツール</button>
+      <button class="chip" data-f="other" type="button" aria-pressed="false">学習・グッズ</button>
     </div>
-    <a class="brow" data-k="page" data-sortie href="https://pandasan-works.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-09-13</span><span class="n">パンダさんワークス｜AI活用の相談窓口</span><span class="c c-page">ホームページ</span><span class="s">NEW</span></a>
-    <a class="brow" data-k="other" href="https://suzuri.jp/pandasan-works" target="_blank" rel="noopener"><span class="d">2026-09-12</span><span class="n">パンダさんワークス｜SUZURIステッカー</span><span class="c c-goods">グッズ</span><span class="s">NEW</span></a>
-    <a class="brow" data-k="page" href="https://pandasan-samples.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-08-17</span><span class="n">ひだまり珈琲店｜6つの営業戦略でつくるWebサイト</span><span class="c c-page">ホームページ</span><span class="s"></span></a>
-    <a class="brow" data-k="game" href="https://sasatomo-caravan.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-23</span><span class="n">笹友キャラバン</span><span class="c c-game">ゲーム</span><span class="s"></span></a>
-    <a class="brow" data-k="page" href="https://mei-library.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-19</span><span class="n">めいちゃん図書館</span><span class="c c-page">ホームページ</span><span class="s"></span></a>
-    <a class="brow" data-k="tool" href="https://github.com/fuyutosan/daitoshokan-ai-library" target="_blank" rel="noopener"><span class="d">2026-07-12</span><span class="n">大図書館（AIの記憶システム）</span><span class="c c-tool">ツール</span><span class="s"></span></a>
-    <a class="brow" data-k="app" href="https://sumiyomi.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-11</span><span class="n">墨詠み</span><span class="c c-app">アプリ</span><span class="s">9/26 刷新</span></a>
-    <div class="brow" data-k="tool"><span class="d">2026-07-11</span><span class="n">メイメイ秘書室（公演カレンダー自動同期）</span><span class="c c-tool">ツール</span><span class="s">運用中</span></div>
-    <a class="brow" data-k="app" href="https://nemuri-hoshizora.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-05</span><span class="n">ねむり星空</span><span class="c c-app">アプリ</span><span class="s"></span></a>
-    <a class="brow" data-k="other" href="https://fable5-torisetsu.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-03</span><span class="n">Fable 5のトリセツ大ぼうけん</span><span class="c c-learn">学習</span><span class="s"></span></a>
-    <a class="brow" data-k="game" href="https://mei-hakase.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-01</span><span class="n">愛生博士クイズ</span><span class="c c-game">ゲーム</span><span class="s"></span></a>
-    <a class="brow" data-k="app" href="https://panda-charger.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-06-06</span><span class="n">パンダさん充電器</span><span class="c c-app">アプリ</span><span class="s"></span></a>
-    <a class="brow" data-k="page" href="https://meimei-56p.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-06-05</span><span class="n">メイメイのお家</span><span class="c c-page">ホームページ</span><span class="s"></span></a>
-    <a class="brow" data-k="page" href="https://mei-news.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-05-28</span><span class="n">デイリーめいちゃんニュース</span><span class="c c-page">ホームページ</span><span class="s"></span></a>
-    <div class="brow" data-k="tool"><span class="d">2026-05-26</span><span class="n">Hello!お知らせ（ハロプロLINE通知）</span><span class="c c-tool">ツール</span><span class="s">運用中</span></div>
-    <a class="brow" data-k="app" href="https://pandasanpet.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-05-22</span><span class="n">パンダさんころころ（デスクトップアプリ）</span><span class="c c-app">アプリ</span><span class="s"></span></a>
-    <a class="brow" data-k="game" href="https://pandasangame.pages.dev/" target="_blank" rel="noopener"><span class="d">2025-05-06</span><span class="n">パンダさんパワーゲーム</span><span class="c c-game">ゲーム</span><span class="s"></span></a>
-    <a class="brow" data-k="game" href="https://panda-power.pages.dev/" target="_blank" rel="noopener"><span class="d">2025-04-17</span><span class="n">パンダさんパワー!!ゲーム</span><span class="c c-game">ゲーム</span><span class="s">初号機</span></a>
+    <div class="board-cols" aria-hidden="true"><span>DATE</span><span>MACHINE</span><span>TYPE</span><span>STATUS</span></div>
+    <div class="board-rows">
+      <a class="brow" data-k="page" data-sortie href="https://pandasan-works.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-09-13</span><span class="n">パンダさんワークス｜AI活用の相談窓口</span><span class="c c-page">ホームページ</span><span class="s">NEW</span></a>
+      <a class="brow" data-k="other" href="https://suzuri.jp/pandasan-works" target="_blank" rel="noopener"><span class="d">2026-09-12</span><span class="n">パンダさんワークス｜SUZURIステッカー</span><span class="c c-goods">グッズ</span><span class="s">NEW</span></a>
+      <a class="brow" data-k="page" href="https://pandasan-samples.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-08-17</span><span class="n">ひだまり珈琲店｜6つの営業戦略でつくるWebサイト</span><span class="c c-page">ホームページ</span><span class="s"></span></a>
+      <a class="brow" data-k="game" href="https://sasatomo-caravan.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-23</span><span class="n">笹友キャラバン</span><span class="c c-game">ゲーム</span><span class="s"></span></a>
+      <a class="brow" data-k="page" href="https://mei-library.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-19</span><span class="n">めいちゃん図書館</span><span class="c c-page">ホームページ</span><span class="s"></span></a>
+      <a class="brow" data-k="tool" href="https://github.com/fuyutosan/daitoshokan-ai-library" target="_blank" rel="noopener"><span class="d">2026-07-12</span><span class="n">大図書館（AIの記憶システム）</span><span class="c c-tool">ツール</span><span class="s"></span></a>
+      <a class="brow" data-k="app" href="https://sumiyomi.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-11</span><span class="n">墨詠み</span><span class="c c-app">アプリ</span><span class="s">9/26 刷新</span></a>
+      <div class="brow" data-k="tool"><span class="d">2026-07-11</span><span class="n">メイメイ秘書室（公演カレンダー自動同期）</span><span class="c c-tool">ツール</span><span class="s">運用中</span></div>
+      <a class="brow" data-k="app" href="https://nemuri-hoshizora.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-05</span><span class="n">ねむり星空</span><span class="c c-app">アプリ</span><span class="s"></span></a>
+      <a class="brow" data-k="other" href="https://fable5-torisetsu.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-03</span><span class="n">Fable 5のトリセツ大ぼうけん</span><span class="c c-learn">学習</span><span class="s"></span></a>
+      <a class="brow" data-k="game" href="https://mei-hakase.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-01</span><span class="n">愛生博士クイズ</span><span class="c c-game">ゲーム</span><span class="s"></span></a>
+      <a class="brow" data-k="app" href="https://panda-charger.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-06-06</span><span class="n">パンダさん充電器</span><span class="c c-app">アプリ</span><span class="s"></span></a>
+      <a class="brow" data-k="page" href="https://meimei-56p.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-06-05</span><span class="n">メイメイのお家</span><span class="c c-page">ホームページ</span><span class="s"></span></a>
+      <a class="brow" data-k="page" href="https://mei-news.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-05-28</span><span class="n">デイリーめいちゃんニュース</span><span class="c c-page">ホームページ</span><span class="s"></span></a>
+      <div class="brow" data-k="tool"><span class="d">2026-05-26</span><span class="n">Hello!お知らせ（ハロプロLINE通知）</span><span class="c c-tool">ツール</span><span class="s">運用中</span></div>
+      <a class="brow" data-k="app" href="https://pandasanpet.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-05-22</span><span class="n">パンダさんころころ（デスクトップアプリ）</span><span class="c c-app">アプリ</span><span class="s"></span></a>
+      <a class="brow" data-k="game" href="https://pandasangame.pages.dev/" target="_blank" rel="noopener"><span class="d">2025-05-06</span><span class="n">パンダさんパワーゲーム</span><span class="c c-game">ゲーム</span><span class="s"></span></a>
+      <a class="brow" data-k="game" href="https://panda-power.pages.dev/" target="_blank" rel="noopener"><span class="d">2025-04-17</span><span class="n">パンダさんパワー!!ゲーム</span><span class="c c-game">ゲーム</span><span class="s">初号機</span></a>
+    </div>
   </div>
-  <p class="note jp">※この記録は、機体が増えるたびに追記されます。思いついたら、すぐつくる。ペースは気分次第。</p>
-  <div class="logbook panel rv" id="maint-sec" hidden>
-    <h4>MAINTENANCE LOG ／ 整備記録</h4>
-    <div id="maint-log"></div>
-    <button type="button" id="maint-more"></button>
+  <p class="note jp pa">※この記録は、機体が増えるたびに追記されます。思いついたら、すぐつくる。ペースは気分次第。</p>
+  <div class="logbook pa rv" id="maint-sec" hidden>
+    <h4><span>MAINTENANCE LOG</span>整備記録</h4>
+    <ol id="maint-log"></ol>
+    <button type="button" id="maint-more" aria-expanded="false"></button>
     <p class="note jp">※この記録は、基地の書庫「大図書館」から自動で転記されています。手書きではありません。</p>
   </div>
 </section>
 
-<!-- ================= SUPPLY DEPOT ================= -->
-<section class="sec" id="depot" data-nav="SUPPLY DEPOT" data-tint="1,.6,.85" data-dim=".3">
-  <div class="eyebrow rv">SUPPLY DEPOT</div>
-  <h2 class="h2 rv">売<em>店</em></h2>
-  <div class="depot-grid">
-    <div class="depot-copy rv">
-      <h3 style="font-family:var(--f-disp);font-size:clamp(24px,3vw,40px);line-height:1.2">パンダさんワークス</h3>
-      <div class="mono" style="font-size:11px;letter-spacing:.14em;color:var(--sub);margin-top:4px">SUZURI STICKER SHOP</div>
-      <p class="jp">基地のパンダさんが、ステッカーになりました。<b>「AIを使う人の“しるし”」</b>がテーマ。ノートPCやスマホに貼っておくと、知っている人だけが気づくマークです。</p>
-      <p class="jp">作っているのは、ふゆとの仕事のほう＝<b class="nw">パンダさんワークス</b>です。</p>
-      <div class="price">STICKER 5種 ／ 基地の外でも持ち歩ける装備 ／ 各622円（税込）</div>
-      <div class="btns">
-        <a class="btn" data-sortie data-cursor="出撃" href="https://suzuri.jp/pandasan-works" target="_blank" rel="noopener">出撃（ショップを見る）</a>
-        <a class="btn plain" href="https://pandasan-works.pages.dev/" target="_blank" rel="noopener">パンダさんワークスとは</a>
+<!-- ===================== 06 B1F ===================== -->
+<section class="sec" id="b1f" data-cam="cctv" data-nav="B1F" data-no="06">
+  <header class="sh pa">
+    <div class="label"><span class="no">№ 06</span>B1F ─ UNDERGROUND</div>
+    <h2 class="h2 rv">地下<em>工場</em></h2>
+    <p class="lead jp rv">このガレージの床下には、24時間稼働の工場があります。溶接班、塗装ライン、誘導員。それから、メイメイの一日。監視カメラの映像で、どうぞ。</p>
+  </header>
+  <div class="cctv pa rv" id="cctv">
+    <div class="cctv-hud" aria-hidden="true">
+      <span class="rec"><i></i>REC</span><span>CAM-02 ／ B1F 製造ライン</span><span class="js-cctv-time">2026-10-06 00:00:00 JST</span>
+    </div>
+    <div class="cctv-screen" aria-label="地下工場の監視カメラ映像（ドット絵のアニメーション）" role="img">
+      <div id="floor">
+        <div class="fl-crane"></div>
+        <img class="fl-trolley" src="assets/px/machine_ctrl.png" alt="">
+        <div class="fl-hookwrap">
+          <img class="fl-hook" src="assets/px/hook.png" alt="">
+          <img class="fl-load" src="assets/px/crate_a.png" alt="">
+          <img class="fl-load face" src="assets/px/panda_face.png" alt="">
+        </div>
+        <div class="fl-led l1"></div><div class="fl-led l2"></div><div class="fl-led l3"></div>
+        <img class="fl-hangar" src="assets/px/hangar.png" alt="">
+        <img class="fl-pole" src="assets/px/pole.png" style="left:126px" alt="">
+        <img class="fl-lamp red" src="assets/px/beacon_red.png" style="left:120px" alt="">
+        <img class="fl-pole" src="assets/px/pole.png" style="right:18px" alt="">
+        <img class="fl-lamp blue" src="assets/px/beacon_blue.png" style="right:12px" alt="">
+        <img class="fl-mc m1" src="assets/px/machine_a.png" style="left:31%" alt="">
+        <img class="fl-mc m2" src="assets/px/machine_pc.png" style="left:42%" alt="">
+        <img class="fl-mc m3" src="assets/px/machine_b.png" style="left:53%" alt="">
+        <img class="fl-mc m4" src="assets/px/sign_warn.png" style="left:70%" alt="">
+        <div class="fl-belt"></div>
+        <img class="fl-cargo" src="assets/px/crate_a.png" alt="">
+        <img class="fl-cargo" src="assets/px/barrel.png" style="animation-delay:-4.6s" alt="">
+        <img class="fl-cargo" src="assets/px/crate_b.png" style="animation-delay:-9.3s" alt="">
+        <div class="fl-glow"></div>
+        <div class="fl-weld"></div>
+        <div class="fl-spark s1"></div><div class="fl-spark s2"></div><div class="fl-spark s3"></div><div class="fl-spark s4"></div>
+        <div class="fl-spark s5"></div><div class="fl-spark s6"></div><div class="fl-spark s7"></div><div class="fl-spark s8"></div>
+        <img class="fl-marsh a" src="assets/px/marshaller_blue_A.png" alt="">
+        <img class="fl-marsh b" src="assets/px/marshaller_blue_B.png" alt="">
+        <img class="fl-plane panda" src="assets/px/plane_long.png" alt="">
+        <img class="fl-plane gold" src="assets/px/plane_gold_long.png" alt="">
+        <div class="fl-crew2 fl-mech"><img class="a" src="assets/px/mech_a.png" alt=""><img class="b" src="assets/px/mech_b.png" alt=""></div>
+        <div class="fl-crew2 fl-painter"><img class="a" src="assets/px/painter_a.png" alt=""><img class="b" src="assets/px/painter_b.png" alt=""></div>
+        <div class="fl-mist"></div>
+        <div class="fl-steam p1"></div><div class="fl-steam p2"></div><div class="fl-steam p3"></div>
+        <div class="fl-fork"><img class="a" src="assets/px/forklift_a.png" alt=""><img class="b" src="assets/px/forklift_b.png" alt=""></div>
+        <div class="fl-mei rest"><img class="a" src="assets/px/mei_bite_a.png" alt=""><img class="b" src="assets/px/mei_bite_b.png" alt=""></div>
+        <div class="fl-mei pc"><img class="a" src="assets/px/mei_desk_a.png" alt=""><img class="b" src="assets/px/mei_desk_b.png" alt=""></div>
+        <div class="fl-mei walk"><img class="a" src="assets/px/mei_walk_a.png" alt=""><img class="b" src="assets/px/mei_walk_b.png" alt=""></div>
+        <div class="fl-mei guide"><img class="a" src="assets/px/mei_guide_a.png" alt=""><img class="b" src="assets/px/mei_guide_b.png" alt=""></div>
+        <img class="fl-welder a" src="assets/px/welder_a.png" alt="">
+        <img class="fl-welder b" src="assets/px/welder_b.png" alt="">
+        <div class="fl-ground"></div>
       </div>
+      <div class="cctv-scan" aria-hidden="true"></div>
     </div>
-    <div class="bench rv" id="bench" style="--d:.1s" data-cursor="DRAG">
-      <a class="stk" style="--w:34%;left:6%;top:14%" data-rot="-8" href="https://suzuri.jp/pandasan-works/20896773/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/soudanchu.webp" alt="AIと相談中 ステッカー" width="320" height="320" loading="lazy"></a>
-      <a class="stk" style="--w:30%;left:58%;top:8%" data-rot="9" href="https://suzuri.jp/pandasan-works/20894542/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/panda.webp" alt="AIパンダさん ステッカー" width="320" height="320" loading="lazy"></a>
-      <a class="stk" style="--w:27%;left:36%;top:44%" data-rot="-4" href="https://suzuri.jp/pandasan-works/20894548/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/emblem.webp" alt="丸エンブレム ステッカー" width="320" height="320" loading="lazy"></a>
-      <a class="stk" style="--w:30%;left:4%;top:54%" data-rot="6" href="https://suzuri.jp/pandasan-works/20894331/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/logo.webp" alt="パンダさんワークス ロゴ ステッカー" width="320" height="320" loading="lazy"></a>
-      <a class="stk" style="--w:42%;left:54%;top:68%" data-rot="-3" href="https://suzuri.jp/pandasan-works/20894549/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/strip.webp" alt="パンダさんワークス 横長 ステッカー" width="480" height="167" loading="lazy"></a>
-    </div>
+    <div class="cctv-ticker" aria-hidden="true"><div class="tk">
+      <span>◉ 地下工場 24時間稼働中</span><span>溶接班: 火花良好</span><span>塗装ライン: いい色出てます</span><span>誘導員: 本日も絶好調</span><span>管制塔: 異常なし（平和）</span><span>次期機体: 布の下で構想中</span><span>パンダさん: 笹休憩中</span><span>整備記録: 自動転記オンライン</span><span>フォークリフト: 積み込み中</span><span>整備員: レンチ回してます</span>
+      <span>◉ 地下工場 24時間稼働中</span><span>溶接班: 火花良好</span><span>塗装ライン: いい色出てます</span><span>誘導員: 本日も絶好調</span><span>管制塔: 異常なし（平和）</span><span>次期機体: 布の下で構想中</span><span>パンダさん: 笹休憩中</span><span>整備記録: 自動転記オンライン</span><span>フォークリフト: 積み込み中</span><span>整備員: レンチ回してます</span>
+    </div></div>
+    <div class="cctv-cap jp">メイメイの一日（60秒）：笹で休憩 → パソコン作業 → 滑走路で誘導。ロゴを5回クリックすると、何かが起きます。</div>
   </div>
-  <a class="lounge panel rv" href="https://note.com/fuyutopandasan" target="_blank" rel="noopener">
-    <span class="em">📝</span><span><b>休憩室 ／ note</b><span class="jp">作業の合間に、書き物もしています。ひと休みのついでに、よかったらどうぞ。</span></span>
-  </a>
 </section>
 
-<!-- ================= RESTRICTED ================= -->
-<section class="sec" id="restricted" data-nav="RESTRICTED" data-tint="1,.45,.4" data-dim=".3">
-  <div class="eyebrow rv">RESTRICTED</div>
-  <h2 class="h2 rv">特別<em>格納庫</em></h2>
-  <div class="rs rv" id="rs">
-    <div class="rs-door" id="rs-door">
-      <button class="hold" id="hold" type="button" aria-label="特別格納庫を開く（長押し、またはEnterキー）" aria-expanded="false" aria-controls="rs-list" data-cursor="HOLD">
-        <span class="hold-ring"><span>🔒</span></span>
-        <h3>CLASSIFIED ─ 推し関連区画</h3>
-        <small>動力源：愛 ／ 長押しで開扉</small>
-      </button>
+<!-- ===================== 07 PARTS ===================== -->
+<section class="sec right" id="parts" data-cam="parts" data-nav="PARTS" data-no="07">
+  <div class="col pa">
+    <header class="sh">
+      <div class="label"><span class="no">№ 07</span>PARTS COUNTER</div>
+      <h2 class="h2 rv">部品<em>棚</em></h2>
+    </header>
+    <div class="parts">
+      <div class="parts-copy rv">
+        <h3>パンダさんワークス<small>SUZURI STICKER SHOP</small></h3>
+        <p class="jp">基地のパンダさんが、ステッカーになりました。<b>「AIを使う人の“しるし”」</b>がテーマ。ノートPCやスマホに貼っておくと、知っている人だけが気づくマークです。</p>
+        <p class="jp">作っているのは、ふゆとの仕事のほう＝<b class="nw">パンダさんワークス</b>です。</p>
+        <div class="price">STICKER 5種 ／ 基地の外でも持ち歩ける装備 ／ 各622円（税込）</div>
+        <div class="btns">
+          <a class="btn" data-sortie data-cursor="出撃" href="https://suzuri.jp/pandasan-works" target="_blank" rel="noopener">ショップを見る</a>
+          <a class="btn plain" href="https://pandasan-works.pages.dev/" target="_blank" rel="noopener">パンダさんワークスとは</a>
+        </div>
+      </div>
+      <div class="lid rv" id="bench" data-cursor="DRAG">
+        <span class="lid-l" aria-hidden="true">TOOLBOX LID ／ ドラッグで貼り替え</span>
+        <a class="stk" style="--w:34%;left:6%;top:14%" data-rot="-8" href="https://suzuri.jp/pandasan-works/20896773/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/soudanchu.webp" alt="AIと相談中 ステッカー" width="320" height="320" loading="lazy"></a>
+        <a class="stk" style="--w:30%;left:58%;top:8%" data-rot="9" href="https://suzuri.jp/pandasan-works/20894542/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/panda.webp" alt="AIパンダさん ステッカー" width="320" height="320" loading="lazy"></a>
+        <a class="stk" style="--w:27%;left:36%;top:44%" data-rot="-4" href="https://suzuri.jp/pandasan-works/20894548/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/emblem.webp" alt="丸エンブレム ステッカー" width="320" height="320" loading="lazy"></a>
+        <a class="stk" style="--w:30%;left:4%;top:54%" data-rot="6" href="https://suzuri.jp/pandasan-works/20894331/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/logo.webp" alt="パンダさんワークス ロゴ ステッカー" width="320" height="320" loading="lazy"></a>
+        <a class="stk" style="--w:42%;left:54%;top:68%" data-rot="-3" href="https://suzuri.jp/pandasan-works/20894549/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/strip.webp" alt="パンダさんワークス 横長 ステッカー" width="480" height="167" loading="lazy"></a>
+      </div>
     </div>
-    <p class="rs-note jp" inert>※機密指定ですが、むしろ見てほしい区画です。この格納庫の機体は、すべて愛で動いています。</p>
-    <div class="rs-list" id="rs-list" inert>
-      <a class="mini" href="https://mei-hakase.pages.dev/" target="_blank" rel="noopener"><span class="em">🎓</span><span><b>愛生博士クイズ</b><span class="t jp">モーニング娘。'26・山﨑愛生ちゃんの非公式検定。合格すると博士号がもらえる</span></span></a>
-      <a class="mini" href="https://mei-library.pages.dev/" target="_blank" rel="noopener"><span class="em">📚</span><span><b>めいちゃん図書館</b><span class="t jp">活動記録を収蔵する非公式ファンサイト</span></span></a>
-      <a class="mini" href="https://mei-news.pages.dev/" target="_blank" rel="noopener"><span class="em">📰</span><span><b>デイリーめいちゃんニュース</b><span class="t jp">毎日自動で発行される新聞。休刊日なし</span></span></a>
-      <a class="mini" href="https://line.me/R/ti/p/@248mvpgb" target="_blank" rel="noopener"><span class="em">🔔</span><span><b>Hello!お知らせ <span class="badge">運用中</span></b><span class="t jp">公式スケジュールを毎朝チェックして、コンサートやFCイベントの締切前にLINEで知らせてくれる通知装備（LINE公式アカウント）</span></span></a>
-      <a class="mini" href="https://meimei-56p.pages.dev/calendar/mm26.ics" target="_blank" rel="noopener"><span class="em">🗓️</span><span><b>メイメイ秘書室 <span class="badge">運用中</span></b><span class="t jp">推しの公演スケジュールを毎朝自動更新する専属秘書。タップでカレンダー購読（ics）できる</span></span></a>
+    <a class="lounge rv" href="https://note.com/fuyutopandasan" target="_blank" rel="noopener">
+      <span class="em" aria-hidden="true">📝</span><span><b>休憩室 ／ note</b><span class="jp">作業の合間に、書き物もしています。ひと休みのついでに、よかったらどうぞ。</span></span>
+    </a>
+  </div>
+</section>
+
+<!-- ===================== 08 SAFE ===================== -->
+<section class="sec right" id="safe" data-cam="safe" data-nav="SAFE" data-no="08">
+  <div class="col pa">
+    <header class="sh">
+      <div class="label"><span class="no">№ 08</span>THE SAFE ─ CLASSIFIED</div>
+      <h2 class="h2 rv">特別<em>格納庫</em></h2>
+      <p class="lead jp rv">推し関連区画。金庫のダイヤルを長押しで回すと、開きます。</p>
+    </header>
+    <div class="vault rv" id="vault">
+      <div class="vault-in" id="rs-list" inert>
+        <p class="vault-note jp">※機密指定ですが、むしろ見てほしい区画です。この金庫の中身は、すべて愛で動いています。</p>
+        <a class="mini" href="https://mei-hakase.pages.dev/" target="_blank" rel="noopener"><span class="em" aria-hidden="true">🎓</span><span><b>愛生博士クイズ</b><span class="t jp">モーニング娘。'26・山﨑愛生ちゃんの非公式検定。合格すると博士号がもらえる</span></span></a>
+        <a class="mini" href="https://mei-library.pages.dev/" target="_blank" rel="noopener"><span class="em" aria-hidden="true">📚</span><span><b>めいちゃん図書館</b><span class="t jp">活動記録を収蔵する非公式ファンサイト</span></span></a>
+        <a class="mini" href="https://mei-news.pages.dev/" target="_blank" rel="noopener"><span class="em" aria-hidden="true">📰</span><span><b>デイリーめいちゃんニュース</b><span class="t jp">毎日自動で発行される新聞。休刊日なし</span></span></a>
+        <a class="mini" href="https://line.me/R/ti/p/@248mvpgb" target="_blank" rel="noopener"><span class="em" aria-hidden="true">🔔</span><span><b>Hello!お知らせ <em class="pill">運用中</em></b><span class="t jp">公式スケジュールを毎朝チェックして、コンサートやFCイベントの締切前にLINEで知らせてくれる通知装備（LINE公式アカウント）</span></span></a>
+        <a class="mini" href="https://meimei-56p.pages.dev/calendar/mm26.ics" target="_blank" rel="noopener"><span class="em" aria-hidden="true">🗓️</span><span><b>メイメイ秘書室 <em class="pill">運用中</em></b><span class="t jp">推しの公演スケジュールを毎朝自動更新する専属秘書。タップでカレンダー購読（ics）できる</span></span></a>
+      </div>
+      <div class="vault-door" id="vault-door">
+        <div class="vd-face">
+          <div class="vd-plate">CLASSIFIED<small>動力源：愛</small></div>
+          <button class="vd-dial" id="hold" type="button" aria-label="金庫を開ける（長押し、またはEnterキー）" aria-expanded="false" aria-controls="rs-list" data-cursor="HOLD">
+            <span class="dial" id="dial" aria-hidden="true"><i></i></span>
+            <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="trk" cx="60" cy="60" r="56"/><circle class="prg" id="dial-ring" cx="60" cy="60" r="56"/></svg>
+          </button>
+          <div class="vd-hint"><span class="lamp"></span>長押しで解錠</div>
+          <div class="vd-bolts" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ================= CONTROL TOWER ================= -->
-<section class="sec" id="tower" data-nav="CONTROL TOWER" data-tint=".5,.85,1" data-dim=".3">
-  <div class="tower">
-    <div>
-      <div class="eyebrow rv">CONTROL TOWER</div>
-      <h2 class="h2 rv">管制塔、<br><em>応答願います。</em></h2>
-      <div class="q rv jp"><span>「これ、どうやって作ってるの？」</span><span>「うちの困りごとも、こういうので解決できる？」</span></div>
-      <p class="lead jp rv">管制塔は、いつでも通信を受け付けています。感想ひとことでも、うれしい燃料になります。仕事の相談は、<b class="nw">パンダさんワークス</b>の窓口で受け付けています。</p>
-      <div class="btns rv">
-        <span class="mag"><a class="btn works" href="https://pandasan-works.pages.dev/" target="_blank" rel="noopener">相談窓口を見る</a></span>
-        <span class="mag"><a class="btn ghost" href="https://x.com/fuyutopandasan" target="_blank" rel="noopener">ふゆとをフォローする</a></span>
-        <span class="mag"><a class="btn mail" href="https://x.com/fuyutopandasan" target="_blank" rel="noopener">管制塔に通信する（DM）</a></span>
-      </div>
+<!-- ===================== 09 RADIO ===================== -->
+<section class="sec right" id="radio" data-cam="radio" data-nav="RADIO" data-no="09">
+  <div class="col pa">
+    <header class="sh">
+      <div class="label"><span class="no">№ 09</span>RADIO ROOM</div>
+      <h2 class="h2 rv">応答、<em>願います。</em></h2>
+    </header>
+    <div class="q rv jp"><span>「これ、どうやって作ってるの？」</span><span>「うちの困りごとも、こういうので解決できる？」</span></div>
+    <p class="lead jp rv">無線は、いつでも開いています。感想ひとことでも、うれしい燃料になります。仕事の相談は、<b class="nw">パンダさんワークス</b>の窓口で受け付けています。</p>
+    <div class="btns rv">
+      <a class="btn works" href="https://pandasan-works.pages.dev/" target="_blank" rel="noopener">相談窓口を見る</a>
+      <a class="btn ghost" href="https://x.com/fuyutopandasan" target="_blank" rel="noopener">ふゆとをフォローする</a>
+      <a class="btn mail" href="https://x.com/fuyutopandasan" target="_blank" rel="noopener">無線を送る（DM）</a>
     </div>
-    <div class="radar rv" aria-hidden="true"><b></b><i style="left:62%;top:30%;animation-delay:.4s"></i><i style="left:30%;top:64%;animation-delay:1.7s"></i><i style="left:72%;top:70%;animation-delay:2.8s"></i></div>
+    <div class="share-box rv" id="share-box">
+      <div class="sb-h"><span class="sb-k">SHARE</span><span class="jp">この基地のこと、仲間にこっそり教える。</span></div>
+      <div class="share-grid" data-share-scope="site"></div>
+    </div>
   </div>
 </section>
 
 </main>
 
-<footer>
-  <div class="foot-tape"></div>
-  <div class="foot-big" aria-hidden="true">HANGAR F.</div>
-  <div class="foot-inner">
-    <div style="font-family:var(--f-disp);font-size:14px;color:var(--text)">HANGAR F. ── 第F格納庫</div>
-    動力源：好奇心 ／ 設計・指揮：ふゆと（人間1名） ／ 製造班：相棒のAI<br>
-    <span style="font-size:10px">背景の工場パーツの一部: Kenney.nl（CC0）</span><br>
-    <span class="mono">© 2026 HANGAR F.</span>
-    <button id="close-hangar" type="button">⏏ 格納庫を閉じる</button>
+<!-- ===================== EXIT ===================== -->
+<footer id="exit" data-cam="exit" data-nav="EXIT" data-no="10">
+  <div class="foot-big" aria-hidden="true">HANGAR F<span>.</span></div>
+  <div class="foot-in pa">
+    <p class="foot-bye">また、いつでも。<br>シャッターは、開けておきます。</p>
+    <p class="foot-cred">動力源：好奇心 ／ 設計・指揮：ふゆと（人間1名） ／ 製造班：相棒のAI<br>
+      3Dのガレージは、画像素材を使わずにコードだけで建てています。<br>
+      <small>地下工場のドット絵パーツの一部: Kenney.nl（CC0） ／ 3D: three.js（MIT）</small></p>
+    <div class="foot-act">
+      <button type="button" id="close-hangar" class="btn plain">⏏ シャッターを閉める</button>
+      <button type="button" class="btn plain" data-share-open>この基地をシェア</button>
+    </div>
+    <p class="foot-old"><a href="index.v2.html">旧・格納庫（v2）</a> ／ <a href="index.legacy.html">初代（v1）</a></p>
+    <p class="foot-c">© 2026 HANGAR F.</p>
   </div>
 </footer>
 
+<!-- ===================== オーバーレイ ===================== -->
+<div class="cur" aria-hidden="true"><div class="cur-ring"><span class="cur-label"></span></div><div class="cur-dot"></div></div>
+
+<div id="sheet" class="modal" role="dialog" aria-modal="true" aria-labelledby="sheet-t" hidden>
+  <div class="modal-bg" data-close></div>
+  <div class="sheet-card">
+    <div class="sheet-tape" aria-hidden="true"></div>
+    <div class="sheet-head"><span class="k">SHARE</span><h2 id="sheet-t">この基地を、教える。</h2><button type="button" class="x" data-close aria-label="閉じる">×</button></div>
+    <div class="sheet-preview">
+      <img src="assets/ogp-garage.jpg" alt="" width="1200" height="630" id="sheet-img">
+      <div><b id="sheet-title">HANGAR F. ── 大人の秘密基地</b><span id="sheet-url">hangar-f.pages.dev</span></div>
+    </div>
+    <div class="share-grid" data-share-scope="sheet"></div>
+    <p class="sheet-note jp">合言葉はいりません。リンクを渡すだけで、シャッターが開きます。</p>
+  </div>
+</div>
+
+<div id="map" class="modal" role="dialog" aria-modal="true" aria-labelledby="map-t" hidden>
+  <div class="modal-bg" data-close></div>
+  <div class="map-card">
+    <div class="map-head"><span class="k">FLOOR PLAN ／ 見取り図</span><h2 id="map-t">どの部屋へ行きますか？</h2><button type="button" class="x" data-close aria-label="閉じる">×</button></div>
+    <div class="map-body">
+      <svg class="plan" id="plan" viewBox="-60 -20 620 760" aria-hidden="true"></svg>
+      <ol class="map-list" id="map-list"></ol>
+    </div>
+  </div>
+</div>
+
 <div id="new-fx" hidden tabindex="0" role="dialog" aria-label="新作のお知らせ：パンダさんワークスのステッカー">
   <div class="nx-band"></div>
-  <div class="nx-in"><div class="nx-k">NEW MACHINE ── 新型機 発進</div><img src="assets/suzuri/panda.webp" alt="" width="320" height="320"><div class="nx-n">パンダさんワークス</div><div class="nx-s">ステッカー 発売中</div></div>
-  <div class="nx-skip">TAP ▶ 見に行く</div>
+  <div class="nx-in"><div class="nx-k">NEW ARRIVAL ── 新しい部品が入庫</div><img src="assets/suzuri/panda.webp" alt="" width="320" height="320"><div class="nx-n">パンダさんワークス</div><div class="nx-s">ステッカー 発売中</div></div>
+  <div class="nx-skip">TAP ▶ 部品棚へ</div>
 </div>
 
 <div id="sortie" hidden aria-hidden="true">
-  <div class="tp t"></div>
-  <div class="sx-body"><div class="sx-lines"></div><img class="sx-plane" src="assets/px/plane_long.png" alt=""><div class="sx-text">SORTIE!!</div><div class="sx-sub">HANGAR F. ── 出撃</div><div class="sx-flash"></div></div>
-  <div class="tp b"></div>
+  <div class="sx-beam l"></div><div class="sx-beam r"></div>
+  <div class="sx-body"><div class="sx-lines"></div><img class="sx-plane" src="assets/px/plane_long.png" alt=""><div class="sx-text">SORTIE</div><div class="sx-sub" id="sx-sub">HANGAR F. ── 出撃</div><div class="sx-flash"></div></div>
 </div>
 
-<script src="v2.js" charset="utf-8"></script>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" src="v3/app.js"></script>
+<script>
+// 保険：古いブラウザなどで本体が動かなかったら、シャッターを開けたままにする
+setTimeout(function(){if(!window.HF){var g=document.getElementById('gate');if(g)g.hidden=true;document.body.classList.remove('locked');document.documentElement.classList.add('is-ready');}},6000);
+</script>
+<noscript><style>#gate{display:none!important}body.locked{overflow:auto!important}.js .catch,.js .hero-lead{opacity:1!important}.rv{opacity:1!important;transform:none!important}.h2.rv{clip-path:none!important}</style></noscript>
 </body>
 </html>
