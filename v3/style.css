@@ -132,8 +132,8 @@ main,footer{position:relative;z-index:3}
 .gate-snd:focus-visible{outline:2px solid var(--amber);outline-offset:4px}
 
 /* ---------- ヘッダー ---------- */
-.bar{position:fixed;top:0;left:0;right:0;z-index:60;height:var(--bar);display:flex;align-items:center;gap:18px;padding:0 14px 0 var(--gut);
-  background:linear-gradient(180deg,rgba(10,9,8,.86),rgba(10,9,8,0));transition:transform .5s var(--ease)}
+.bar{position:fixed;top:0;left:0;right:0;z-index:60;height:var(--bar);display:flex;align-items:center;gap:18px;padding:0 14px 0 var(--gut);transition:transform .5s var(--ease)}
+.bar::before{content:"";position:absolute;left:0;right:0;top:0;height:calc(var(--bar) + 26px);z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(10,9,8,.9) 0%,rgba(10,9,8,.72) 60%,rgba(10,9,8,0) 100%);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);-webkit-mask-image:linear-gradient(180deg,#000 62%,transparent);mask-image:linear-gradient(180deg,#000 62%,transparent)}
 .locked .bar{transform:translateY(-110%)}
 .brand{font:900 19px/1 var(--f-lat);letter-spacing:.06em;text-decoration:none;display:flex;align-items:baseline;gap:10px;white-space:nowrap}
 .brand i{color:var(--amber);font-style:normal}
@@ -319,7 +319,7 @@ button.btn{font:700 13px var(--f-body)}
 .batt::after{content:"";position:absolute;right:-18px;top:30%;bottom:30%;width:12px;background:var(--green);border-radius:0 6px 6px 0}
 .batt i{background:rgba(95,227,161,.12);transition:background .15s,box-shadow .15s}
 .batt i.on{background:var(--green);box-shadow:0 0 14px var(--green)}
-.charger img{position:absolute;width:20%;left:50%;bottom:55%;transform:translateX(-50%);image-rendering:pixelated}
+.charger img{position:absolute;width:20%;height:auto;left:50%;bottom:55%;transform:translateX(-50%);image-rendering:pixelated}
 .charger.full img{animation:hop .5s ease-in-out infinite alternate}
 @keyframes hop{to{transform:translate(-50%,-26px)}}
 .charger .pct{position:absolute;bottom:11%;font:900 34px var(--f-lat);color:var(--green)}
@@ -567,7 +567,9 @@ footer{padding:clamp(120px,22vh,220px) var(--gut) 40px;min-height:100vh;display:
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
 /* ---------- 出撃・新着 ---------- */
-#sortie{position:fixed;inset:0;z-index:1998;background:#060505;overflow:hidden}
+#sortie{position:fixed;inset:0;z-index:1998;background:rgba(6,5,5,.35);overflow:hidden;animation:fin .3s}
+.no3d #sortie{background:#060505}
+body.sortie main,body.sortie footer,body.sortie .bar,body.sortie .rail,body.sortie .odo,body.sortie .spots,body.sortie .fx-shade,body.sortie .cur{opacity:0;transition:opacity .35s}
 #sortie[hidden]{display:none}
 .sx-beam{position:absolute;top:50%;width:140vmax;height:60vmax;margin-top:-30vmax;background:radial-gradient(ellipse at 0% 50%,rgba(255,240,210,.9),rgba(255,200,120,.25) 30%,transparent 60%);opacity:0;animation:beam 1.4s ease-out forwards}
 .sx-beam.l{left:-20vmax;transform:rotate(-8deg)}

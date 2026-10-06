@@ -144,6 +144,9 @@ function setGateReady(fallback) {
    シャッター（入口）
    ===================================================================== */
 const gate = $('#gate'), gateBtn = $('#gate-btn'), gateHint = $('#gate-hint');
+const behind = $$('header.bar,main,footer,.rail,.skip');
+const setBehind = on => behind.forEach(el => { el.inert = on; });
+setBehind(true);
 let gateState = 'closed', lift = 0, holding = false, latched = false, motor = null, litFired = false, closing = false;
 function gateDown(e) {
   if (gateState !== 'closed' && gateState !== 'lifting') return;
@@ -169,18 +172,18 @@ function gateTick(dt) {
     if (lift >= 1) openDone();
   } else if (gateState === 'closing') {
     lift = Math.max(0, lift - dt * .75); gate.style.setProperty('--lift', lift.toFixed(4)); if (motor) motor.rate(.5);
-    if (lift === 0) { gateState = 'closed'; if (motor) { motor.stop(); motor = null; } Snd.clunk(); gateBtn.style.setProperty('--hold', 0); gateHint.textContent = '長押しで、もう一度あける'; gateMsg.textContent = 'シャッターを閉めました'; if (G) G.lightsOff(); scrollTo(0, 0); litFired = false; latched = false; }
+    if (lift === 0) { gateState = 'closed'; if (motor) { motor.stop(); motor = null; } Snd.clunk(); gateBtn.style.setProperty('--hold', 0); gateHint.textContent = '長押しで、もう一度あける'; gateMsg.textContent = 'シャッターを閉めました'; if (G) G.lightsOff(); scrollTo(0, 0); litFired = false; latched = false; gateBtn.focus({ preventScroll: true }); }
   }
 }
 function openDone() {
   gateState = 'open'; if (motor) { motor.stop(); motor = null; } Snd.clunk();
-  gate.hidden = true; body.classList.remove('locked'); root.classList.add('is-ready'); store.set('hf3_in', '1');
+  gate.hidden = true; setBehind(false); body.classList.remove('locked'); root.classList.add('is-ready'); store.set('hf3_in', '1');
   if (G && !litFired) G.lightsOn(); litFired = true;
   setTimeout(showNfx, 5200);
 }
-function skipGate() { gateState = 'open'; lift = 1; gate.hidden = true; body.classList.remove('locked'); root.classList.add('is-ready'); litFired = true; if (G) G.lightsOn(true); }
+function skipGate() { gateState = 'open'; lift = 1; gate.hidden = true; setBehind(false); body.classList.remove('locked'); root.classList.add('is-ready'); litFired = true; if (G) G.lightsOn(true); }
 function closeGate() {
-  if (gateState !== 'open') return; gateState = 'closing'; gate.hidden = false; lift = 1; gate.style.setProperty('--lift', 1); body.classList.add('locked');
+  if (gateState !== 'open') return; gateState = 'closing'; gate.hidden = false; setBehind(true); lift = 1; gate.style.setProperty('--lift', 1); body.classList.add('locked');
   gateHint.textContent = ''; motor = Snd.motor(); latched = false; holding = false;
 }
 $('#close-hangar').addEventListener('click', closeGate);
@@ -193,7 +196,7 @@ const logo = $('#logo'); logo.textContent = '';
 [...'HANGAR F.'].forEach((c, i) => { const a = document.createElement('span'); a.className = 'ch' + (c === ' ' ? ' sp' : '') + (c === '.' ? ' dt' : ''); a.style.setProperty('--i', i); a.setAttribute('aria-hidden', 'true'); const b = document.createElement('span'); b.className = 'chi'; b.textContent = c === ' ' ? ' ' : c; a.appendChild(b); logo.appendChild(a); });
 const chs = $$('.ch', logo);
 function logoPhysics() {
-  if (!FINE || RM) return;
+  if (!FINE || RM || S.y > innerHeight) return;
   chs.forEach(el => { const r = el.getBoundingClientRect(), cx = r.left + r.width / 2 - (el._ox || 0), cy = r.top + r.height / 2 - (el._oy || 0);
     const dx = cx - S.mx, dy = cy - S.my, d = Math.hypot(dx, dy), R = 240; let tx = 0, ty = 0; if (d < R) { const k = (1 - d / R) ** 2; tx = dx / d * k * 30; ty = dy / d * k * 22; }
     el._ox = lerp(el._ox || 0, tx, .12); el._oy = lerp(el._oy || 0, ty, .12); el.firstChild.style.translate = `${el._ox.toFixed(1)}px ${el._oy.toFixed(1)}px`; });
@@ -237,10 +240,15 @@ function updateConcept(p) {
 const secs = $$('[data-cam]');
 const SHADE = { hero: [.5, 0, 0], concept: [.72, 0, .05], pit: [.55, .1, .18], screening: [0, .78, .05], crew: [.78, 0, .05], log: [.2, .2, .42], cctv: [.25, .25, .4], parts: [0, .78, .05], safe: [0, .78, .05], radio: [0, .8, .05], exit: [0, 0, .12] };
 let marks = [], active = secs[0], blend = { i: 0, t: 0 };
+const fxShade = $('.fx-shade'), heroSec = $('#top'), footSec = $('footer'), conceptSec = $('#concept');
+let L = { max: 1 };
 function measure() {
-  const vh = innerHeight, max = document.documentElement.scrollHeight - vh;
-  marks = secs.map(el => { const top = el.offsetTop, h = el.offsetHeight, c = clamp(top + h / 2 - vh / 2, 0, max), hold = Math.max(0, (h - vh) / 2) * .9 + vh * .1; return { el, c, hold, cam: el.dataset.cam }; });
+  const vh = innerHeight, max = document.documentElement.scrollHeight - vh, y = scrollY;
+  marks = secs.map(el => { const top = el.offsetTop, h = el.offsetHeight, c = clamp(top + h / 2 - vh / 2, 0, max), hold = Math.max(0, (h - vh) / 2) * .9 + vh * .1;
+    const boxes = $$('.pa', el).map(b => { const r = b.getBoundingClientRect(); return [r.left, r.top + y, r.right, r.bottom + y]; });
+    return { el, c, hold, cam: el.dataset.cam, boxes }; });
   marks[0].c = 0; marks[marks.length - 1].c = max;
+  L = { max: Math.max(1, max), heroH: heroSec.offsetHeight, footTop: footSec.offsetTop, cTop: conceptSec.offsetTop, cH: conceptSec.offsetHeight };
 }
 function trackSections() {
   const y = S.y; let i = 0; while (i < marks.length - 2 && y > marks[i + 1].c) i++;
@@ -254,15 +262,15 @@ function trackSections() {
   const sa = SHADE[A.cam] || [0, 0, 0], sb = SHADE[B.cam] || sa, m = MOBILE();
   const sh = [0, 1, 2].map(k => lerp(sa[k], sb[k], t));
   if (m) { sh[2] = Math.max(sh[2], (A.cam === 'hero' && t < .5) ? 0 : .45); sh[0] = sh[1] = 0; }
-  root.style.setProperty('--sl', sh[0].toFixed(3)); root.style.setProperty('--sr', sh[1].toFixed(3)); root.style.setProperty('--sa', sh[2].toFixed(3));
+  const shs = sh.map(v => v.toFixed(2)).join(); if (shs !== fxShade._s) { fxShade._s = shs; fxShade.style.setProperty('--sl', sh[0].toFixed(2)); fxShade.style.setProperty('--sr', sh[1].toFixed(2)); fxShade.style.setProperty('--sa', sh[2].toFixed(2)); }
   // 雨音（外が見えるときは大きく）
   const outside = (A.cam === 'hero' ? 1 - t : 0) + (B.cam === 'exit' ? t : 0);
   if (Snd.amb) Snd.setRain(outside);
   // ヒーロー・フッター
-  const hr = $('#top').getBoundingClientRect(); $('#top').style.setProperty('--hp', clamp(-hr.top / (hr.height * .6)).toFixed(3));
-  const fr = $('footer').getBoundingClientRect(); $('footer').style.setProperty('--fp', clamp(1 - fr.top / innerHeight).toFixed(3));
+  const hp = clamp(y / (L.heroH * .6)).toFixed(3); if (hp !== heroSec._hp) { heroSec._hp = hp; heroSec.style.setProperty('--hp', hp); }
+  const fp = clamp(1 - (L.footTop - y) / innerHeight).toFixed(3); if (fp !== footSec._fp) { footSec._fp = fp; footSec.style.setProperty('--fp', fp); }
   // オドメーター（歩いた距離）
-  const mm = Math.round(S.y / Math.max(1, document.documentElement.scrollHeight - innerHeight) * 16000);
+  const mm = Math.round(S.y / L.max * 16000);
   const str = String(mm).padStart(6, '0'); if (str !== odoEl._s) { odoEl._s = str; odoEl.innerHTML = [...str].map(c => `<i>${c}</i>`).join(''); }
 }
 const odoEl = $('#odo');
@@ -285,7 +293,8 @@ function updateSpots() {
     if (G && !MOBILE() && settled && active.dataset.cam === sp.dataset.sec && G.lightsLevel() > .8) {
       const p = G.project(sp.dataset.anchor);
       if (p && p.visible) {
-        show = !$$('.pa', active).some(el => { const r = el.getBoundingClientRect(); return p.x > r.left - 30 && p.x < r.right + 260 && p.y > r.top - 60 && p.y < r.bottom + 20 && r.bottom > 0 && r.top < innerHeight; });
+        const m = marks.find(k => k.el === active), py = p.y + S.y;
+        show = !(m && m.boxes.some(r => p.x > r[0] - 30 && p.x < r[2] + 260 && py > r[1] - 60 && py < r[3] + 20));
         if (show) sp.style.transform = `translate3d(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px,0)`;
       }
     }
@@ -577,13 +586,13 @@ function updateMapMe() { if (mapEl.hidden || !G) return; plan._me.classList.remo
    ===================================================================== */
 {
   const fx = $('#sortie'); let busy = false;
-  addEventListener('pageshow', () => { fx.hidden = true; busy = false; });
+  addEventListener('pageshow', e => { fx.hidden = true; busy = false; body.classList.remove('sortie'); if (e.persisted) location.reload(); });
   document.addEventListener('click', e => {
     const a = e.target.closest && e.target.closest('a[data-sortie]'); if (!a || e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
     e.preventDefault(); if (busy) return; busy = true;
     const nm = (a.closest('[data-machine]') && a.closest('[data-machine]').dataset.machine) || ($('.n', a) && $('.n', a).textContent) || '';
-    $('#sx-sub').textContent = nm ? `「${nm}」 ── 出撃` : 'HANGAR F. ── 出撃'; fx.hidden = false; Snd.whoosh(); navigator.vibrate && navigator.vibrate(30);
-    setTimeout(() => { location.href = a.href; }, RM ? 200 : 1500); setTimeout(() => { fx.hidden = true; busy = false; }, 4500);
+    $('#sx-sub').textContent = nm ? `「${nm}」 ── 出撃` : 'HANGAR F. ── 出撃'; fx.hidden = false; Snd.whoosh(); navigator.vibrate && navigator.vibrate(30); if (G && G.sortie) { G.sortie(); body.classList.add('sortie'); } else root.classList.add('no3d');
+    setTimeout(() => { location.href = a.href; }, RM ? 200 : 1500); setTimeout(() => { fx.hidden = true; busy = false; body.classList.remove('sortie'); }, 4500);
   });
 }
 const nfx = $('#new-fx'); let nfxT;
@@ -622,7 +631,8 @@ let last = performance.now(), perf = { n: 0, acc: 0, checked: 0, level: 0 };
 function frame(now) {
   const dt = Math.min(.05, (now - last) / 1000); last = now; S.t += dt; S.y = scrollY;
   gateTick(dt); updateCursor(); trackSections(); logoPhysics(); updateStk(); vaultTick(dt);
-  const cp = $('#concept').getBoundingClientRect(); const ctr = cp.height - innerHeight; const p = ctr > 0 ? clamp(-cp.top / ctr) : 0; $('#concept').style.setProperty('--p', p.toFixed(4)); updateConcept(p);
+  const ctr = L.cH - innerHeight, p = ctr > 0 ? clamp((S.y - L.cTop) / ctr) : 0;
+  if (S.y > L.cTop - innerHeight && S.y < L.cTop + L.cH) { const ps = p.toFixed(3); if (ps !== conceptSec._p) { conceptSec._p = ps; conceptSec.style.setProperty('--p', ps); } updateConcept(p); }
   demos.forEach(d => d(S.t)); updateSpots(); updateMapMe(); clocks();
   const ts = (now - tcT0) / 1000; const tc = [ts / 3600 | 0, (ts / 60 | 0) % 60, ts % 60 | 0, (ts * 24 | 0) % 24].map(n => String(n).padStart(2, '0')).join(':'); tcEls.forEach(e => e.textContent = tc);
   if (G && !document.hidden) {

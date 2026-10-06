@@ -52,9 +52,9 @@ function floorMaps(S) {
   fbm(y, S, S, [[3, .9], [9, .55], [40, .25]]);
   for (let i = 0; i < 7; i++) {
     const R = rr(.05, .14) * S, cx = rr(R, S - R), cy = rr(R, S - R), a = rr(.08, .22);
-    stain(x, cx, cy, R, '18,14,10', a); stain(y, cx, cy, R * 1.15, '30,30,30', .7);
+    stain(x, cx, cy, R, '18,14,10', a); stain(y, cx, cy, R * 1.15, '75,75,75', .55);
   }
-  for (let i = 0; i < 6; i++) { const R = rr(.12, .26) * S, cx = rr(R, S - R), cy = rr(R, S - R); stain(y, cx, cy, R, '25,25,25', .6); }
+  for (let i = 0; i < 6; i++) { const R = rr(.12, .26) * S, cx = rr(R, S - R), cy = rr(R, S - R); stain(y, cx, cy, R, '80,80,80', .45); }
   // タイヤ痕
   x.save(); x.globalAlpha = .07; x.strokeStyle = '#000'; x.lineWidth = S * .035;
   for (let i = 0; i < 3; i++) { x.beginPath(); const sx = rr(.2, .8) * S; x.moveTo(sx, 0); x.bezierCurveTo(sx + rr(-.2, .2) * S, S * .3, sx + rr(-.2, .2) * S, S * .7, sx + rr(-.1, .1) * S, S); x.stroke(); }
@@ -201,7 +201,7 @@ export async function createGarage(canvas, opt = {}) {
   /* ===== 部屋 ===== */
   const TS = LOW ? 512 : 1024;
   const [fc, fr] = floorMaps(TS);
-  const floorMat = std(0xffffff, 1, 0, { map: T(fc, [2, 2.6]), roughnessMap: T(fr, [2, 2.6], false) });
+  const floorMat = std(0xffffff, 1, 0, { map: T(fc, [2, 2.6]), roughnessMap: T(fr, [2, 2.6], false), envMapIntensity: .05 });
   const floor = plane(10, 13, floorMat, 0, 0, -6.5, 0, -Math.PI / 2); floor.receiveShadow = true;
   await step(.22, '床');
   const [bc, bb] = brickMaps(TS, TS / 2);
@@ -633,8 +633,17 @@ export async function createGarage(canvas, opt = {}) {
   /* ===== 外：路地・自販機・街灯・雨 ===== */
   const asphC = cv(512), ax = asphC.getContext('2d'); ax.fillStyle = '#26272a'; ax.fillRect(0, 0, 512, 512); fbm(ax, 512, 512, [[6, .4], [30, .3], [120, .3]]); speckle(ax, 512, 512, 9000, ['rgba(0,0,0,.4)', 'rgba(200,200,200,.12)']);
   const asphR = cv(256), ar = asphR.getContext('2d'); ar.fillStyle = 'rgb(70,70,70)'; ar.fillRect(0, 0, 256, 256); fbm(ar, 256, 256, [[4, .9], [12, .5]]);
-  const asph = plane(20, 10, std(0xffffff, 1, 0, { map: T(asphC, [5, 2.5]), roughnessMap: T(asphR, [2, 1], false) }), 0, -.01, 5, 0, -Math.PI / 2); asph.receiveShadow = true;
-  const opp = plane(20, 8, std(0xffffff, .9, 0, { map: T(kc, [10, 8]), bumpMap: T(kb, [10, 8], false), bumpScale: 1.5 }), 0, 4, 8.2, Math.PI);
+  const asph = plane(44, 10, std(0xffffff, 1, 0, { map: T(asphC, [11, 2.5]), roughnessMap: T(asphR, [4, 1], false) }), 0, -.01, 5, 0, -Math.PI / 2); asph.receiveShadow = true;
+  const opp = plane(44, 8, std(0xffffff, .9, 0, { map: T(kc, [22, 8]), bumpMap: T(kb, [22, 8], false), bumpScale: 1.5 }), 0, 4, 8.2, Math.PI);
+  // 路地の続き（ガレージ側の建物の外壁と、向かいのスナック）
+  const facade = std(0xffffff, .9, 0, { map: T(kc, [7.5, 4]), bumpMap: T(kb, [7.5, 4], false), bumpScale: 1.5 });
+  plane(15, 8, facade, 12.5, 4, -.02); plane(15, 8, facade, -12.5, 4, -.02); plane(10, 4.2, facade, 0, 5.9, -.02);
+  const barC = neonCanvas('スナック 夜更け', '700 {s}px "Zen Kaku Gothic New", sans-serif', '#5ad1ff', 1024, 200, { stroke: false, size: 120, lw: 3 });
+  const barM = new THREE.MeshBasicMaterial({ map: T(barC), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, color: new THREE.Color(1.6, 1.6, 1.6) });
+  plane(2.6, .5, barM, 9.2, 2.9, 8.15, Math.PI);
+  plane(4.5, 2.2, new THREE.MeshBasicMaterial({ map: T(glowSprite('rgba(90,200,255,1)')), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, color: new THREE.Color(.22, .22, .22) }), 9.2, 2.9, 8.14, Math.PI);
+  box(1.0, 2.1, .1, std(0x3a2a20, .6), 9.2, 1.05, 8.15); plane(.9, .03, new THREE.MeshBasicMaterial({ color: new THREE.Color(2, 1.4, .7), toneMapped: false }), 9.2, 2.14, 8.09, Math.PI);
+  const barL = new THREE.PointLight(0x5ad1ff, 3, 8, 1.6); barL.position.set(9.2, 2.6, 7.4); scene.add(barL);
   // 窓
   const winM = new THREE.MeshBasicMaterial({ color: new THREE.Color(.9, .55, .25), toneMapped: false });
   plane(1.1, .8, winM, -2.4, 2.7, 8.18, Math.PI); box(1.2, .06, .1, std(0x222222, .5, .5), -2.4, 2.27, 8.15);
@@ -658,7 +667,7 @@ export async function createGarage(canvas, opt = {}) {
   const stCone = mkCone(2.0, 4.1, 0x9fbfff, new THREE.Vector3(-2.98, 4.2 - 2.05, 7.6)); stCone.material.uniforms.uI.value = .22;
   // 雨
   const RN = LOW ? 300 : 700, rainPos = new Float32Array(RN * 6), rainV = [];
-  for (let i = 0; i < RN; i++) { const x = rr(-6, 6), y = rr(0, 6), z = i < RN * .3 ? rr(.15, 2.2) : rr(.4, 9); rainV.push([x, y, z, rr(7, 10)]); }
+  for (let i = 0; i < RN; i++) { const x = rr(-6, 6), y = rr(0, 6), z = i < RN * .3 ? rr(1.3, 3) : rr(1.3, 9); rainV.push([x, y, z, rr(7, 10)]); }
   const rainG = new THREE.BufferGeometry(); rainG.setAttribute('position', new THREE.BufferAttribute(rainPos, 3));
   const rain = new THREE.LineSegments(rainG, new THREE.LineBasicMaterial({ color: 0xc9b8a2, transparent: true, opacity: .22, depthWrite: false })); scene.add(rain);
   await step(.86, '路地');
@@ -702,7 +711,7 @@ export async function createGarage(canvas, opt = {}) {
     const pat = [[0, .05, 1], [.05, .16, 0], [.16, .2, .8], [.2, .34, 0], [.34, .37, 1], [.37, .42, .15], [.42, .52, 1], [.52, .55, .3], [.55, .9, 1]];
     for (const [a, b, v] of pat) if (k >= a && k < b) return v; return 1;
   };
-  let over = 0, flickT = 0, peekT = 0;
+  let over = 0, flickT = 0, peekT = 0, sortieT = -1; const sortieFrom = new THREE.Vector3(), V3 = (x, y, z) => new THREE.Vector3(x, y, z);
 
   /* ===== ブルーム（高画質時） ===== */
   let composer = null, bloomPass = null, gradePass = null;
@@ -762,6 +771,7 @@ export async function createGarage(canvas, opt = {}) {
     tvNext() { tvCh++; tvStatic = time + .35; lastTV = 0; },
     neonFlick() { flickT = time + 1.1; },
     carPeek() { peekT = .9; },
+    sortie() { sortieT = time; sortieFrom.copy(camP); },
     lightsOn(instant) { if (lightsT0 >= 0) return; lightsT0 = instant ? -100 : time; },
     lightsOff() { lightsT0 = -1; tubeFired.fill(0); neonFired = 0; },
     overdrive(v) { over = v ? 1 : 0; },
@@ -775,7 +785,16 @@ export async function createGarage(canvas, opt = {}) {
     update(dt, playing) {
       time += dt; const t = time;
       // カメラ
-      const k = 1 - Math.pow(.0025, dt);
+      if (sortieT >= 0) { // 出撃：シャッターをくぐって路地へ出て、右へ駆け抜ける
+        const e = Math.min(1, (t - sortieT) / 1.5), e1 = sm(0, .55, e), e2 = sm(.45, 1, e) ** 1.6;
+        const A = V3(0, 1.25, 5.0), B = V3(10, 1.15, 5.3);
+        const p1 = V3().lerpVectors(sortieFrom, A, e1); p1.y += Math.exp(-Math.pow((p1.z + 6.4) / 2.6, 2)) * Math.max(0, 1 - Math.abs(p1.x) / 2.2) * .95;
+        goalP.lerpVectors(p1, B, e2);
+        const dir = V3(0, 0, 1).lerp(V3(1, -.02, .15), e2).normalize();
+        goalT.copy(goalP).addScaledVector(dir, 8); goalO = 0; goalF = lerp(48, 72, e);
+        if (bloomPass) bloomPass.strength = .5 + e * e * 2.2;
+      }
+      const k = sortieT >= 0 ? 1 - Math.pow(.00002, dt) : 1 - Math.pow(.0025, dt);
       mouseS.lerp(mouse, 1 - Math.pow(.02, dt));
       camP.lerp(goalP, k); camT.lerp(goalT, k); camO = lerp(camO, goalO, k); camF = lerp(camF, goalF, k);
       const fwd = tmpD.copy(camT).sub(camP).normalize();
@@ -823,7 +842,7 @@ export async function createGarage(canvas, opt = {}) {
       const outward = fwd.z > -.2 || cam.position.z > .3;
       rain.visible = outward;
       if (outward) { for (let i = 0; i < RN; i++) { const r = rainV[i]; r[1] -= r[3] * dt; if (r[1] < 0) { r[1] += 6; } const o = i * 6; rainPos[o] = r[0]; rainPos[o + 1] = r[1]; rainPos[o + 2] = r[2]; rainPos[o + 3] = r[0] + .01; rainPos[o + 4] = r[1] + .22; rainPos[o + 5] = r[2] + .02; } rainG.attributes.position.needsUpdate = true; }
-      if (bloomPass) bloomPass.strength = .5 + over * .5;
+      if (bloomPass && sortieT < 0) bloomPass.strength = .5 + over * .5;
       if (gradePass) { gradePass.uniforms.uT.value = t; gradePass.uniforms.uRes.value.set(innerWidth, innerHeight); }
       if (composer) composer.render(); else R.render(scene, cam);
     },

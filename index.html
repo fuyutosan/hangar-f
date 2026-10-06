@@ -541,7 +541,7 @@ document.documentElement.classList.add('js');
 <script type="module" src="v3/app.js"></script>
 <script>
 // 保険：古いブラウザなどで本体が動かなかったら、シャッターを開けたままにする
-setTimeout(function(){if(!window.HF){var g=document.getElementById('gate');if(g)g.hidden=true;document.body.classList.remove('locked');document.documentElement.classList.add('is-ready');}},6000);
+setTimeout(function(){if(!window.HF){var g=document.getElementById('gate');if(g)g.hidden=true;[].forEach.call(document.querySelectorAll('[inert]'),function(e){e.inert=false;e.removeAttribute('inert')});document.body.classList.remove('locked');document.documentElement.classList.add('is-ready');}},6000);
 </script>
 <noscript><style>#gate{display:none!important}body.locked{overflow:auto!important}.js .catch,.js .hero-lead{opacity:1!important}.rv{opacity:1!important;transform:none!important}.h2.rv{clip-path:none!important}</style></noscript>
 </body>
