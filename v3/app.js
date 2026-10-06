@@ -119,7 +119,7 @@ function tierInfo() {
   const coarse = matchMedia('(pointer:coarse)').matches, small = innerWidth < 900, cores = navigator.hardwareConcurrency || 4, dpr = devicePixelRatio || 1;
   if (coarse || small) return { tier: 'low', dpr: Math.min(dpr, 1.5) * .8, shadows: false, bloom: false };
   if (cores <= 4) return { tier: 'mid', dpr: Math.min(dpr, 1.25), shadows: false, bloom: true };
-  return { tier: 'high', dpr: Math.min(dpr, 1.5), shadows: true, bloom: true };
+  return { tier: 'high', dpr: Math.min(dpr, 1.3), shadows: true, bloom: true };
 }
 function webglOK() { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } }
 async function boot3D() {

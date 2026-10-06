@@ -165,7 +165,7 @@ export async function createGarage(canvas, opt = {}) {
     new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
   await step(.08, '電源');
 
-  const R = new THREE.WebGLRenderer({ canvas, antialias: !LOW && !Q.bloom, powerPreference: 'high-performance', alpha: false, stencil: false });
+  const R = new THREE.WebGLRenderer({ canvas, antialias: !Q.bloom, powerPreference: 'high-performance', alpha: false, stencil: false });
   R.setPixelRatio(Q.dpr); R.setSize(innerWidth, innerHeight, false);
   R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = 1.05;
   R.shadowMap.enabled = Q.shadows; R.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -719,7 +719,7 @@ export async function createGarage(canvas, opt = {}) {
     try {
       const [{ EffectComposer }, { RenderPass }, { UnrealBloomPass }, { OutputPass }] = await Promise.all([
         import('three/addons/EffectComposer.js'), import('three/addons/RenderPass.js'), import('three/addons/UnrealBloomPass.js'), import('three/addons/OutputPass.js')]);
-      composer = new EffectComposer(R, new THREE.WebGLRenderTarget(innerWidth * Q.dpr, innerHeight * Q.dpr, { type: THREE.HalfFloatType, samples: Q.tier === 'high' ? 4 : 0 })); composer.setPixelRatio(Q.dpr); composer.setSize(innerWidth, innerHeight);
+      composer = new EffectComposer(R, new THREE.WebGLRenderTarget(innerWidth * Q.dpr, innerHeight * Q.dpr, { type: THREE.HalfFloatType, samples: Q.tier === 'high' ? 4 : 2 })); composer.setPixelRatio(Q.dpr); composer.setSize(innerWidth, innerHeight);
       composer.addPass(new RenderPass(scene, cam));
       bloomPass = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), .5, .42, .95); composer.addPass(bloomPass);
       composer.addPass(new OutputPass());

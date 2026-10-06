@@ -60,7 +60,7 @@ main,footer{position:relative;z-index:3}
 .spot em{font-style:normal;font-family:var(--f-mono);color:var(--amber)}
 
 /* ---------- シャッター ---------- */
-#gate{position:fixed;inset:0;z-index:1000;overflow:hidden;--lift:0;touch-action:none;user-select:none;-webkit-user-select:none}
+#gate{position:fixed;inset:0;z-index:1000;overflow:hidden;--lift:0;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 #gate[hidden]{display:none}
 .gate-door{position:absolute;left:0;right:0;top:0;height:100%;transform:translate3d(0,calc(var(--lift) * -101%),0);will-change:transform;
   background:#2c2e31;box-shadow:0 30px 60px rgba(0,0,0,.8)}
@@ -109,7 +109,7 @@ main,footer{position:relative;z-index:3}
 .gate-status b{font:700 13px var(--f-mono);color:var(--amber)}
 .gate-status .led{width:8px;height:8px;border-radius:50%;background:#ff5a3c;box-shadow:0 0 10px #ff5a3c;animation:blink .6s infinite}
 .gate-status .led.ok{background:var(--green);box-shadow:0 0 10px var(--green);animation:none}
-.gate-btn{all:unset;position:relative;width:112px;height:112px;border-radius:50%;cursor:pointer;display:grid;place-items:center;touch-action:none;-webkit-tap-highlight-color:transparent}
+.gate-btn{all:unset;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;position:relative;width:112px;height:112px;border-radius:50%;cursor:pointer;display:grid;place-items:center;touch-action:none;-webkit-tap-highlight-color:transparent}
 .gate-btn svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
 .gate-btn .trk{fill:none;stroke:rgba(236,230,218,.12);stroke-width:4}
 .gate-btn .prg{fill:none;stroke:var(--amber);stroke-width:4;stroke-linecap:round;stroke-dasharray:339.3;stroke-dashoffset:calc(339.3 - var(--hold,0) * 339.3);filter:drop-shadow(0 0 6px rgba(255,181,71,.7))}
@@ -237,7 +237,7 @@ button.btn{font:700 13px var(--f-body)}
 .hero{min-height:100svh;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr auto;padding-top:calc(var(--bar) + 26px);padding-bottom:clamp(36px,7vh,70px);gap:20px}
 .hero-top{grid-column:1/-1}
 .hero-main{grid-column:1;grid-row:3;align-self:end;max-width:1100px}
-.hero-logo{font:900 clamp(74px,13.2vw,236px)/.8 var(--f-sten);letter-spacing:.005em;white-space:nowrap;display:flex;user-select:none;cursor:pointer;
+.hero-logo{font:900 clamp(72px,11.6vw,210px)/.8 var(--f-sten);letter-spacing:.005em;white-space:nowrap;display:flex;user-select:none;cursor:pointer;
   text-shadow:0 10px 60px rgba(0,0,0,.55);transform:translateY(calc(var(--hp,0) * -60px));opacity:calc(1 - var(--hp,0) * 1.4)}
 .hero-logo .ch{display:inline-block;overflow:hidden;padding:.06em .006em 0}
 .hero-logo .chi{display:inline-block;will-change:transform}
@@ -476,7 +476,7 @@ button.btn{font:700 13px var(--f-body)}
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 .vd-plate{font:900 22px/1 var(--f-lat);letter-spacing:.18em;color:#2a1e08;background:linear-gradient(180deg,#e7c477,#b8913d);padding:8px 18px 6px;text-align:center;box-shadow:0 2px 0 rgba(0,0,0,.4);position:relative;z-index:1}
 .vd-plate small{display:block;font:700 10px var(--f-body);letter-spacing:.2em;margin-top:3px}
-.vd-dial{all:unset;position:relative;width:min(200px,46vw);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;cursor:pointer;touch-action:none;z-index:1;-webkit-tap-highlight-color:transparent}
+.vd-dial{all:unset;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;position:relative;width:min(200px,46vw);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;cursor:pointer;touch-action:none;z-index:1;-webkit-tap-highlight-color:transparent}
 .vd-dial svg{position:absolute;inset:-8px;width:calc(100% + 16px);height:calc(100% + 16px);transform:rotate(-90deg)}
 .vd-dial .trk{fill:none;stroke:rgba(0,0,0,.35);stroke-width:3}
 .vd-dial .prg{fill:none;stroke:var(--amber);stroke-width:3;stroke-linecap:round;stroke-dasharray:351.9;stroke-dashoffset:calc(351.9 - var(--h,0) * 351.9);filter:drop-shadow(0 0 6px rgba(255,181,71,.8))}
@@ -609,7 +609,8 @@ body.overdrive .cctv-ticker .tk{animation-duration:6s}
   :root{--bar:54px}
   .odo,.cue{display:none}
   .rail{right:8px;transform:translate(0,-50%)}
-  .sec{min-height:auto;padding-top:clamp(90px,14vh,130px)}
+  .sec:not(.hero){min-height:auto;padding-top:clamp(90px,14vh,130px)}
+  .bar-clock{display:none}
   .sec.left .col,.sec.right .col{max-width:none;margin:0}
   .col,.sh,#pit .sh,#log .sh,#b1f .sh{background:none}
   .sec .sh{position:relative}
