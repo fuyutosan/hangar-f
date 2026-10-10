@@ -290,7 +290,7 @@ export async function createGarage(canvas, opt = {}) {
   const vise = group(.52, .955, -1.05, 0, benchG);
   shadowy(box(.16, .1, .2, std(0x2d4a5c, .4, .6), 0, .05, 0, .01, vise)); shadowy(box(.16, .1, .04, std(0x2d4a5c, .4, .6), .14, .05, 0, .01, vise));
   { const s = cyl(.012, .012, .32, chrome, .24, .06, 0, 8, vise); s.rotation.z = Math.PI / 2; }
-  // ノートPC（画面にメイメイ）
+  // ノートPC（画面にドット絵のパンダさん）
   const lap = group(.42, .957, .15, -Math.PI / 2 - .25, benchG); pickables.laptop = lap;
   shadowy(box(.34, .016, .24, std(0x9ea3aa, .3, .85), 0, 0, 0, .004, lap));
   const scr = group(0, .008, -.12, 0, lap); scr.rotation.x = -.32;
@@ -406,7 +406,7 @@ export async function createGarage(canvas, opt = {}) {
   anchors.car = new THREE.Vector3(.15, 1.15, -6.4);
   await step(.66, '次期機体');
 
-  /* ===== ロッカー（乗組員） ===== */
+  /* ===== ロッカー（ガレージの主） ===== */
   const lockG = group(-4.7, 0, -9.35, Math.PI / 2);
   const lockerTex = (name, sub) => {
     const c = cv(256, 1024), x = c.getContext('2d'); x.fillStyle = '#3b4944'; x.fillRect(0, 0, 256, 1024); fbm(x, 256, 1024, [[4, .2], [30, .15]]);
@@ -417,7 +417,7 @@ export async function createGarage(canvas, opt = {}) {
     x.fillStyle = 'rgba(255,255,255,.05)'; x.fillRect(14, 14, 10, 996); return c;
   };
   const lockSide = std(0x2f3a36, .5, .5);
-  [['FUYUTO', 'STAFF-01 / OWNER'], ['MEIMEI', 'STAFF-02 / AI'], ['VACANT', 'STAFF-03 / ???']].forEach(([n, s], i) => {
+  [['SHIROTA', 'OWNER'], ['VACANT', 'LOCKER-02 / ???'], ['VACANT', 'LOCKER-03 / ???']].forEach(([n, s], i) => {
     const m = std(0xffffff, .42, .45, { map: T(lockerTex(n, s)) });
     const lk = shadowy(box(.48, 1.9, .5, lockSide, (i - 1) * .5, .95, 0, 0, lockG)); lk.material = [lockSide, lockSide, lockSide, lockSide, m, lockSide];
     box(.03, .16, .03, chrome, (i - 1) * .5 + .17, 1.0, .26, .008, lockG);

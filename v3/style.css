@@ -750,7 +750,7 @@ body.tour,body.tour *{cursor:none!important}
   74%{transform:translate(calc(100cqw + 60px),-120px) rotate(-16deg);opacity:1}
   78%,100%{transform:translate(calc(100cqw + 120px),-190px) rotate(-18deg);opacity:0}
 }
-/* メイメイの1日（60秒）: 笹30s → 移動 → PC5s → 移動 → 誘導15s → 移動 */
+/* パンダさんの1日（60秒）: 笹30s → 移動 → PC5s → 移動 → 誘導15s → 移動 */
 .fl-mei{position:absolute;bottom:32px;width:48px;height:48px}
 .fl-mei img{position:absolute;inset:0;width:100%;height:100%}
 .fl-mei.rest{left:var(--mei-rest);animation:meiRest 60s linear infinite}
@@ -840,7 +840,7 @@ body.tour,body.tour *{cursor:none!important}
    L1 奥の壁（格納庫・機械・標識・回転灯・天井クレーン・蒸気）
    L2 中景の設備（コンベアと流れる貨物）
    L3 その設備で働く人（整備士・塗装工・溶接工と火花・ミスト）
-   L4 手前の通路（フォークリフト・メイメイ・誘導員）
+   L4 手前の通路（フォークリフト・パンダさん・誘導員）
    L5 滑走路レーン（飛行機）＝いちばん手前。人にも設備にも隠れない          */
 .fl-crane,.fl-trolley,.fl-hookwrap,.fl-led,
 .fl-hangar,.fl-pole,.fl-lamp,.fl-mc,.fl-steam{z-index:1}
@@ -849,3 +849,63 @@ body.tour,body.tour *{cursor:none!important}
 .fl-fork,.fl-mei,.fl-marsh{z-index:4}
 .fl-plane{z-index:5}
 
+
+/* =====================================================================
+   №02 並んでいるもの（2026-10-10 主力機から作り替え）
+   ===================================================================== */
+#pit .sh{max-width:720px}
+.lineup{max-width:1200px;position:relative}
+.bays{display:flex;gap:clamp(8px,1.4vw,20px);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+  padding:34px 6px 0;border-bottom:1px solid var(--line2);
+  background:linear-gradient(180deg,transparent 64%,rgba(255,181,71,.06) 64%,transparent)}
+.bays::-webkit-scrollbar{display:none}
+.bay{all:unset;box-sizing:border-box;flex:0 0 clamp(128px,12.5vw,170px);scroll-snap-align:center;position:relative;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;padding:0 0 14px;text-align:center}
+.bay:focus-visible{outline:2px solid var(--amber);outline-offset:4px}
+.bay-beam{position:absolute;left:50%;top:-34px;width:160%;height:calc(100% + 34px);transform:translateX(-50%);pointer-events:none;
+  background:radial-gradient(ellipse 34% 100% at 50% 0,rgba(255,226,170,.24),transparent 72%);
+  clip-path:polygon(42% 0,58% 0,100% 100%,0 100%);opacity:0;transition:opacity .5s var(--out)}
+.bay-obj{position:relative;z-index:1;width:84%;aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;
+  background:#0c0b0a;border:1px solid var(--amber-d);
+  box-shadow:0 20px 34px -18px #000,0 0 0 4px rgba(20,18,16,.85),0 0 0 5px var(--line2);
+  filter:brightness(.6) saturate(.65);transition:transform .5s var(--out),filter .45s,box-shadow .45s}
+.bay-obj::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.05),transparent 30%),repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 1px,transparent 1px 3px)}
+.bay-no{position:absolute;left:7px;bottom:3px;font:600 9px var(--f-mono);letter-spacing:.14em;color:var(--amber)}
+.bay-gly{font:800 clamp(28px,2.6vw,42px)/1 var(--f-min);color:var(--c)}
+.bay-gly.lat{font-family:var(--f-lat);font-weight:900;letter-spacing:.02em}
+.bay-pad{position:absolute;left:50%;top:calc(84% * .75 + 10px);width:80%;height:16px;transform:translateX(-50%);border-radius:50%;
+  border:1px solid var(--line2);transition:border-color .4s,box-shadow .4s}
+.bay-name{margin-top:22px;font:700 13px/1.35 var(--f-body);color:var(--sub);transition:color .3s}
+.bay-kind{margin-top:3px;font:600 9.5px var(--f-mono);letter-spacing:.2em;color:var(--mute)}
+.bay-pick{position:absolute;top:-24px;left:50%;transform:translate(-50%,6px);opacity:0;z-index:2;
+  font:700 10px var(--f-mono);letter-spacing:.22em;color:#1a1209;background:var(--amber);padding:2px 8px;transition:opacity .3s,transform .3s var(--out)}
+.bay:hover .bay-obj,.bay.look .bay-obj{filter:brightness(.92) saturate(.95)}
+.bay:hover .bay-beam,.bay.look .bay-beam{opacity:.45}
+.bay[aria-pressed="true"] .bay-beam{opacity:1}
+.bay[aria-pressed="true"] .bay-obj{transform:translateY(-12px);filter:none;box-shadow:0 30px 40px -18px #000,0 0 0 4px rgba(20,18,16,.85),0 0 0 5px var(--c),0 0 36px -4px var(--c)}
+.bay[aria-pressed="true"] .bay-pad{border-color:var(--amber);box-shadow:0 0 20px rgba(255,181,71,.35)}
+.bay[aria-pressed="true"] .bay-name{color:var(--ink)}
+.bay[aria-pressed="true"] .bay-pick{opacity:1;transform:translate(-50%,0)}
+.lu-hint{margin-top:12px;font:500 10.5px var(--f-mono);letter-spacing:.14em;color:var(--mute)}
+.lu-detail{margin-top:clamp(26px,4vw,44px)}
+.lu-mon{border-color:var(--c,var(--amber-d))}
+.lu-layer{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .45s var(--out),visibility 0s .45s;display:grid;place-content:center;justify-items:center;gap:10px;text-align:center}
+.lu-layer.on{opacity:1;visibility:visible;transition:opacity .45s var(--out)}
+.lu-layer img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05) contrast(1.06) sepia(.12)}
+.lu-big{font:900 clamp(56px,7vw,110px)/1 var(--f-lat);color:var(--c)}
+.lu-sub{font:700 clamp(14px,1.3vw,18px) var(--f-body);color:var(--ink);letter-spacing:.06em;position:relative}
+.art-note{background:radial-gradient(circle at 30% 20%,#efe8d4,#cfc7b0 70%)}
+.art-note .lu-big{color:#1f2a28}.art-note .lu-sub{color:#3a3328}
+.art-yt{background:radial-gradient(ellipse at 50% 45%,#2a0f0d,#0b0606 75%)}
+.lu-play{width:92px;height:64px;display:grid;place-items:center;border-radius:18px;background:#ff3b30;color:#fff;font-size:30px;padding-left:5px;box-shadow:0 0 40px rgba(255,59,48,.45)}
+.art-x{background:radial-gradient(circle at 50% 40%,#1c1b19,#080807 75%)}
+.lu-detail.swap .m-sheet{animation:luSwap .45s var(--out)}
+@keyframes luSwap{from{opacity:.25;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (max-width:900px){
+  .bay{flex-basis:40vw}
+  .bays{margin-inline:calc(var(--gut) * -1);padding-inline:30vw}
+}
+@media (prefers-reduced-motion:reduce){
+  .bay-obj,.bay-beam,.bay-pick,.lu-layer{transition:none}
+  .lu-detail.swap .m-sheet{animation:none}
+}

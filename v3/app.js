@@ -303,7 +303,7 @@ function updateSpots() {
 }
 
 /* ---------- 3Dの小物をクリック ---------- */
-const PICK = { car: '布をめくる', radio: 'ラジオ', tv: 'チャンネル', neon: 'ネオン', clock: '時計', safe: '金庫へ', hatch: '地下へ', laptop: 'メイメイ', vend: '自販機' };
+const PICK = { car: '布をめくる', radio: 'ラジオ', tv: 'チャンネル', neon: 'ネオン', clock: '時計', safe: '金庫', hatch: '地下へ', laptop: 'ノートPC', vend: '自販機' };
 let pickName = null;
 const glc = $('#gl');
 function pickAt(x, y) { if (!G || !G.pick) return null; return G.pick(x / innerWidth * 2 - 1, -(y / innerHeight) * 2 + 1); }
@@ -321,9 +321,9 @@ function pickAct(n) {
   else if (n === 'tv') { G.tvNext && G.tvNext(); Snd.static(); }
   else if (n === 'neon') { G.neonFlick && G.neonFlick(); Snd.neon(); }
   else if (n === 'clock') { const t = jst(); toast(`東京はいま ${t.h}:${t.m}。いい時間ですね。`); Snd.click(); }
-  else if (n === 'safe') goTo('#safe');
+  else if (n === 'safe') { toast('しっかり鍵がかかっています。'); Snd.click(); }
   else if (n === 'hatch') goTo('#b1f');
-  else if (n === 'laptop') { toast('メイメイ「ただいま作業中です！ 思いついたら、すぐつくります」'); Snd.blip(); }
+  else if (n === 'laptop') { toast('ただいま作業中です！ 思いついたら、すぐつくります'); Snd.blip(); }
   else if (n === 'vend') { toast('ガコン。…パンダ珈琲（微糖）が出てきました。'); Snd.clunk(); }
 }
 function goTo(sel) { const el = $(sel); if (!el) return; const m = marks.find(k => k.el === el); const y = m ? Math.max(0, Math.min(el.offsetTop + 10, m.c)) : el.offsetTop; scrollTo({ top: el.id === 'top' ? 0 : y, behavior: RM ? 'auto' : 'smooth' }); }
@@ -406,7 +406,7 @@ $$('.yt-play').forEach(btn => btn.addEventListener('click', () => {
 const tcEls = $$('.js-tc'), tcT0 = performance.now();
 
 /* =====================================================================
-   主力機のデモ（墨・星・充電）
+   並んでいるもののデモ（墨・星・充電）
    ===================================================================== */
 const visible = new Map();
 const vio = new IntersectionObserver(es => es.forEach(e => visible.set(e.target, e.isIntersecting)), { rootMargin: '100px' });
@@ -454,6 +454,42 @@ const demos = [];
 })();
 
 /* =====================================================================
+   並んでいるもの ── ガレージに並んだ物から選ぶ
+   ===================================================================== */
+const bays = $$('.bay'), luDetail = $('#lu-detail');
+function luPick(key, focus) {
+  const b = bays.find(x => x.dataset.key === key); if (!b || !luDetail) return;
+  const d = b.dataset;
+  bays.forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+  $$('.lu-layer', luDetail).forEach(l => l.classList.toggle('on', l.dataset.for === key));
+  luDetail.dataset.machine = d.name; luDetail.dataset.url = d.url; luDetail.style.setProperty('--c', b.style.getPropertyValue('--c'));
+  $('#lu-no').textContent = d.no; $('#lu-id').textContent = `${d.no} ／ TYPE: ${d.type}`;
+  $('#lu-name').textContent = d.name; $('#lu-en').textContent = d.en; $('#lu-desc').textContent = d.desc;
+  const go = $('#lu-go'); go.href = d.url; go.textContent = d.go;
+  const sh = $('[data-share-machine]', luDetail); if (sh) sh.setAttribute('aria-label', `${d.name}をシェアする`);
+  luDetail.classList.remove('swap'); void luDetail.offsetWidth; luDetail.classList.add('swap');
+  if (focus) b.focus();
+}
+bays.forEach((b, i) => {
+  b.addEventListener('click', () => {
+    if (b.getAttribute('aria-pressed') === 'true') { window.open(b.dataset.url, '_blank', 'noopener'); return; }
+    luPick(b.dataset.key); Snd.tick();
+    b.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
+  });
+  b.addEventListener('keydown', e => {
+    const n = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!n) return; e.preventDefault();
+    const nx = bays[(i + n + bays.length) % bays.length]; luPick(nx.dataset.key, true); Snd.tick();
+    nx.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
+  });
+});
+if (!FINE) {
+  const h = $('#lu-hint'); if (h) h.textContent = '左右にスワイプして見くらべ ／ タップで選ぶ';
+  const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('look', e.isIntersecting)), { root: $('#bays'), rootMargin: '0px -40% 0px -40%' });
+  bays.forEach(b => io.observe(b));
+}
+luPick('note');
+
+/* =====================================================================
    部品棚 ── ステッカーをドラッグ
    ===================================================================== */
 const bench = $('#bench'), stks = []; let zTop = 10;
@@ -476,25 +512,6 @@ function updateStk() {
     s.a.style.transform = `translate3d(${s.x.toFixed(1)}px,${s.y.toFixed(1)}px,0) rotate(${s.rot.toFixed(1)}deg)`; });
 }
 
-/* =====================================================================
-   金庫 ── ダイヤルを長押しで解錠
-   ===================================================================== */
-const vault = $('#vault'), hold = $('#hold'), dialEl = $('#dial');
-let vHold = false, vH = 0, vOpen = false, vRot = 0, vLastTick = 0;
-function vaultOpen() {
-  if (vOpen) return; vOpen = true; vault.classList.add('unlocking'); Snd.clunk(); hold.setAttribute('aria-expanded', 'true');
-  setTimeout(() => { vault.classList.add('open', 'shake'); Snd.rumble(); $('#rs-list').removeAttribute('inert'); setTimeout(() => vault.classList.remove('shake'), 700); }, 420);
-}
-hold.addEventListener('pointerdown', e => { vHold = true; try { hold.setPointerCapture(e.pointerId); } catch (_) {} });
-['pointerup', 'pointercancel', 'lostpointercapture'].forEach(t => hold.addEventListener(t, () => { vHold = false; }));
-hold.addEventListener('click', e => { if (e.detail === 0) vaultOpen(); });
-hold.addEventListener('contextmenu', e => e.preventDefault());
-function vaultTick(dt) {
-  if (vOpen) return; vH = vHold ? Math.min(1, vH + dt / 1.2) : Math.max(0, vH - dt * 1.5);
-  vRot += (vHold ? 420 : 0) * dt * (vH < .5 ? 1 : -1.4); dialEl.style.setProperty('--rot', vRot.toFixed(1) + 'deg'); hold.style.setProperty('--h', vH.toFixed(3));
-  if (vHold && Math.abs(vRot - vLastTick) > 12) { vLastTick = vRot; Snd.click(); }
-  if (vH >= 1) vaultOpen();
-}
 
 /* =====================================================================
    シェア
@@ -545,7 +562,7 @@ $('#share-open').addEventListener('click', e => openSheet(SITE, e.currentTarget)
 $$('[data-share-open]').forEach(b => b.addEventListener('click', e => openSheet(SITE, e.currentTarget)));
 $$('[data-share-machine]').forEach(b => b.addEventListener('click', e => {
   const m = b.closest('[data-machine]'), name = m.dataset.machine;
-  openSheet({ name, title: `${name} ── HANGAR F. 主力機`, text: `「${name}」── 路地裏のガレージ、HANGAR F.（第F格納庫）から出撃。`, url: m.dataset.url }, e.currentTarget);
+  openSheet({ name, title: `${name} ── HANGAR F.`, text: `「${name}」── 路地裏のガレージ、HANGAR F.（第F格納庫）から出撃。`, url: m.dataset.url }, e.currentTarget);
 }));
 $$('.modal').forEach(m => { $$('[data-close]', m).forEach(c => c.addEventListener('click', () => closeModal(m))); });
 addEventListener('keydown', e => {
@@ -559,9 +576,9 @@ addEventListener('keydown', e => {
    ===================================================================== */
 const mapEl = $('#map'), plan = $('#plan'); let mapFrom = null;
 const ZONES = [
-  ['top', 'ENTRANCE', '入口', -3, .9, 3, -.3], ['concept', 'CONCEPT', '次期機体', -1.6, -3.4, 1.9, -9.4], ['pit', 'THE PIT', '主力機', -5, -2.7, -3.55, -5.6],
-  ['screening', 'SCREENING', '映写室', 3.85, -6.6, 5, -7.7], ['crew', 'CREW', '乗組員', -5, -8.5, -3.6, -10.3], ['log', 'LOGBOOK', '出庫記録', -1.9, -11.7, 1.9, -12.5],
-  ['b1f', 'B1F', '地下工場', -3.3, -10.3, -1.9, -11.5], ['parts', 'PARTS', '部品棚', 4.05, -8.3, 5, -10.4], ['safe', 'SAFE', '金庫', 3.8, -10.9, 5, -12.2], ['radio', 'RADIO', '無線室', 3.1, -1.5, 5, -6.2]
+  ['top', 'ENTRANCE', '入口', -3, .9, 3, -.3], ['concept', 'CONCEPT', '次期機体', -1.6, -3.4, 1.9, -9.4], ['pit', 'THE LINEUP', '並んでいるもの', -5, -2.7, -3.55, -5.6],
+  ['screening', 'SCREENING', '映写室', 3.85, -6.6, 5, -7.7], ['crew', 'CREW', 'ガレージの主', -5, -8.5, -3.6, -10.3], ['log', 'LOGBOOK', '出庫記録', -1.9, -11.7, 1.9, -12.5],
+  ['b1f', 'B1F', '地下工場', -3.3, -10.3, -1.9, -11.5], ['parts', 'PARTS', '部品棚', 4.05, -8.3, 5, -10.4], ['radio', 'RADIO', '無線室', 3.1, -1.5, 5, -6.2]
 ];
 {
   const X = x => (x + 5) * 50, Y = z => (1.2 - z) * 50; const el = (n, at, txt) => { const e = document.createElementNS(NS, n); for (const k in at) e.setAttribute(k, at[k]); if (txt) e.textContent = txt; plan.appendChild(e); return e; };
@@ -630,7 +647,7 @@ function clocks() {
 let last = performance.now(), perf = { n: 0, acc: 0, checked: 0, level: 0 };
 function frame(now) {
   const dt = Math.min(.05, (now - last) / 1000); last = now; S.t += dt; S.y = scrollY;
-  gateTick(dt); updateCursor(); trackSections(); logoPhysics(); updateStk(); vaultTick(dt);
+  gateTick(dt); updateCursor(); trackSections(); logoPhysics(); updateStk();
   const ctr = L.cH - innerHeight, p = ctr > 0 ? clamp((S.y - L.cTop) / ctr) : 0;
   if (S.y > L.cTop - innerHeight && S.y < L.cTop + L.cH) { const ps = p.toFixed(3); if (ps !== conceptSec._p) { conceptSec._p = ps; conceptSec.style.setProperty('--p', ps); } updateConcept(p); }
   demos.forEach(d => d(S.t)); updateSpots(); updateMapMe(); clocks();
@@ -670,12 +687,11 @@ if (TOUR) {
     await wait(4500);
     await go(top('#concept') + 10, 2600); await go(top('#concept') + innerHeight * 1.9, 8000); await wait(1800);
     await go(top('#pit') + 40, 2600); await wait(1500);
-    for (const id of ['#cv-sumi', '#cv-star']) { const art = $(id).parentNode; await go(art.getBoundingClientRect().top + scrollY - innerHeight * .2, 1800); const r = art.getBoundingClientRect();
+    for (const [id, key] of [['#cv-sumi', 'sumi'], ['#cv-star', 'nemuri']]) { luPick(key); await wait(700); const art = $(id).parentNode; await go(art.getBoundingClientRect().top + scrollY - innerHeight * .2, 1800); const r = art.getBoundingClientRect();
       for (let k = 0; k < 12; k++) { ev(art, 'pointermove', r.left + r.width * (.2 + .05 * k), r.top + r.height * (.3 + .2 * Math.sin(k))); ev(art, 'pointerdown', r.left + r.width * .5, r.top + r.height * .5); await wait(220); } }
-    { const art = $('#charger').parentNode; await go(art.getBoundingClientRect().top + scrollY - innerHeight * .2, 1800); ev(art, 'pointerenter', 5, 5); await wait(1800); }
+    { luPick('charger'); await wait(700); const art = $('#charger').parentNode; await go(art.getBoundingClientRect().top + scrollY - innerHeight * .2, 1800); ev(art, 'pointerenter', 5, 5); await wait(1800); }
     for (const id of ['#screening', '#crew', '#log', '#b1f']) { await go(top(id) + 20, 2600); await wait(id === '#log' ? 3800 : 2600); }
     await go(top('#parts') + 20, 2600); stks.forEach((s, i) => { s.vx = (i % 2 ? 1 : -1) * (14 + i * 3); s.vy = -10 + i * 4; }); await wait(3200);
-    await go(top('#safe') + 20, 2600); hold.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 9 })); await wait(1500); hold.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 9 })); await wait(2600);
     await go(top('#radio') + 20, 2600); await wait(3000);
     await go(document.documentElement.scrollHeight, 4000); await wait(3500);
     console.log('TOUR_DONE');

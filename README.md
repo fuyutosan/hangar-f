@@ -31,5 +31,3 @@
 - `v3/garage.js` … 3Dガレージ
 - `v3/style.css` … 見た目
 - `kiroku.json` … 整備記録（大図書館から自動転記）
-- `index.v2.html`（`v2.css` / `v2.js`）… 旧・格納庫（v2）
-- `index.legacy.html` … 初代（v1）
