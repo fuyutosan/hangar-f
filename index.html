@@ -11,451 +11,175 @@ if(location.hostname==='fuyutosan.github.io'){
 document.documentElement.classList.add('js');
 </script>
 <link rel="canonical" href="https://hangar-f.pages.dev/">
-<title>HANGAR F. ── 大人の秘密基地／第F格納庫</title>
-<meta name="description" content="路地の奥、シャッターの向こう。思いついたら、すぐつくる。シロタの大人の秘密基地＝ガレージ。作ったもの・書いているものへの案内所です。長押しでシャッターを上げて、3Dのガレージを歩いて巡れます。">
-<meta property="og:title" content="HANGAR F. ── 大人の秘密基地／第F格納庫">
-<meta property="og:description" content="路地の奥、シャッターの向こう。思いついたら、すぐつくる。作ったもの・書いているものへの案内所を兼ねた、シロタの秘密のガレージ。">
-<meta property="og:image" content="https://hangar-f.pages.dev/assets/ogp-garage.jpg">
+<title>HANGAR F. ── 毎週、増築されるテーマパーク｜シロタ</title>
+<meta name="description" content="プログラミング未経験の会社員シロタが、AIといっしょに作ったアプリ・ゲーム・サイトが並ぶテーマパーク。ミニチュアの園を見て回って、気になった作品にそのまま乗れます。新作が出るたびに増築されます。">
+<meta property="og:title" content="HANGAR F. ── 毎週、増築されるテーマパーク">
+<meta property="og:description" content="プログラミング未経験の会社員シロタが、AIと作ったアプリ・ゲーム・サイトが並ぶテーマパーク。思いついたら、すぐつくる。">
+<meta property="og:image" content="https://hangar-f.pages.dev/assets/ogp-park.jpg">
 <meta property="og:url" content="https://hangar-f.pages.dev/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="HANGAR F.">
 <meta property="og:locale" content="ja_JP">
-<meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="HANGAR F. ── 路地裏の秘密基地。思いついたら、すぐつくる。">
+<meta property="og:image:alt" content="HANGAR F. ── ミニチュアのテーマパーク。思いついたら、すぐつくる。">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="HANGAR F. ── 大人の秘密基地／第F格納庫">
-<meta name="twitter:description" content="路地の奥、シャッターの向こう。思いついたら、すぐつくる。">
-<meta name="twitter:image" content="https://hangar-f.pages.dev/assets/ogp-garage.jpg">
-<meta name="theme-color" content="#0a0908">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230a0908'/%3E%3Cpath d='M20 14h26v9H30v7h13v9H30v13H20z' fill='%23ffb547'/%3E%3Ccircle cx='47' cy='48' r='5' fill='%23ff4f7e'/%3E%3C/svg%3E">
+<meta name="twitter:title" content="HANGAR F. ── 毎週、増築されるテーマパーク">
+<meta name="twitter:description" content="AIと作ったアプリ・ゲーム・サイトが並ぶ、シロタのテーマパーク。">
+<meta name="twitter:image" content="https://hangar-f.pages.dev/assets/ogp-park.jpg">
+<meta name="theme-color" content="#8fc4ee">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23fbf8f2'/%3E%3Cpath d='M18 14h28v9H29v7h14v9H29v13H18z' fill='%231f2430'/%3E%3Ccircle cx='48' cy='48' r='6' fill='%23ff6b4a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Big+Shoulders+Stencil+Display:wght@700;900&family=DotGothic16&family=JetBrains+Mono:wght@400;500;700&family=Shippori+Mincho+B1:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="v3/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Big+Shoulders+Stencil+Display:wght@900&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet">
+<style>body{word-break:keep-all;overflow-wrap:anywhere;text-wrap:pretty}h1,h2,h3,h4{text-wrap:balance}.nb{white-space:nowrap}</style>
+<link rel="stylesheet" href="park/park.css">
 <script type="importmap">{"imports":{"three":"./vendor/three/three.module.min.js","three/addons/":"./vendor/three/addons/"}}</script>
-<link rel="modulepreload" href="vendor/three/three.module.min.js">
+<link rel="modulepreload" href="park/app.js">
 </head>
-<body class="locked">
-<a class="skip" href="#main">本文へ</a>
-<canvas id="gl" aria-hidden="true"></canvas>
-<div class="fx-shade" aria-hidden="true"></div>
-<div class="fx-vig" aria-hidden="true"></div>
-<div class="fx-grain" aria-hidden="true"></div>
-<div class="spots" id="spots" aria-hidden="true">
-  <div class="spot" data-anchor="car" data-sec="concept"><i></i><span><b>F-19 ／ 次期機体</b>布の下は、まだ秘密。</span></div>
-  <div class="spot" data-anchor="tv" data-sec="screening"><i></i><span><b>ON AIR</b>画面をクリックでチャンネル送り</span></div>
-  <div class="spot" data-anchor="lockers" data-sec="crew"><i></i><span><b>LOCKER</b>ガレージの主のロッカー</span></div>
-  <div class="spot" data-anchor="clock" data-sec="log"><i></i><span><b>TOKYO TIME</b><em class="js-jst">--:--</em> いまの日本時間</span></div>
-  <div class="spot" data-anchor="hatch" data-sec="b1f"><i></i><span><b>B1F ↓</b>地下工場への入口</span></div>
-  <div class="spot" data-anchor="shelves" data-sec="parts"><i></i><span><b>PARTS</b>在庫はたっぷり</span></div>
-  <div class="spot" data-anchor="radio" data-sec="radio"><i></i><span><b>RADIO</b>クリックで1曲かかります</span></div>
+<body>
+<a class="skip" href="#guide">パークガイドへ</a>
+
+<!-- 園の模型（3D）。読み込むまでは空のグラデーションだけ。読み上げはガイドが受けるので隠す -->
+<div id="stage" aria-hidden="true">
+  <canvas id="cv"></canvas>
+  <div id="pins"></div>
+  <div class="tilt"></div>
 </div>
 
-<!-- ===================== シャッター（入口・ローダー） ===================== -->
-<div id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-t" aria-describedby="gate-hint">
-  <div class="gate-sky" aria-hidden="true"><i class="rain"></i></div>
-  <div class="gate-door" id="gate-door" aria-hidden="true">
-    <div class="slats"></div>
-    <div class="paint">
-      <div class="paint-no">F</div>
-      <div class="paint-name">HANGAR F<span>.</span></div>
-      <div class="paint-jp">第F格納庫 ── 関係者以外立入禁止</div>
-      <div class="paint-sub"><span>NO PARKING</span><span>シャッター前 駐車禁止</span><span>EST. 2025</span></div>
-    </div>
-    <div class="sticker s1"><img src="assets/suzuri/panda.webp" alt="" width="320" height="320"></div>
-    <div class="sticker s2"><img src="assets/suzuri/soudanchu.webp" alt="" width="320" height="320"></div>
-    <div class="bottom-bar"><i></i></div>
-  </div>
-  <div class="gate-leak" aria-hidden="true"></div>
-  <div class="gate-ui">
-    <div class="gate-title" id="gate-t"><span class="k">SECRET GARAGE ─ 路地裏の第F格納庫</span><span>HANGAR F<i>.</i></span></div>
-    <div class="gate-box">
-      <p class="gate-welcome">ようこそ、大人の秘密基地へ。<small>WELCOME TO THE SECRET GARAGE</small></p>
-      <div class="gate-status" role="status" aria-live="polite"><span class="led" id="gate-led"></span><span id="gate-msg">鍵を探しています…</span><b id="gate-pct">00</b></div>
-      <button type="button" class="gate-btn" id="gate-btn" aria-label="シャッターを開ける（長押し、またはEnterキー）">
-        <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="trk" cx="60" cy="60" r="54"/><circle class="prg" id="gate-ring" cx="60" cy="60" r="54"/></svg>
-        <span class="gate-btn-in"><b>OPEN</b><small>HOLD</small></span>
-      </button>
-      <p class="gate-hint" id="gate-hint">長押しで、シャッターを上げる</p>
-      <div class="gate-opts">
-        <button type="button" class="gate-snd" id="gate-snd" aria-pressed="false"><span class="sw"><i></i></span><span>音ありで入る</span></button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===================== ヘッダー ===================== -->
-<header class="bar">
-  <a class="brand" href="#top" aria-label="HANGAR F. トップへ">HANGAR F<i>.</i><small>SECRET GARAGE</small></a>
-  <div class="now" id="now" aria-hidden="true"><span class="now-no">00</span><span class="now-t">ENTRANCE</span></div>
-  <div class="bar-clock" aria-label="日本時間"><span class="lamp"></span>TOKYO <b class="js-clock">00:00:00</b></div>
-  <div class="bar-act">
-    <button type="button" class="bar-btn" id="snd" aria-pressed="false" aria-label="サウンド"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="lbl">SOUND</span></button>
-    <button type="button" class="bar-btn share" id="share-open" aria-haspopup="dialog" aria-controls="sheet"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v7h14v-7"/></svg><span class="lbl">SHARE</span></button>
-    <button type="button" class="bar-btn map" id="map-open" aria-haspopup="dialog" aria-controls="map" aria-expanded="false"><span class="burger" aria-hidden="true"><i></i><i></i></span><span class="lbl">MAP</span></button>
-  </div>
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="HANGAR F. トップへ"><b>HANGAR F<i>.</i></b><small>第F格納庫</small></a>
+  <nav class="topnav" aria-label="園内の案内">
+    <a href="#guide">ガイド</a><a href="#theater">映写館</a><a href="#ask">頼む</a><a href="#exit">出口</a>
+  </nav>
+  <button type="button" class="btn-enter mini" data-enter>入園する</button>
 </header>
-
-<aside class="odo" aria-hidden="true"><span class="odo-k">ODO</span><span class="odo-d" id="odo">000000</span><span class="odo-u">mm</span></aside>
-<nav class="rail" id="rail" aria-label="ガレージの部屋"></nav>
 
 <main id="main">
 
-<!-- ===================== 00 ENTRANCE ===================== -->
-<section class="sec hero" id="top" data-cam="hero" data-nav="ENTRANCE" data-no="00">
-  <div class="hero-top pa">
-    <div class="kick"><span class="no">№ 00</span>SECRET GARAGE ─ 路地裏の第F格納庫</div>
-  </div>
-  <div class="hero-main">
-    <h1 class="hero-logo" id="logo" aria-label="HANGAR F.">HANGAR F.</h1>
-    <p class="catch"><span class="nw">思いついたら、</span><span class="nw"><em>すぐつくる。</em></span></p>
-    <p class="hero-lead jp pa">路地の奥、シャッターの向こう。ここは、シロタの大人の秘密基地。機体はここで作られ、ここにしまわれ、ここから出撃していく。</p>
-  </div>
-  <dl class="plate pa" aria-label="ガレージの仕様">
-    <div><dt>OWNER</dt><dd>シロタ</dd></div>
-    <div><dt>PACE</dt><dd>思いついたら、すぐ</dd></div>
-    <div><dt>STATUS</dt><dd class="ok" id="sysstate">OPEN</dd></div>
-  </dl>
-  <div class="cue" aria-hidden="true"><span>SCROLL</span><i></i><span>奥へ</span></div>
-</section>
-
-<!-- ===================== 01 CONCEPT ===================== -->
-<section class="sec pin" id="concept" data-cam="concept" data-nav="CONCEPT" data-no="01">
-  <div class="stage">
-    <div class="mf">
-      <div class="label"><span class="no">№ 01</span>CONCEPT</div>
-      <p class="mf-text" id="mf-text" data-hl="すぐつくる,出撃">機体はここで作られ、ここにしまわれ、ここから出撃していく。思いついたら、すぐつくる。コードが書けなかったひとりが、AIといっしょに、勢いと本気で。</p>
-      <div class="gauges" id="gauges">
-        <div class="gauge red" data-v="20" data-max="20" data-txt="即"><svg viewBox="0 0 120 120" aria-hidden="true"></svg><b>即</b><span>製造ペース</span></div>
-      </div>
+<!-- ===== 入口 ===== -->
+<section class="hero" id="top">
+  <div class="hero-card">
+    <p class="kick"><span class="nb">HANGAR F.</span> ── <span class="nb">第F格納庫</span></p>
+    <h1 class="hero-title"><budoux-ja>毎週、増築されるテーマパーク。</budoux-ja></h1>
+    <p class="hero-lead" id="park-lead"><budoux-ja>プログラミング未経験の会社員シロタが、AIといっしょに作ったアプリ・ゲーム・サイトが並ぶテーマパーク。思いついたら、すぐつくる。</budoux-ja></p>
+    <div class="hero-btns">
+      <button type="button" class="btn-enter" data-enter><span>入園する</span><small>模型の園を見て回る</small></button>
+      <a class="btn-sub" href="#guide">一覧で見る</a>
     </div>
   </div>
 </section>
 
-<!-- ===================== 02 THE LINEUP ===================== -->
-<section class="sec" id="pit" data-cam="pit" data-nav="THE LINEUP" data-no="02">
-<header class="sh pa">
-<div class="label"><span class="no">№ 02</span>THE LINEUP</div>
-<h2 class="h2 rv">並んでいる<em>もの</em></h2>
-<p class="lead jp rv">ガレージに並べてあるものを、端から眺めてみてください。気になったら前に立って、気に入ったら、そのまま持っていってください。</p>
-</header>
-<div class="lineup pa">
-<div class="bays" id="bays" role="group" aria-label="ガレージに並んでいるもの">
-<button type="button" class="bay" data-key="note" data-no="F-01" data-type="書きもの" data-name="note" data-en="NOTE ─ HOW I MAKE THINGS" data-desc="作り方を、文章で。AIでものを作る手順や、途中で考えたことを、プログラミング未経験の目線で書いています。まずはここから。" data-url="https://note.com/shirotapandasan" data-go="読みにいく" aria-pressed="false" aria-controls="lu-detail" style="--c:#41c9b4"><span class="bay-beam" aria-hidden="true"></span><span class="bay-pad" aria-hidden="true"></span><span class="bay-pick" aria-hidden="true">PICK</span><span class="bay-obj" aria-hidden="true"><span class="bay-no">F-01</span><span class="bay-gly lat">note</span></span><span class="bay-name">note</span><span class="bay-kind">WRITING</span></button>
-<button type="button" class="bay" data-key="yt" data-no="F-02" data-type="映像" data-name="YouTube" data-en="YOUTUBE ─ シロタのAI工作室" data-desc="作るところを、映像で。AIと作ったもののお披露目、AIのしくみの短い解説、作業やゲームのライブ配信。" data-url="https://www.youtube.com/@shirotapandasan" data-go="観にいく" aria-pressed="false" aria-controls="lu-detail" style="--c:#ff5a4f"><span class="bay-beam" aria-hidden="true"></span><span class="bay-pad" aria-hidden="true"></span><span class="bay-pick" aria-hidden="true">PICK</span><span class="bay-obj" aria-hidden="true"><span class="bay-no">F-02</span><span class="bay-gly">▶</span></span><span class="bay-name">YouTube</span><span class="bay-kind">MOVIE</span></button>
-<button type="button" class="bay" data-key="x" data-no="F-03" data-type="無線" data-name="X" data-en="X ─ @shirotapandasan" data-desc="いま作っているものを、ひとことで。作っている途中のことや、思いついたことを短く流しています。" data-url="https://x.com/shirotapandasan" data-go="のぞきにいく" aria-pressed="false" aria-controls="lu-detail" style="--c:#d8d2c6"><span class="bay-beam" aria-hidden="true"></span><span class="bay-pad" aria-hidden="true"></span><span class="bay-pick" aria-hidden="true">PICK</span><span class="bay-obj" aria-hidden="true"><span class="bay-no">F-03</span><span class="bay-gly lat">𝕏</span></span><span class="bay-name">X</span><span class="bay-kind">RADIO</span></button>
-<button type="button" class="bay" data-key="sumi" data-no="F-04" data-type="気持ちの整理" data-name="墨詠み" data-en="SUMIYOMI ─ INK THAT READS YOUR HEART" data-desc="言の葉を三つ拾うと、墨があなたのこころを詠む。静かに揺れる水墨画の庭で、まだ言葉にならない気持ちをそっと整理してくれる。結果は一枚の「おみくじ札」にして持ち帰れます。" data-url="https://sumiyomi.pages.dev/" data-go="遊ぶ" aria-pressed="false" aria-controls="lu-detail" style="--c:#9fb6c9"><span class="bay-beam" aria-hidden="true"></span><span class="bay-pad" aria-hidden="true"></span><span class="bay-pick" aria-hidden="true">PICK</span><span class="bay-obj" aria-hidden="true"><span class="bay-no">F-04</span><span class="bay-gly">墨</span></span><span class="bay-name">墨詠み</span><span class="bay-kind">APP</span></button>
-<button type="button" class="bay" data-key="nemuri" data-no="F-05" data-type="睡眠支援" data-name="ねむり星空" data-en="NEMURI HOSHIZORA" data-desc="スマホの光で、天井を星空に変える。呼吸のリズムでゆっくり明滅する、眠れない夜のいちばん近い星。" data-url="https://nemuri-hoshizora.pages.dev/" data-go="使ってみる" aria-pressed="false" aria-controls="lu-detail" style="--c:#8fa8ff"><span class="bay-beam" aria-hidden="true"></span><span class="bay-pad" aria-hidden="true"></span><span class="bay-pick" aria-hidden="true">PICK</span><span class="bay-obj" aria-hidden="true"><span class="bay-no">F-05</span><span class="bay-gly">☾</span></span><span class="bay-name">ねむり星空</span><span class="bay-kind">APP</span></button>
-<button type="button" class="bay" data-key="charger" data-no="F-06" data-type="癒し" data-name="パンダさん充電器" data-en="PANDA POWER CHARGER" data-desc="充電するたび、パンダさんが元気をくれる。ただの充電時間が、ちょっとした楽しみに変わる充電画面アプリ。" data-url="https://panda-charger.pages.dev/" data-go="使ってみる" aria-pressed="false" aria-controls="lu-detail" style="--c:#5fe3a1"><span class="bay-beam" aria-hidden="true"></span><span class="bay-pad" aria-hidden="true"></span><span class="bay-pick" aria-hidden="true">PICK</span><span class="bay-obj" aria-hidden="true"><span class="bay-no">F-06</span><span class="bay-gly">⚡</span></span><span class="bay-name">パンダさん<br>充電器</span><span class="bay-kind">APP</span></button>
-<button type="button" class="bay" data-key="caravan" data-no="F-07" data-type="ゲーム" data-name="笹友キャラバン" data-en="SASATOMO CARAVAN" data-desc="パンダさんたちの隊商が、町をめぐって元気を配りながら旅をするゲーム。もやもや雲を、ひとつずつ笑顔に。" data-url="https://sasatomo-caravan.pages.dev/" data-go="遊ぶ" aria-pressed="false" aria-controls="lu-detail" style="--c:#c9e25f"><span class="bay-beam" aria-hidden="true"></span><span class="bay-pad" aria-hidden="true"></span><span class="bay-pick" aria-hidden="true">PICK</span><span class="bay-obj" aria-hidden="true"><span class="bay-no">F-07</span><span class="bay-gly">笹</span></span><span class="bay-name">笹友<br>キャラバン</span><span class="bay-kind">GAME</span></button>
-</div>
-<p class="lu-hint" id="lu-hint">← → で見くらべ ／ クリックで選ぶ</p>
-</div>
-<article class="machine lu-detail pa" id="lu-detail" data-machine="note" data-url="https://note.com/shirotapandasan">
-<div class="m-screen lu-mon">
-<div class="lu-layer art-note" data-for="note"><span class="lu-big lat">note</span><span class="lu-sub">作り方を、文章で。</span><span class="m-tag">READ ／ 書きもの</span></div>
-<div class="lu-layer art-yt" data-for="yt"><span class="lu-play" aria-hidden="true">▶</span><span class="lu-sub">シロタのAI工作室</span><span class="m-tag">ON AIR ／ 映像</span></div>
-<div class="lu-layer art-x" data-for="x"><span class="lu-big lat">𝕏</span><span class="lu-sub">@shirotapandasan</span><span class="m-tag">RADIO ／ 無線</span></div>
-<div class="lu-layer art-sumi" data-for="sumi" data-cursor="墨を落とす"><canvas id="cv-sumi"></canvas><span class="m-tag">LIVE DEMO ／ 触ると墨が落ちる</span></div>
-<div class="lu-layer art-nemuri" data-for="nemuri" data-cursor="星をともす"><canvas id="cv-star"></canvas><span class="m-tag">LIVE DEMO ／ タップで星がともる</span></div>
-<div class="lu-layer" data-for="charger" data-cursor="充電"><div class="charger" id="charger"><span class="msg">CHARGING…</span><img src="assets/px/panda_face.png" alt="" width="38" height="28"><div class="batt"><i></i><i></i><i></i><i></i><i></i></div><span class="pct" id="pct">0%</span></div><span class="m-tag">LIVE DEMO ／ 触れると充電</span></div>
-<div class="lu-layer art-caravan" data-for="caravan"><img src="https://i.ytimg.com/vi/5diwayjSREY/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy"><span class="m-tag">GAME ／ オープニング映像より</span></div>
-<span class="m-no" id="lu-no" aria-hidden="true">F-01</span>
-</div>
-<div class="m-sheet" aria-live="polite">
-<div class="m-id" id="lu-id">F-01 ／ TYPE: 書きもの</div>
-<h3 id="lu-name">note</h3>
-<div class="m-en" id="lu-en">NOTE ─ HOW I MAKE THINGS</div>
-<p class="jp" id="lu-desc">作り方を、文章で。AIでものを作る手順や、途中で考えたことを、プログラミング未経験の目線で書いています。まずはここから。</p>
-<div class="btns"><a class="btn" id="lu-go" data-sortie data-cursor="出撃" href="https://note.com/shirotapandasan" target="_blank" rel="noopener">読みにいく</a><button type="button" class="btn-ic" data-share-machine aria-label="選んでいるものをシェアする"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v7h14v-7"/></svg></button></div>
-</div>
-</article>
-</section>
-
-<!-- ===================== 03 SCREENING ===================== -->
-<section class="sec right" id="screening" data-cam="screening" data-nav="SCREENING" data-no="03">
-  <div class="col pa">
-    <header class="sh">
-      <div class="label"><span class="no">№ 03</span>SCREENING ROOM</div>
-      <h2 class="h2 rv">映写<em>室</em></h2>
-      <p class="lead jp rv">ブラウン管の前のソファで、記録映像をどうぞ。</p>
-    </header>
-    <div class="reel rv">
-      <div class="crt" data-tilt data-cursor="PLAY">
-        <button type="button" class="yt-play" data-yt="5diwayjSREY" data-title="笹友キャラバン オープニング映像" aria-label="笹友キャラバンのオープニング映像を再生する">
-          <img src="https://i.ytimg.com/vi/5diwayjSREY/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy">
-          <span class="rec">REC ／ OPENING</span><span class="play" aria-hidden="true">▶</span>
-        </button>
-      </div>
-      <div class="reel-cap"><span>REEL 01 ／ 笹友キャラバン</span><span>8 CUTS</span></div>
-      <h3>ゲームのオープニング</h3>
-      <p class="jp">プログラミング未経験のシロタが、AIと作ったゲームのオープニング。<b>カメラワーク8カットと、専用のBGM</b>まで自作しました。</p>
-      <div class="btns">
-        <a class="btn" data-sortie data-cursor="出撃" href="https://sasatomo-caravan.pages.dev/" target="_blank" rel="noopener">出撃する（ゲームで遊ぶ）</a>
-        <a class="btn plain" href="https://www.youtube.com/watch?v=5diwayjSREY" target="_blank" rel="noopener">YouTubeで見る</a>
-      </div>
-    </div>
+<!-- ===== 本日の開園情報 ===== -->
+<section class="today" id="today" aria-labelledby="today-t">
+  <div class="board">
+    <h2 id="today-t" class="board-t"><span class="en">TODAY</span>本日の開園情報</h2>
+    <dl class="board-rows" id="board">
+      <div><dt>開園から</dt><dd>…</dd></div>
+    </dl>
   </div>
+  <article class="now" id="now" aria-labelledby="now-t" hidden>
+    <h2 class="now-k" id="now-t">園の主力 ── いますぐ遊べる</h2>
+    <div class="now-body"></div>
+  </article>
 </section>
 
-<!-- ===================== 04 CREW ===================== -->
-<section class="sec left" id="crew" data-cam="crew" data-nav="CREW" data-no="04">
-  <div class="col pa">
-    <header class="sh">
-      <div class="label"><span class="no">№ 04</span>LOCKER ROOM</div>
-      <h2 class="h2 rv">ガレージの<em>主</em></h2>
-      <p class="lead jp rv">このガレージの持ち主です。</p>
-    </header>
-    <div class="crew">
-      <article class="badge-card rv" data-tilt>
-        <div class="bc-clip" aria-hidden="true"></div>
-        <div class="bc-top"><span>OWNER</span><span>ガレージの主</span></div>
-        <div class="bc-body">
-          <div class="bc-photo"><img src="assets/shirota-icon.png" alt="シロタ" width="128" height="128" loading="lazy"></div>
-          <div><h3>シロタ</h3><div class="bc-en">SHIROTA ─ OWNER / FOUNDER</div></div>
-        </div>
-        <p class="jp">このガレージの主。思いついたアイデアを、AIとバイブコーディングで形にしては、この格納庫にしまって出撃させている。</p>
-        <div class="bc-code" aria-hidden="true"></div>
-        <div class="btns">
-          <a class="btn" href="https://note.com/shirotapandasan" target="_blank" rel="noopener">note（AI活用の記事）</a>
-<a class="btn ghost" href="https://x.com/shirotapandasan" target="_blank" rel="noopener">@shirotapandasan</a>
-<a class="btn plain" href="https://www.youtube.com/@shirotapandasan" target="_blank" rel="noopener">YouTube</a>
-        </div>
-        <div class="glare" aria-hidden="true"></div>
-      </article>
-      
-    </div>
-  </div>
-</section>
-
-<!-- ===================== 05 LOGBOOK ===================== -->
-<section class="sec" id="log" data-cam="log" data-nav="LOGBOOK" data-no="05">
-  <header class="sh pa">
-    <div class="label"><span class="no">№ 05</span>LOGBOOK</div>
-    <h2 class="h2 rv">出庫<em>記録</em></h2>
-    <p class="lead jp rv">このガレージから出ていった機体の、発着案内板。パタパタと、行き先が変わります。</p>
+<!-- ===== パークガイド（正本） ===== -->
+<section class="guide" id="guide" aria-labelledby="guide-t">
+  <header class="sec-head">
+    <p class="en">PARK GUIDE</p>
+    <h2 id="guide-t">パークガイド</h2>
+    <p class="sec-lead"><budoux-ja>園のアトラクションを、区画ごとに並べました。模型の園と同じ内容です。</budoux-ja></p>
   </header>
-  <div class="board pa rv" id="board">
-    <div class="board-head" role="group" aria-label="種別で絞り込む">
-      <span class="t">DEPARTURES ／ 全<b id="board-n">18</b>機</span>
-      <button class="chip on" data-f="all" type="button" aria-pressed="true">すべて</button>
-      <button class="chip" data-f="game" type="button" aria-pressed="false">ゲーム</button>
-      <button class="chip" data-f="app" type="button" aria-pressed="false">アプリ</button>
-      <button class="chip" data-f="page" type="button" aria-pressed="false">ホームページ</button>
-      <button class="chip" data-f="tool" type="button" aria-pressed="false">ツール</button>
-      <button class="chip" data-f="other" type="button" aria-pressed="false">学習・グッズ</button>
-    </div>
-    <div class="board-cols" aria-hidden="true"><span>DATE</span><span>MACHINE</span><span>TYPE</span><span>STATUS</span></div>
-    <div class="board-rows">
-      <a class="brow" data-k="page" data-sortie href="https://pandasan-works.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-09-13</span><span class="n">パンダさんワークス｜AI活用の相談窓口</span><span class="c c-page">ホームページ</span><span class="s">NEW</span></a>
-      <a class="brow" data-k="other" href="https://suzuri.jp/pandasan-works" target="_blank" rel="noopener"><span class="d">2026-09-12</span><span class="n">パンダさんワークス｜SUZURIステッカー</span><span class="c c-goods">グッズ</span><span class="s">NEW</span></a>
-      <a class="brow" data-k="page" href="https://pandasan-samples.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-08-17</span><span class="n">ひだまり珈琲店｜6つの営業戦略でつくるWebサイト</span><span class="c c-page">ホームページ</span><span class="s"></span></a>
-      <a class="brow" data-k="game" href="https://sasatomo-caravan.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-23</span><span class="n">笹友キャラバン</span><span class="c c-game">ゲーム</span><span class="s"></span></a>
-      <a class="brow" data-k="tool" href="https://github.com/fuyutosan/daitoshokan-ai-library" target="_blank" rel="noopener"><span class="d">2026-07-12</span><span class="n">大図書館（AIの記憶システム）</span><span class="c c-tool">ツール</span><span class="s"></span></a>
-      <a class="brow" data-k="app" href="https://sumiyomi.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-11</span><span class="n">墨詠み</span><span class="c c-app">アプリ</span><span class="s">9/26 刷新</span></a>
-      <a class="brow" data-k="app" href="https://nemuri-hoshizora.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-05</span><span class="n">ねむり星空</span><span class="c c-app">アプリ</span><span class="s"></span></a>
-      <a class="brow" data-k="other" href="https://fable5-torisetsu.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-07-03</span><span class="n">Fable 5のトリセツ大ぼうけん</span><span class="c c-learn">学習</span><span class="s"></span></a>
-      <a class="brow" data-k="app" href="https://panda-charger.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-06-06</span><span class="n">パンダさん充電器</span><span class="c c-app">アプリ</span><span class="s"></span></a>
-      <a class="brow" data-k="app" href="https://pandasanpet.pages.dev/" target="_blank" rel="noopener"><span class="d">2026-05-22</span><span class="n">パンダさんころころ（デスクトップアプリ）</span><span class="c c-app">アプリ</span><span class="s"></span></a>
-      <a class="brow" data-k="game" href="https://pandasangame.pages.dev/" target="_blank" rel="noopener"><span class="d">2025-05-06</span><span class="n">パンダさんパワーゲーム</span><span class="c c-game">ゲーム</span><span class="s"></span></a>
-      <a class="brow" data-k="game" href="https://panda-power.pages.dev/" target="_blank" rel="noopener"><span class="d">2025-04-17</span><span class="n">パンダさんパワー!!ゲーム</span><span class="c c-game">ゲーム</span><span class="s">初号機</span></a>
-    </div>
-  </div>
-  <p class="note jp pa">※この記録は、機体が増えるたびに追記されます。思いついたら、すぐつくる。ペースは気分次第。</p>
-  <div class="logbook pa rv" id="maint-sec" hidden>
-    <h4><span>MAINTENANCE LOG</span>整備記録</h4>
-    <ol id="maint-log"></ol>
-    <button type="button" id="maint-more" aria-expanded="false"></button>
-    <p class="note jp">※この記録は、基地の書庫「大図書館」から自動で転記されています。手書きではありません。</p>
-  </div>
+  <div id="lands"></div>
+  <noscript>
+    <ul class="ns-list">
+      <li><a href="https://dopareversi.pages.dev/">ドパリバーシ</a></li>
+      <li><a href="https://sumiyomi.pages.dev/">墨詠み</a></li>
+      <li><a href="https://nemuri-hoshizora.pages.dev/">ねむり星空</a></li>
+      <li><a href="https://sasatomo-caravan.pages.dev/">笹友キャラバン</a></li>
+      <li><a href="https://pandasan-works.pages.dev/">パンダさんワークス（AI活用の相談窓口）</a></li>
+      <li><a href="https://note.com/shirotapandasan">note</a> ／ <a href="https://www.youtube.com/@shirotapandasan">YouTube</a> ／ <a href="https://x.com/shirotapandasan">X</a></li>
+    </ul>
+  </noscript>
 </section>
 
-<!-- ===================== 06 B1F ===================== -->
-<section class="sec" id="b1f" data-cam="cctv" data-nav="B1F" data-no="06">
-  <header class="sh pa">
-    <div class="label"><span class="no">№ 06</span>B1F ─ UNDERGROUND</div>
-    <h2 class="h2 rv">地下<em>工場</em></h2>
-    <p class="lead jp rv">このガレージの床下には、24時間稼働の工場があります。溶接班、塗装ライン、誘導員。監視カメラの映像で、どうぞ。</p>
+<!-- ===== 映写館 ===== -->
+<section class="theater" id="theater" aria-labelledby="theater-t">
+  <header class="sec-head">
+    <p class="en">THEATER</p>
+    <h2 id="theater-t">映写館</h2>
+    <p class="sec-lead"><budoux-ja>園のできるまでと、アトラクションの記録映像。</budoux-ja></p>
   </header>
-  <div class="cctv pa rv" id="cctv">
-    <div class="cctv-hud" aria-hidden="true">
-      <span class="rec"><i></i>REC</span><span>CAM-02 ／ B1F 製造ライン</span><span class="js-cctv-time">2026-10-06 00:00:00 JST</span>
-    </div>
-    <div class="cctv-screen" aria-label="地下工場の監視カメラ映像（ドット絵のアニメーション）" role="img">
-      <div id="floor">
-        <div class="fl-crane"></div>
-        <img class="fl-trolley" src="assets/px/machine_ctrl.png" alt="">
-        <div class="fl-hookwrap">
-          <img class="fl-hook" src="assets/px/hook.png" alt="">
-          <img class="fl-load" src="assets/px/crate_a.png" alt="">
-          <img class="fl-load face" src="assets/px/panda_face.png" alt="">
-        </div>
-        <div class="fl-led l1"></div><div class="fl-led l2"></div><div class="fl-led l3"></div>
-        <img class="fl-hangar" src="assets/px/hangar.png" alt="">
-        <img class="fl-pole" src="assets/px/pole.png" style="left:126px" alt="">
-        <img class="fl-lamp red" src="assets/px/beacon_red.png" style="left:120px" alt="">
-        <img class="fl-pole" src="assets/px/pole.png" style="right:18px" alt="">
-        <img class="fl-lamp blue" src="assets/px/beacon_blue.png" style="right:12px" alt="">
-        <img class="fl-mc m1" src="assets/px/machine_a.png" style="left:31%" alt="">
-        <img class="fl-mc m2" src="assets/px/machine_pc.png" style="left:42%" alt="">
-        <img class="fl-mc m3" src="assets/px/machine_b.png" style="left:53%" alt="">
-        <img class="fl-mc m4" src="assets/px/sign_warn.png" style="left:70%" alt="">
-        <div class="fl-belt"></div>
-        <img class="fl-cargo" src="assets/px/crate_a.png" alt="">
-        <img class="fl-cargo" src="assets/px/barrel.png" style="animation-delay:-4.6s" alt="">
-        <img class="fl-cargo" src="assets/px/crate_b.png" style="animation-delay:-9.3s" alt="">
-        <div class="fl-glow"></div>
-        <div class="fl-weld"></div>
-        <div class="fl-spark s1"></div><div class="fl-spark s2"></div><div class="fl-spark s3"></div><div class="fl-spark s4"></div>
-        <div class="fl-spark s5"></div><div class="fl-spark s6"></div><div class="fl-spark s7"></div><div class="fl-spark s8"></div>
-        <img class="fl-marsh a" src="assets/px/marshaller_blue_A.png" alt="">
-        <img class="fl-marsh b" src="assets/px/marshaller_blue_B.png" alt="">
-        <img class="fl-plane panda" src="assets/px/plane_long.png" alt="">
-        <img class="fl-plane gold" src="assets/px/plane_gold_long.png" alt="">
-        <div class="fl-crew2 fl-mech"><img class="a" src="assets/px/mech_a.png" alt=""><img class="b" src="assets/px/mech_b.png" alt=""></div>
-        <div class="fl-crew2 fl-painter"><img class="a" src="assets/px/painter_a.png" alt=""><img class="b" src="assets/px/painter_b.png" alt=""></div>
-        <div class="fl-mist"></div>
-        <div class="fl-steam p1"></div><div class="fl-steam p2"></div><div class="fl-steam p3"></div>
-        <div class="fl-fork"><img class="a" src="assets/px/forklift_a.png" alt=""><img class="b" src="assets/px/forklift_b.png" alt=""></div>
-        <div class="fl-mei rest"><img class="a" src="assets/px/mei_bite_a.png" alt=""><img class="b" src="assets/px/mei_bite_b.png" alt=""></div>
-        <div class="fl-mei pc"><img class="a" src="assets/px/mei_desk_a.png" alt=""><img class="b" src="assets/px/mei_desk_b.png" alt=""></div>
-        <div class="fl-mei walk"><img class="a" src="assets/px/mei_walk_a.png" alt=""><img class="b" src="assets/px/mei_walk_b.png" alt=""></div>
-        <div class="fl-mei guide"><img class="a" src="assets/px/mei_guide_a.png" alt=""><img class="b" src="assets/px/mei_guide_b.png" alt=""></div>
-        <img class="fl-welder a" src="assets/px/welder_a.png" alt="">
-        <img class="fl-welder b" src="assets/px/welder_b.png" alt="">
-        <div class="fl-ground"></div>
-      </div>
-      <div class="cctv-scan" aria-hidden="true"></div>
-    </div>
-    <div class="cctv-ticker" aria-hidden="true"><div class="tk">
-      <span>◉ 地下工場 24時間稼働中</span><span>溶接班: 火花良好</span><span>塗装ライン: いい色出てます</span><span>誘導員: 本日も絶好調</span><span>管制塔: 異常なし（平和）</span><span>次期機体: 布の下で構想中</span><span>パンダさん: 笹休憩中</span><span>整備記録: 自動転記オンライン</span><span>フォークリフト: 積み込み中</span><span>整備員: レンチ回してます</span>
-      <span>◉ 地下工場 24時間稼働中</span><span>溶接班: 火花良好</span><span>塗装ライン: いい色出てます</span><span>誘導員: 本日も絶好調</span><span>管制塔: 異常なし（平和）</span><span>次期機体: 布の下で構想中</span><span>パンダさん: 笹休憩中</span><span>整備記録: 自動転記オンライン</span><span>フォークリフト: 積み込み中</span><span>整備員: レンチ回してます</span>
-    </div></div>
-    <div class="cctv-cap jp">ロゴを5回クリックすると、何かが起きます。</div>
-  </div>
+  <div class="reels" id="reels"></div>
 </section>
 
-<!-- ===================== 07 PARTS ===================== -->
-<section class="sec right" id="parts" data-cam="parts" data-nav="PARTS" data-no="07">
-  <div class="col pa">
-    <header class="sh">
-      <div class="label"><span class="no">№ 07</span>PARTS COUNTER</div>
-      <h2 class="h2 rv">部品<em>棚</em></h2>
-    </header>
-    <div class="parts">
-      <div class="parts-copy rv">
-        <h3>パンダさんワークス<small>SUZURI STICKER SHOP</small></h3>
-        <p class="jp">基地のパンダさんが、ステッカーになりました。<b>「AIを使う人の“しるし”」</b>がテーマ。ノートPCやスマホに貼っておくと、知っている人だけが気づくマークです。</p>
-        <p class="jp">作っているのは、シロタの仕事のほう＝<b class="nw">パンダさんワークス</b>です。</p>
-        <div class="price">STICKER 5種 ／ 基地の外でも持ち歩ける装備 ／ 各622円（税込）</div>
-        <div class="btns">
-          <a class="btn" data-sortie data-cursor="出撃" href="https://suzuri.jp/pandasan-works" target="_blank" rel="noopener">ショップを見る</a>
-          <a class="btn plain" href="https://pandasan-works.pages.dev/" target="_blank" rel="noopener">パンダさんワークスとは</a>
-        </div>
-      </div>
-      <div class="lid rv" id="bench" data-cursor="DRAG">
-        <span class="lid-l" aria-hidden="true">TOOLBOX LID ／ ドラッグで貼り替え</span>
-        <a class="stk" style="--w:34%;left:6%;top:14%" data-rot="-8" href="https://suzuri.jp/pandasan-works/20896773/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/soudanchu.webp" alt="AIと相談中 ステッカー" width="320" height="320" loading="lazy"></a>
-        <a class="stk" style="--w:30%;left:58%;top:8%" data-rot="9" href="https://suzuri.jp/pandasan-works/20894542/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/panda.webp" alt="AIパンダさん ステッカー" width="320" height="320" loading="lazy"></a>
-        <a class="stk" style="--w:27%;left:36%;top:44%" data-rot="-4" href="https://suzuri.jp/pandasan-works/20894548/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/emblem.webp" alt="丸エンブレム ステッカー" width="320" height="320" loading="lazy"></a>
-        <a class="stk" style="--w:30%;left:4%;top:54%" data-rot="6" href="https://suzuri.jp/pandasan-works/20894331/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/logo.webp" alt="パンダさんワークス ロゴ ステッカー" width="320" height="320" loading="lazy"></a>
-        <a class="stk" style="--w:42%;left:54%;top:68%" data-rot="-3" href="https://suzuri.jp/pandasan-works/20894549/sticker/m/white" target="_blank" rel="noopener"><img src="assets/suzuri/strip.webp" alt="パンダさんワークス 横長 ステッカー" width="480" height="167" loading="lazy"></a>
-      </div>
-    </div>
-    <a class="lounge rv" href="https://note.com/shirotapandasan" target="_blank" rel="noopener">
-      <span class="em" aria-hidden="true">📝</span><span><b>休憩室 ／ note</b><span class="jp">作業の合間に、書き物もしています。ひと休みのついでに、よかったらどうぞ。</span></span>
-    </a>
-  </div>
+<!-- ===== 整備記録 ===== -->
+<section class="logbook" id="logbook" aria-labelledby="log-t" hidden>
+  <header class="sec-head">
+    <p class="en">MAINTENANCE LOG</p>
+    <h2 id="log-t">整備記録</h2>
+    <p class="sec-lead"><budoux-ja>園の手入れの記録です。作業の記録帳から、自動で届きます。</budoux-ja></p>
+  </header>
+  <ol class="log-list" id="log-list"></ol>
 </section>
 
-<!-- ===================== 08 RADIO ===================== -->
-<section class="sec right" id="radio" data-cam="radio" data-nav="RADIO" data-no="08">
-  <div class="col pa">
-    <header class="sh">
-      <div class="label"><span class="no">№ 08</span>RADIO ROOM</div>
-      <h2 class="h2 rv">応答、<em>願います。</em></h2>
-    </header>
-    <div class="q rv jp"><span>「これ、どうやって作ってるの？」</span><span>「うちの困りごとも、こういうので解決できる？」</span></div>
-    <p class="lead jp rv">無線は、いつでも開いています。感想ひとことでも、うれしい燃料になります。仕事の相談は、<b class="nw">パンダさんワークス</b>の窓口で受け付けています。</p>
-    <div class="btns rv">
-      <a class="btn works" href="https://pandasan-works.pages.dev/" target="_blank" rel="noopener">相談窓口を見る</a>
-      <a class="btn plain" href="https://note.com/shirotapandasan" target="_blank" rel="noopener">noteを読む</a>
-<a class="btn ghost" href="https://x.com/shirotapandasan" target="_blank" rel="noopener">シロタをフォローする</a>
-<a class="btn mail" href="https://x.com/shirotapandasan" target="_blank" rel="noopener">無線を送る（DM）</a>
-    </div>
-    <div class="share-box rv" id="share-box">
-      <div class="sb-h"><span class="sb-k">SHARE</span><span class="jp">この基地のこと、仲間にこっそり教える。</span></div>
-      <div class="share-grid" data-share-scope="site"></div>
-    </div>
+<!-- ===== 出口 ===== -->
+<section class="exit" id="exit" aria-labelledby="exit-t">
+  <div class="exit-board">
+    <p class="en">NEXT FLIGHTS</p>
+    <h2 id="exit-t">次の便</h2>
+    <p class="sec-lead"><budoux-ja>お帰りの前に。気が向いたら、次の便へどうぞ。</budoux-ja></p>
+    <ol class="flights" id="flights"></ol>
+  </div>
+  <div class="stub" id="stub">
+    <p class="stub-k">入園チケットの半券</p>
+    <p class="stub-no" id="stub-no">F-0000</p>
+    <p class="stub-d" id="stub-d"></p>
+    <button type="button" class="btn-share" id="share-park">この園を教える</button>
   </div>
 </section>
 
 </main>
 
-<!-- ===================== EXIT ===================== -->
-<footer id="exit" data-cam="exit" data-nav="EXIT" data-no="09">
-  <div class="foot-big" aria-hidden="true">HANGAR F<span>.</span></div>
-  <div class="foot-in pa">
-    <p class="foot-bye">また、いつでも。<br>シャッターは、開けておきます。</p>
-    <p class="foot-cred">動力源：好奇心 ／ 設計・指揮：シロタ（人間1名） ／ 製造班：相棒のAI<br>
-      3Dのガレージは、画像素材を使わずにコードだけで建てています。<br>
-      <small>地下工場のドット絵パーツの一部: Kenney.nl（CC0） ／ 3D: three.js（MIT）</small></p>
-    <div class="foot-act">
-      <button type="button" id="close-hangar" class="btn plain">⏏ シャッターを閉める</button>
-      <button type="button" class="btn plain" data-share-open>この基地をシェア</button>
-    </div>
-    <p class="foot-c">© 2026 HANGAR F.</p>
-  </div>
+<footer class="foot">
+  <p><span class="nb">HANGAR F.</span> ── <span class="nb">シロタ</span>の<span class="nb">テーマパーク</span></p>
+  <p class="small"><budoux-ja>建物・地面・光は、すべてプログラムで組み立てています。ドット絵の乗組員と作品の画面は、それぞれの作品から。</budoux-ja></p>
+  <p class="small">3D: <a href="https://threejs.org/">three.js</a>（MIT）／ 改行: <a href="https://github.com/google/budoux">BudouX</a>（Apache-2.0）</p>
 </footer>
 
-<!-- ===================== オーバーレイ ===================== -->
-<div class="cur" aria-hidden="true"><div class="cur-ring"><span class="cur-label"></span></div><div class="cur-dot"></div></div>
-
-<div id="sheet" class="modal" role="dialog" aria-modal="true" aria-labelledby="sheet-t" hidden>
-  <div class="modal-bg" data-close></div>
-  <div class="sheet-card">
-    <div class="sheet-tape" aria-hidden="true"></div>
-    <div class="sheet-head"><span class="k">SHARE</span><h2 id="sheet-t">この基地を、教える。</h2><button type="button" class="x" data-close aria-label="閉じる">×</button></div>
-    <div class="sheet-preview">
-      <img src="assets/ogp-garage.jpg" alt="" width="1200" height="630" id="sheet-img">
-      <div><b id="sheet-title">HANGAR F. ── 大人の秘密基地</b><span id="sheet-url">hangar-f.pages.dev</span></div>
-    </div>
-    <div class="share-grid" data-share-scope="sheet"></div>
-    <p class="sheet-note jp">合言葉はいりません。リンクを渡すだけで、シャッターが開きます。</p>
+<!-- ===== 園の中（模型を触るときの画面） ===== -->
+<div class="park-ui" id="park-ui" hidden>
+  <div class="pk-top">
+    <button type="button" class="pk-exit" data-leave aria-label="園を出てガイドに戻る">← ガイド</button>
+    <div class="pk-title"><b>HANGAR F<i>.</i></b><span id="pk-clock"></span></div>
+    <button type="button" class="pk-help" id="pk-help" aria-expanded="false">遊び方</button>
   </div>
-</div>
-
-<div id="map" class="modal" role="dialog" aria-modal="true" aria-labelledby="map-t" hidden>
-  <div class="modal-bg" data-close></div>
-  <div class="map-card">
-    <div class="map-head"><span class="k">FLOOR PLAN ／ 見取り図</span><h2 id="map-t">どの部屋へ行きますか？</h2><button type="button" class="x" data-close aria-label="閉じる">×</button></div>
-    <div class="map-body">
-      <svg class="plan" id="plan" viewBox="-60 -20 620 760" aria-hidden="true"></svg>
-      <ol class="map-list" id="map-list"></ol>
-    </div>
+  <p class="pk-tip" id="pk-tip" hidden><budoux-ja>建物をタップすると近づけます。ドラッグで少し回り込み、2本指で寄ったり引いたり。</budoux-ja></p>
+  <div class="pk-time" id="pk-time" hidden>
+    <label for="pk-range"><span class="en">HISTORY</span> 時間をさかのぼる</label>
+    <input type="range" id="pk-range" min="0" max="100" step="1" value="100">
+    <output id="pk-date"></output>
   </div>
+  <div class="pk-bottom">
+    <div class="pk-tabs" role="tablist" aria-label="区画" id="pk-tabs"></div>
+    <div class="pk-strip" id="pk-strip"></div>
+  </div>
+  <article class="card" id="card" hidden aria-live="polite">
+    <button type="button" class="card-x" data-close aria-label="閉じる">×</button>
+    <div class="card-in" id="card-in"></div>
+  </article>
 </div>
 
-<div id="new-fx" hidden tabindex="0" role="dialog" aria-label="新作のお知らせ：パンダさんワークスのステッカー">
-  <div class="nx-band"></div>
-  <div class="nx-in"><div class="nx-k">NEW ARRIVAL ── 新しい部品が入庫</div><img src="assets/suzuri/panda.webp" alt="" width="320" height="320"><div class="nx-n">パンダさんワークス</div><div class="nx-s">ステッカー 発売中</div></div>
-  <div class="nx-skip">TAP ▶ 部品棚へ</div>
+<!-- ===== 入園の儀式（シャッター＋チケット） ===== -->
+<div class="ritual" id="ritual" hidden aria-hidden="true">
+  <div class="shutter"><div class="slats"></div><p class="sh-name">HANGAR F<i>.</i></p></div>
+  <div class="ticket" id="ticket"><p class="tk-k">ADMIT ONE ／ 入園チケット</p><p class="tk-no" id="tk-no">F-0000</p><p class="tk-d" id="tk-d"></p></div>
 </div>
 
-<div id="sortie" hidden aria-hidden="true">
-  <div class="sx-beam l"></div><div class="sx-beam r"></div>
-  <div class="sx-body"><div class="sx-lines"></div><img class="sx-plane" src="assets/px/plane_long.png" alt=""><div class="sx-text">SORTIE</div><div class="sx-sub" id="sx-sub">HANGAR F. ── 出撃</div><div class="sx-flash"></div></div>
-</div>
+<div class="toast" id="toast" role="status" hidden></div>
 
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-<script type="module" src="v3/app.js"></script>
-<script>
-// 保険：古いブラウザなどで本体が動かなかったら、シャッターを開けたままにする
-setTimeout(function(){if(!window.HF){var g=document.getElementById('gate');if(g)g.hidden=true;[].forEach.call(document.querySelectorAll('[inert]'),function(e){e.inert=false;e.removeAttribute('inert')});document.body.classList.remove('locked');document.documentElement.classList.add('is-ready');}},6000);
-</script>
-<noscript><style>#gate{display:none!important}body.locked{overflow:auto!important}.js .catch,.js .hero-lead{opacity:1!important}.rv{opacity:1!important;transform:none!important}.h2.rv{clip-path:none!important}</style></noscript>
+<script src="vendor/budoux/budoux-ja.min.js"></script>
+<script type="module" src="park/app.js"></script>
 </body>
 </html>

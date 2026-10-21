@@ -1,0 +1,269 @@
+{
+ "park": {
+  "name": "HANGAR F.",
+  "jp": "第F格納庫",
+  "catch": "毎週、増築されるテーマパーク。",
+  "lead": "プログラミング未経験の会社員シロタが、AIといっしょに作ったアプリ・ゲーム・サイトが並ぶテーマパーク。思いついたら、すぐつくる。",
+  "owner": "シロタ",
+  "opened": "2026-05-22",
+  "url": "https://hangar-f.pages.dev/"
+ },
+ "lands": [
+  {
+   "id": "play",
+   "name": "遊ぶ",
+   "en": "PLAY",
+   "color": "#ff6b4a",
+   "lead": "AIと作ったゲーム。ブラウザで、すぐ遊べます。"
+  },
+  {
+   "id": "ask",
+   "name": "頼む",
+   "en": "ASK",
+   "color": "#2fbf86",
+   "lead": "同じようなものを、あなたの仕事にも。相談の窓口と、見本と、グッズ。"
+  },
+  {
+   "id": "learn",
+   "name": "学ぶ",
+   "en": "LEARN",
+   "color": "#f2a81d",
+   "lead": "作り方を、文章と映像で。AIでものを作る手順を、未経験の目線で。"
+  },
+  {
+   "id": "rest",
+   "name": "整える",
+   "en": "REST",
+   "color": "#5b8fe8",
+   "lead": "眠れない夜や、もやもやする日に。気持ちと暮らしを、少し整える道具。"
+  }
+ ],
+ "works": [
+  {
+   "id": "korokoro",
+   "name": "パンダさんころころ",
+   "land": "rest",
+   "kind": "app",
+   "icon": "🐼",
+   "color": "#9db4ff",
+   "date": "2026-05-22",
+   "url": "https://pandasanpet.pages.dev/",
+   "go": "見てみる",
+   "one": "デスクトップに、パンダさんを。",
+   "desc": "Windowsのデスクトップの上を、パンダさんがころころ転がる無料のデスクトップペットアプリ。作業の合間に、ちょっと和みます。",
+   "shot": "assets/shots/korokoro.webp",
+   "shotM": "assets/shots/korokoro-m.webp"
+  },
+  {
+   "id": "fable5",
+   "name": "Fable 5のトリセツ大ぼうけん",
+   "land": "learn",
+   "kind": "learn",
+   "icon": "🗺️",
+   "color": "#e9b64a",
+   "date": "2026-07-03",
+   "url": "https://fable5-torisetsu.pages.dev/",
+   "go": "読んでみる",
+   "one": "AIの使い方を、冒険しながら。",
+   "desc": "AIモデル「Claude Fable 5」のじょうずな使い方を、AIパンダさんが小学生でもわかるように解説するページ。スタンプラリーとクイズつき。",
+   "shot": "assets/shots/fable5.webp",
+   "shotM": "assets/shots/fable5-m.webp"
+  },
+  {
+   "id": "nemuri",
+   "name": "ねむり星空",
+   "land": "rest",
+   "kind": "app",
+   "icon": "🌙",
+   "color": "#8fa8ff",
+   "date": "2026-07-05",
+   "url": "https://nemuri-hoshizora.pages.dev/",
+   "go": "使ってみる",
+   "one": "スマホの光で、天井に星空。",
+   "desc": "画面の光で、天井を星空に。呼吸に合わせてゆっくり明滅する、眠れない夜のための睡眠ライト。",
+   "shot": "assets/shots/nemuri-og.webp",
+   "shotM": "assets/shots/nemuri-m.webp"
+  },
+  {
+   "id": "sumiyomi",
+   "name": "墨詠み",
+   "land": "rest",
+   "kind": "app",
+   "icon": "🖌️",
+   "color": "#7f9bb8",
+   "date": "2026-07-11",
+   "updated": "2026-09-26",
+   "url": "https://sumiyomi.pages.dev/",
+   "go": "遊ぶ",
+   "one": "言葉にならない気持ちを、墨が詠む。",
+   "desc": "言の葉を三つ拾うと、墨があなたのこころを詠む。静かに揺れる水墨画の庭で、まだ言葉にならない気持ちをそっと整理してくれる。結果は一枚の「おみくじ札」にして持ち帰れます。",
+   "shot": "assets/shots/sumiyomi-og.webp",
+   "shotM": "assets/shots/sumiyomi-m.webp"
+  },
+  {
+   "id": "daitoshokan",
+   "name": "大図書館",
+   "land": "learn",
+   "kind": "learn",
+   "icon": "📚",
+   "color": "#c9a46a",
+   "date": "2026-07-12",
+   "url": "https://github.com/fuyutosan/daitoshokan-ai-library",
+   "go": "仕組みを見る",
+   "one": "AIが自分を覚えてくれない問題に。",
+   "desc": "AIとの作業の記録を日誌から棚へ整理して、次の仕事で引けるようにする仕組み（Claude Code向け・非エンジニア向けの日本語テンプレート）。この園の整備記録も、ここから自動で届いています。",
+   "shot": "assets/shots/daitoshokan.webp",
+   "shotM": "assets/shots/daitoshokan-m.webp"
+  },
+  {
+   "id": "caravan",
+   "name": "笹友キャラバン",
+   "land": "play",
+   "kind": "game",
+   "icon": "🎋",
+   "color": "#a8c93f",
+   "date": "2026-07-23",
+   "url": "https://sasatomo-caravan.pages.dev/",
+   "go": "遊ぶ",
+   "one": "パンダさんの隊商と、町をめぐる旅。",
+   "desc": "パンダさんたちが世界に元気を配る、ドット×放置×ハクスラのゲーム。るすばん中もキャラバンは旅を続けます。カメラワーク8カットのオープニングと専用のBGMまで作りました。",
+   "shot": "assets/shots/caravan-og.webp",
+   "shotM": "assets/shots/caravan-m.webp",
+   "yt": "5diwayjSREY"
+  },
+  {
+   "id": "youtube",
+   "name": "シロタのAI工作室",
+   "land": "learn",
+   "kind": "media",
+   "icon": "▶️",
+   "color": "#ff5a4f",
+   "facility": true,
+   "date": "2026-07-26",
+   "url": "https://www.youtube.com/@shirotapandasan",
+   "go": "観にいく",
+   "one": "作るところを、映像で。",
+   "desc": "AIと作ったもののお披露目、AIのしくみの短い解説、作業やゲームのライブ配信。YouTubeのチャンネルです。",
+   "thumb": "https://i.ytimg.com/vi/5diwayjSREY/hqdefault.jpg"
+  },
+  {
+   "id": "note",
+   "name": "note",
+   "land": "learn",
+   "kind": "media",
+   "icon": "📝",
+   "color": "#41c9b4",
+   "facility": true,
+   "date": "2026-08-10",
+   "url": "https://note.com/shirotapandasan",
+   "go": "読みにいく",
+   "one": "作り方を、文章で。",
+   "desc": "AIでものを作る手順や、途中で考えたことを、プログラミング未経験の目線で書いています。"
+  },
+  {
+   "id": "hidamari",
+   "name": "お店のサンプルHP集",
+   "land": "ask",
+   "kind": "ask",
+   "icon": "☕",
+   "color": "#c98a4a",
+   "date": "2026-08-17",
+   "url": "https://pandasan-samples.pages.dev/",
+   "go": "見本を見る",
+   "one": "見せ方が違うのは、届けたい相手が違うから。",
+   "desc": "架空のお店や会社を題材にしたWebサイトの見本集。お店とデザインを切り替えて、見せ方の違いを見比べられます。お店のサイトを作るときの「どこまでできるか」の目安に。",
+   "shot": "assets/shots/hidamari.webp",
+   "shotM": "assets/shots/hidamari-m.webp"
+  },
+  {
+   "id": "suzuri",
+   "name": "ステッカー売店",
+   "land": "ask",
+   "kind": "ask",
+   "icon": "🏷️",
+   "color": "#ff8fb1",
+   "date": "2026-09-12",
+   "url": "https://suzuri.jp/pandasan-works",
+   "go": "売店をのぞく",
+   "one": "AIと働く毎日に、パンダさんを。",
+   "desc": "パンダさんワークスのステッカーやグッズを、SUZURIで扱っています。パソコンやデスクまわりに、どうぞ。",
+   "shot": "assets/shots/suzuri.webp",
+   "shotM": "assets/shots/suzuri-m.webp"
+  },
+  {
+   "id": "pandasan-works",
+   "name": "パンダさんワークス",
+   "land": "ask",
+   "kind": "ask",
+   "icon": "🤝",
+   "color": "#2fbf86",
+   "date": "2026-09-13",
+   "url": "https://pandasan-works.pages.dev/",
+   "go": "相談窓口へ",
+   "one": "困りごと、ひとつ形にします。",
+   "desc": "ホームページ、動画、業務改善の道具、作業の自動化。AIを使って、あなたの困りごとを1つ形にする相談窓口です。この園に並んでいるものを作ってきた経験から、できること・できないことを正直にお話しします。",
+   "shot": "assets/shots/pandasan-works.webp",
+   "shotM": "assets/shots/pandasan-works-m.webp"
+  },
+  {
+   "id": "dopareversi",
+   "name": "ドパリバーシ",
+   "land": "play",
+   "kind": "game",
+   "icon": "⚫",
+   "color": "#7d6bff",
+   "date": "2026-10-10",
+   "updated": "2026-10-16",
+   "url": "https://dopareversi.pages.dev/",
+   "go": "遊ぶ",
+   "one": "パンダさんと50問の、リズムリバーシ。",
+   "desc": "パンダさんと50問のリズムリバーシ。一手から、宇宙まで。いま、この園でいちばん力を入れているアトラクションです。",
+   "shot": "assets/shots/dopareversi-og.webp",
+   "shotM": "assets/shots/dopareversi-m.webp",
+   "flagship": true
+  },
+  {
+   "id": "x",
+   "name": "無線塔（X）",
+   "land": "ask",
+   "kind": "tower",
+   "icon": "📡",
+   "color": "#2c3340",
+   "facility": true,
+   "date": "2025-04-17",
+   "url": "https://x.com/shirotapandasan",
+   "go": "のぞきにいく",
+   "one": "いま作っているものを、ひとことで。",
+   "desc": "作っている途中のことや、思いついたことを短く流しています。感想や相談のDMも、ここで受け付けています。"
+  }
+ ],
+ "media": [
+  {
+   "id": "intro",
+   "yt": "yzl5P0Md700",
+   "title": "第F格納庫の紹介映像",
+   "from": "2026-10-21T07:30:00+09:00"
+  },
+  {
+   "id": "caravan-op",
+   "yt": "5diwayjSREY",
+   "title": "笹友キャラバン オープニング映像"
+  }
+ ],
+ "construction": {
+  "label": "次の機体",
+  "note": "布の下は、まだ秘密。",
+  "since": "2026-10-21"
+ },
+ "ask": {
+  "can": [
+   "ホームページ・動画・業務改善の道具・作業の自動化を、困りごと1つから形にする",
+   "目の前で、画面を見ながらいっしょに作る",
+   "自分で使えるようになりたい人に、使い方を伝える"
+  ],
+  "cannot": [
+   "大きな会社の基幹システムのような、大規模な開発",
+   "「AIを入れれば必ず売上が上がる」といった約束"
+  ]
+ }
+}
