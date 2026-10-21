@@ -38,6 +38,7 @@ body.in-park #pins{opacity:1}
 #pins.near .pin span,.pin.on span{display:inline}
 .pin.star span{display:inline;font-weight:900}.pin.star{box-shadow:0 0 0 3px var(--c),0 6px 16px rgba(0,0,0,.18)}
 .pin.on{outline:3px solid var(--c);z-index:3}
+.pin.care::after{content:'';position:absolute;top:-4px;right:-4px;width:11px;height:11px;border-radius:50%;background:#2fc27a;box-shadow:0 0 0 2px #fff}
 
 /* ---------- 上の帯 ---------- */
 .topbar{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;gap:12px;padding:10px 16px;
@@ -229,3 +230,4 @@ body.in-park{overflow:hidden}
   .shutter,.ticket,.card{animation-duration:.01ms!important;animation-delay:0s!important}
 }
 .tag-star{background:var(--c);color:#fff}
+.tag-care{background:#13774a}

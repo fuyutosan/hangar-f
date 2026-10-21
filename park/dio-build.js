@@ -131,7 +131,18 @@ export function building(w, scaffold) {
   const hit = new THREE.Mesh(new THREE.BoxGeometry(info.foot[0] + .8, info.h + .6, info.foot[1] + .8), new THREE.MeshBasicMaterial({ visible: false }));
   hit.position.y = (info.h + .6) / 2; hit.userData.id = w.id; g.add(hit);
   g.userData = { id: w.id, h: info.h, hit, flag: info.flag };
+  if (w.care) g.userData.care = addCare(g, info);
   return g;
+}
+
+/* 手入れの印：14日以内に日誌で手入れした建物の足元を、緑の光の輪で囲む（上から見る模型なので名札と重ならない。昼も夜も見える） */
+function addCare(g, info) {
+  const r = Math.min(Math.max(...info.foot) * .78 + .35, 2);
+  const mat = o => new THREE.MeshBasicMaterial({ color: C('#39d98a'), transparent: true, opacity: o, toneMapped: false, depthWrite: false });
+  const m = mesh(new THREE.RingGeometry(r - .3, r, 48), mat(.95), 0, .05, 0, g);
+  mesh(new THREE.CircleGeometry(r - .3, 48), mat(.22), 0, 0, 0, m);
+  m.rotation.x = -Math.PI / 2;
+  return m;
 }
 
 /* 足場：公開7日以内の建物を囲む細い管＋黄黒の幕＋NEW旗 */

@@ -94,6 +94,7 @@ export async function createDiorama(canvas, opt) {
     const g = building(w, fresh); g.position.set(x + qx * push, 0, z + qz * push * .7); g.scale.setScalar(S); g.userData.s = S; g.userData.h *= S; scene.add(g);
     items.push({ w, g, base: g.position.clone() });
   }
+  const careRings = items.map(it => it.g.userData.care).filter(Boolean);
   const towerW = data.works.find(w => w.kind === 'tower');
   if (towerW) { const t = radioTower(towerW); t.position.set(0, 0, -(HALF - 1.9)); scene.add(t); items.push({ w: towerW, g: t, base: t.position.clone() }); }
   const gate = gateHangar(); gate.position.set(0, 0, HALF - 2.4); scene.add(gate);
@@ -242,7 +243,7 @@ export async function createDiorama(canvas, opt) {
   const pins = [];
   if (pinsEl) for (const it of items) {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'pin'; b.tabIndex = -1; b.setAttribute('aria-hidden', 'true');
-    b.dataset.id = it.w.id; if (it.w.flagship) b.classList.add('star'); b.style.setProperty('--c', it.w.color);
+    b.dataset.id = it.w.id; if (it.w.flagship) b.classList.add('star'); if (it.w.care) b.classList.add('care'); b.style.setProperty('--c', it.w.color);
     b.innerHTML = `<i>${it.w.icon || '●'}</i><span>${it.w.name}</span>`;
     b.addEventListener('click', () => onSelect(it.w.id, 'pin'));
     pinsEl.appendChild(b); pins.push({ b, it });
@@ -273,6 +274,7 @@ export async function createDiorama(canvas, opt) {
       site.jib.rotation.y += dt * .12;
       site.beam.material.rotation += dt * 3;
       site.beaconMat.emissiveIntensity = 1.2 + Math.sin(nowT / 160) * .6;
+      if (careRings.length) { const beat = 1 + Math.sin(nowT / 420) * .06; for (const c of careRings) c.scale.setScalar(beat); }
     }
     if (snow && !reduced) { const a = snow.geometry.attributes.position; for (let i = 1; i < a.array.length; i += 3) { a.array[i] -= dt * 1.1; if (a.array[i] < 0) a.array[i] = 14; } a.needsUpdate = true; }
     castT += dt; if (castT > .45) { castT = 0; for (const s of cast) { const u = s.userData; if (u.tB) { u.f ^= 1; s.material.map = u.f ? u.tB : u.tA; } } }

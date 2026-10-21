@@ -12,10 +12,13 @@ const md = s => { const [, m, d] = s.split('-'); return `${+m}/${+d}`; };
 const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const Q = new URLSearchParams(location.search);
-const NOW = new Date();
+const REAL = new Date();
+// ?today=YYYY-MM-DD で「その日の園」を確かめる（?season= と同じ作法）。ありえない日付は無視する
+const FAKE = (t => /^\d{4}-\d{2}-\d{2}$/.test(t) && !isNaN(day(t)) && ymd(day(t)) === t ? t : null)(Q.get('today') || '');
+const NOW = FAKE ? new Date(day(FAKE).getTime() + (REAL - day(ymd(REAL)))) : REAL;
 const TODAY = ymd(NOW);
 
-let DATA, KIROKU = {}, ATT = [], BYID = {}, LANDS = {}, D = null, dioP = null, heroVis = true, SEASON, CELEB = '';
+let DATA, KIROKU = {}, ATT = [], BYID = {}, LANDS = {}, D = null, dioP = null, heroVis = true, SEASON, CELEB = '', CARE = [];
 
 /* ---------- データ ---------- */
 async function load() {
@@ -24,16 +27,25 @@ async function load() {
   DATA = await r.json();
   // 整備記録は自動生成だが、形が崩れていても園は開く（読めない項目は捨てる）
   const ok = e => e && typeof e.title === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(e.date);
-  KIROKU = { entries: Array.isArray(k?.entries) ? k.entries.filter(ok) : [], next: k?.next && typeof k.next.name === 'string' && ok({ title: k.next.name, date: k.next.date }) ? k.next : null };
+  const hostsOf = e => Array.isArray(e.hosts) ? e.hosts.filter(h => typeof h === 'string' && /^[a-z0-9-]+$/.test(h)) : [];
+  KIROKU = { entries: Array.isArray(k?.entries) ? k.entries.filter(ok).map(e => ({ date: e.date, title: e.title, hosts: hostsOf(e) })) : [], next: k?.next && typeof k.next.name === 'string' && ok({ title: k.next.name, date: k.next.date }) ? k.next : null };
   for (const l of DATA.lands) LANDS[l.id] = l;
   ATT = DATA.works.filter(w => !w.facility).sort((a, b) => a.date.localeCompare(b.date));
   ATT.forEach((w, i) => { w.no = 'F-' + String(i + 1).padStart(2, '0'); });
-  for (const w of DATA.works) { BYID[w.id] = w; w.fresh = (NOW - day(w.date)) / DAY < 7; }
+  for (const w of DATA.works) { BYID[w.id] = w; w.fresh = (NOW - day(w.date)) / DAY < 7; w.host = (w.url || '').match(/^https:\/\/([a-z0-9-]+)\.pages\.dev(?:\/|$)/)?.[1]; }
   DATA.nextNo = 'F-' + String(ATT.length + 1).padStart(2, '0');
   DATA.days = Math.floor((NOW - day(DATA.park.opened)) / DAY) + 1;
   // 次の機体の札：もう園に建った作品・45日より古いものは出さない（整備記録は日誌を書いたときしか作り直されないため）
   const nx = KIROKU.next;
-  if (nx && (DATA.works.some(w => (w.url || '').includes(`//${nx.host}.pages.dev`)) || (NOW - day(nx.date)) / DAY > 45)) KIROKU.next = null;
+  if (nx && (DATA.works.some(w => w.host && w.host === nx.host) || (NOW - day(nx.date)) / DAY > 45)) KIROKU.next = null;
+  const byHost = {};
+  for (const w of DATA.works) if (w.host) byHost[w.host] = w;
+  for (const e of KIROKU.entries) {
+    const age = (NOW - day(e.date)) / DAY;
+    if (age < 0 || age >= 14) continue;
+    for (const h of e.hosts) { const w = byHost[h]; if (w && !(w.care > e.date)) w.care = e.date; }
+  }
+  CARE = DATA.works.filter(w => w.care).sort((a, b) => b.care.localeCompare(a.care));
   SEASON = seasonOf(Q.get('season'));
   CELEB = milestone();
 }
@@ -69,7 +81,7 @@ function milestone() {
 function sinceLast() {
   const last = store.get('hf.last');
   const fresh = last ? DATA.works.filter(w => w.date > last || (w.updated && w.updated > last)) : [];
-  addEventListener('pagehide', () => store.set('hf.last', TODAY));
+  if (!FAKE) addEventListener('pagehide', () => store.set('hf.last', TODAY));
   return { last, fresh };
 }
 
@@ -82,7 +94,7 @@ function attHTML(w, { inCard = false } = {}) {
     <div class="att-shot">${shot ? `<img src="${esc(shot)}" alt="${esc(w.name)}の画面" loading="lazy" width="960" height="600">` : `<span class="glyph" aria-hidden="true">${esc(w.icon)}</span>`}
       ${w.no ? `<span class="att-no">${esc(w.no)}</span>` : ''}</div>
     <div class="att-body">
-      <p class="att-meta">${w.flagship ? '<span class="tag-new tag-star">主力</span>' : ''}${w.fresh ? '<span class="tag-new">NEW</span>' : ''}<span>${esc(land.name || '')}</span>${meta.map(m => `<span>${esc(m)}</span>`).join('')}<span class="wait">待ち時間 0分</span></p>
+      <p class="att-meta">${w.flagship ? '<span class="tag-new tag-star">主力</span>' : ''}${w.fresh ? '<span class="tag-new">NEW</span>' : ''}${w.care ? `<span class="tag-new tag-care">手入れ ${md(w.care)}</span>` : ''}<span>${esc(land.name || '')}</span>${meta.map(m => `<span>${esc(m)}</span>`).join('')}<span class="wait">待ち時間 0分</span></p>
       <h4 id="${inCard ? 'ct' : 't'}-${esc(w.id)}"><span class="nb">${esc(w.name)}</span></h4>
       <p class="att-one">${jp(w.one)}</p>
       <p class="att-desc">${jp(w.desc)}</p>
@@ -108,6 +120,7 @@ function renderBoard(since) {
     <div><dt>アトラクション</dt><dd>${flap(ATT.length)} <span>基</span>（発信の設備 ${DATA.works.length - ATT.length}つ）</dd></div>
     <div><dt>${since.last ? '前回から' : '最新'}</dt><dd>${news}</dd></div>
     <div><dt>きょうの園</dt><dd>${jp(seasonText(SEASON))}${CELEB ? `<br><span class="tag-new">${esc(CELEB)}</span>` : ''}</dd></div>
+    ${CARE.length ? `<div><dt>最近の手入れ</dt><dd>${CARE.slice(0, 3).map(w => `<a class="nb" href="#w-${esc(w.id)}">${esc(w.name)}</a>（${md(w.care)}）`).join('・')}</dd></div>` : ''}
     <div><dt>いま工事中</dt><dd>${esc(DATA.construction.label)} <b>${esc(DATA.nextNo)}</b> ── ${KIROKU.next ? jp(`新作「${KIROKU.next.name}」を建てています（${md(KIROKU.next.date)}〜）`) : jp(DATA.construction.note)}</dd></div>
     <div><dt>いまの園</dt><dd>${ph}の園（あなたの時計で ${NOW.getHours()}時）</dd></div>`;
 }
@@ -218,7 +231,7 @@ async function enterPark(selectId) {
   const ritual = !RM && !store.get('hf.ritual.' + TODAY);
   if (ritual) {
     $('#tk-no').textContent = ticketNo(); $('#tk-d').textContent = `${TODAY.replace(/-/g, '.')} ／ ${DATA.park.name}`;
-    const r = $('#ritual'); r.hidden = false; store.set('hf.ritual.' + TODAY, '1');
+    const r = $('#ritual'); r.hidden = false; if (!FAKE) store.set('hf.ritual.' + TODAY, '1');
     setTimeout(() => { r.hidden = true; }, 1900);
   }
   const d = await Promise.race([bootDiorama(), new Promise(r => setTimeout(() => r('late'), 3000))]);
