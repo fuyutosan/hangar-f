@@ -15,17 +15,54 @@ const Q = new URLSearchParams(location.search);
 const NOW = new Date();
 const TODAY = ymd(NOW);
 
-let DATA, ATT = [], BYID = {}, LANDS = {}, D = null, dioP = null, heroVis = true;
+let DATA, KIROKU = {}, ATT = [], BYID = {}, LANDS = {}, D = null, dioP = null, heroVis = true, SEASON, CELEB = '';
 
 /* ---------- データ ---------- */
 async function load() {
-  const r = await fetch('works.json', { cache: 'no-cache' });
+  // 正本と整備記録は同時に読む（整備記録が読めなくても園は開く）
+  const [r, k] = await Promise.all([fetch('works.json', { cache: 'no-cache' }), fetch('kiroku.json', { cache: 'no-cache' }).then(x => x.json()).catch(() => ({}))]);
   DATA = await r.json();
+  // 整備記録は自動生成だが、形が崩れていても園は開く（読めない項目は捨てる）
+  const ok = e => e && typeof e.title === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(e.date);
+  KIROKU = { entries: Array.isArray(k?.entries) ? k.entries.filter(ok) : [], next: k?.next && typeof k.next.name === 'string' && ok({ title: k.next.name, date: k.next.date }) ? k.next : null };
   for (const l of DATA.lands) LANDS[l.id] = l;
   ATT = DATA.works.filter(w => !w.facility).sort((a, b) => a.date.localeCompare(b.date));
   ATT.forEach((w, i) => { w.no = 'F-' + String(i + 1).padStart(2, '0'); });
   for (const w of DATA.works) { BYID[w.id] = w; w.fresh = (NOW - day(w.date)) / DAY < 7; }
   DATA.nextNo = 'F-' + String(ATT.length + 1).padStart(2, '0');
+  DATA.days = Math.floor((NOW - day(DATA.park.opened)) / DAY) + 1;
+  // 次の機体の札：もう園に建った作品・45日より古いものは出さない（整備記録は日誌を書いたときしか作り直されないため）
+  const nx = KIROKU.next;
+  if (nx && (DATA.works.some(w => (w.url || '').includes(`//${nx.host}.pages.dev`)) || (NOW - day(nx.date)) / DAY > 45)) KIROKU.next = null;
+  SEASON = seasonOf(Q.get('season'));
+  CELEB = milestone();
+}
+
+/* 季節：日付だけで決まる（定期作業なし）。秋は毎日すこしずつ色づき、春は桜、冬は雪 */
+function seasonOf(force) {
+  const mmdd = TODAY.slice(5), y = +TODAY.slice(0, 4), d = (a, b) => (day(`${y}-${b}`) - day(`${y}-${a}`)) / DAY;
+  const pick = { autumn: { kind: 'autumn', p: .6 }, sakura: { kind: 'sakura', p: 1 }, winter: { kind: 'winter', p: 1 }, green: { kind: 'green', p: 0 } }[force];
+  if (pick) return pick;
+  if (mmdd >= '03-20' && mmdd <= '04-15') { const p = mmdd <= '04-01' ? d('03-20', mmdd) / 12 : 1 - d('04-01', mmdd) / 14; return { kind: 'sakura', p: Math.max(.15, p) }; }
+  // 秋は10/1から60日かけて色づき、雪が来る12/15まで色づいたまま（12月前半に緑へ戻さない）
+  if (mmdd >= '10-01' && mmdd < '12-15') return { kind: 'autumn', p: Math.min(1, d('10-01', mmdd) / 60) };
+  if (mmdd >= '12-15' || mmdd <= '02-29') return { kind: 'winter', p: 1 };
+  return { kind: 'green', p: 0 };
+}
+function seasonText(s) {
+  return s.kind === 'autumn' ? (s.p >= 1 ? '秋の終わり ── 園の木がすっかり色づきました' : `秋 ── 園の木の${Math.round(s.p * 100)}％が色づきました（毎日すこしずつ）`)
+    : s.kind === 'sakura' ? '春 ── 園の桜が咲いています'
+    : s.kind === 'winter' ? '冬 ── 園に雪が降っています'
+    : `${+TODAY.slice(5, 7)}月 ── 緑の園`;
+}
+/* 節目：開園の日数と、アトラクションの数。達してから14日間だけ玄関に旗が立つ */
+function milestone() {
+  const days = DATA.days, out = [];
+  const M = [30, 50, 100, 150, 200, 250, 300, 365, 400, 500, 600, 700, 730, 800, 900, 1000].filter(m => m <= days).pop();
+  if (M && days - M < 14) out.push(`開園${M}日`);
+  const n = Math.floor(ATT.length / 5) * 5;
+  if (n && (NOW - day(ATT[n - 1].date)) / DAY < 14) out.push(`${n}基`);
+  return out.length ? '祝 ' + out.join('・') : '';
 }
 
 /* 前回の訪問から増えた・更新されたもの（端末にだけ保存） */
@@ -58,7 +95,7 @@ function attHTML(w, { inCard = false } = {}) {
 }
 
 function renderBoard(since) {
-  const days = Math.floor((NOW - day(DATA.park.opened)) / DAY) + 1;
+  const days = DATA.days;
   const latest = [...ATT].sort((a, b) => (b.updated || b.date).localeCompare(a.updated || a.date))[0];
   const flap = s => `<span class="flap" aria-hidden="true">${[...String(s)].map(c => `<b>${esc(c)}</b>`).join('')}</span>`;
   const ph = { day: '昼', dusk: '夕方', night: '夜' }[phaseNow()];
@@ -70,7 +107,8 @@ function renderBoard(since) {
     <div><dt>開園から</dt><dd>${flap(days)} <span>日目</span><span class="sr-only" style="position:absolute;left:-999px">${days}日目</span></dd></div>
     <div><dt>アトラクション</dt><dd>${flap(ATT.length)} <span>基</span>（発信の設備 ${DATA.works.length - ATT.length}つ）</dd></div>
     <div><dt>${since.last ? '前回から' : '最新'}</dt><dd>${news}</dd></div>
-    <div><dt>いま工事中</dt><dd>${esc(DATA.construction.label)} <b>${esc(DATA.nextNo)}</b> ── ${jp(DATA.construction.note)}</dd></div>
+    <div><dt>きょうの園</dt><dd>${jp(seasonText(SEASON))}${CELEB ? `<br><span class="tag-new">${esc(CELEB)}</span>` : ''}</dd></div>
+    <div><dt>いま工事中</dt><dd>${esc(DATA.construction.label)} <b>${esc(DATA.nextNo)}</b> ── ${KIROKU.next ? jp(`新作「${KIROKU.next.name}」を建てています（${md(KIROKU.next.date)}〜）`) : jp(DATA.construction.note)}</dd></div>
     <div><dt>いまの園</dt><dd>${ph}の園（あなたの時計で ${NOW.getHours()}時）</dd></div>`;
 }
 
@@ -95,7 +133,7 @@ function renderGuide() {
 }
 
 function deskHTML() {
-  const a = DATA.ask, days = Math.floor((NOW - day(DATA.park.opened)) / DAY) + 1;
+  const a = DATA.ask, days = DATA.days;
   return `<div class="desk" aria-label="相談の窓口">
     <div><h4>できること</h4><ul class="yes">${a.can.map(s => `<li>${jp(s)}</li>`).join('')}</ul></div>
     <div><h4>できないこと</h4><ul class="no">${a.cannot.map(s => `<li>${jp(s)}</li>`).join('')}</ul></div>
@@ -111,14 +149,11 @@ function renderTheater() {
     <div class="reel-cap"><h3>${esc(m.title)}</h3><p><a href="https://www.youtube.com/watch?v=${esc(m.yt)}" target="_blank" rel="noopener">YouTubeで見る</a></p></div></div>`).join('');
 }
 
-async function renderLog() {
-  try {
-    const k = await (await fetch('kiroku.json', { cache: 'no-cache' })).json();
-    const es = (k.entries || []).slice(0, 6);
-    if (!es.length) return;
-    $('#log-list').innerHTML = es.map(e => `<li><time datetime="${esc(e.date)}">${esc(e.date)}</time><span>${jp(e.title)}</span></li>`).join('');
-    $('#logbook').hidden = false;
-  } catch (e) { /* 記録が読めなくても園は開く */ }
+function renderLog() {
+  const es = (KIROKU.entries || []).slice(0, 6);
+  if (!es.length) return;
+  $('#log-list').innerHTML = es.map(e => `<li><time datetime="${esc(e.date)}">${esc(e.date)}</time><span>${jp(e.title)}</span></li>`).join('');
+  $('#logbook').hidden = false;
 }
 
 function renderExit() {
@@ -158,7 +193,7 @@ function bootDiorama() {
     await Promise.race([Promise.all([document.fonts.load('700 40px "Zen Kaku Gothic New"'), document.fonts.load('900 40px "Big Shoulders Display"')]), new Promise(r => setTimeout(r, 1200))]);
     const { createDiorama } = await import('./diorama.js');
     const t = Q.get('phase');
-    D = await createDiorama($('#cv'), { data: DATA, reduced: RM, pinsEl: $('#pins'), phase: ['day', 'dusk', 'night'].includes(t) ? t : undefined,
+    D = await createDiorama($('#cv'), { data: DATA, reduced: RM, pinsEl: $('#pins'), phase: ['day', 'dusk', 'night'].includes(t) ? t : undefined, season: SEASON, celebrate: CELEB,
       onSelect: (id, how) => id ? pick(id, how) : closeCard(), onSlow: slow });
     $('#stage').classList.add('ready');
     if (!document.body.classList.contains('in-park')) D.setIdle(true);

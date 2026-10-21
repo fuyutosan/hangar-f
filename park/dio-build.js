@@ -242,13 +242,43 @@ function treeParts() {
   if (TREE) return TREE;
   const crowns = [];
   for (let i = 0; i < 6; i++) crowns.push(new THREE.MeshStandardMaterial({ color: new THREE.Color().setHSL(.25 + i * .018, .35 + (i % 3) * .07, .32 + (i % 2) * .08), roughness: .9, flatShading: true }));
-  return (TREE = { trunkGeo: new THREE.CylinderGeometry(.08, .11, .7, 6), trunkMat: std('#7a5638', .9), crownGeo: new THREE.IcosahedronGeometry(.55, 0), crowns });
+  const flat = c => new THREE.MeshStandardMaterial({ color: C(c), roughness: .9, flatShading: true });
+  return (TREE = { trunkGeo: new THREE.CylinderGeometry(.08, .11, .7, 6), trunkMat: std('#7a5638', .9), crownGeo: new THREE.IcosahedronGeometry(.55, 0), crowns,
+    autumn: ['#e8b23a', '#e07a2e', '#c8432f'].map(flat), sakura: flat('#f5b9ca'), snow: flat('#eef4f7') });
+}
+export const treeTops = []; // 季節替えのために、全部の木の冠を覚えておく
+
+/* 季節：木の冠の色を替える。p は進み具合（0〜1）。木ごとの th と比べて、少しずつ色づく＝毎日ちがう園になる */
+export function applySeason(kind, p = 0) {
+  const P = treeParts();
+  for (const top of treeTops) {
+    const th = top.userData.th;
+    top.material = kind === 'autumn' && th < p ? P.autumn[Math.floor(th * 997) % 3]
+      : kind === 'sakura' && th < p * .4 ? P.sakura
+      : kind === 'winter' && th < .7 ? P.snow
+      : top.userData.base;
+  }
+}
+
+/* 節目の旗：玄関の前に、色とりどりの三角旗の綱と祝いの札 */
+export function celebration(text, colors) {
+  const g = new THREE.Group(); g.name = 'celebration';
+  const pole = std('#e8e2d6', .4, .6), W = 6.4, H = 3.9; // 玄関の屋根（高さ2.4）に札が隠れない高さ
+  for (const x of [-W / 2, W / 2]) cyl(.05, .06, H, pole, x, H / 2, 0, g, 8);
+  const tri = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-.22, 0, 0), new THREE.Vector3(.22, 0, 0), new THREE.Vector3(0, -.42, 0)]);
+  for (let i = 0; i < 13; i++) {
+    const u = i / 12, x = -W / 2 + .25 + u * (W - .5), y = H - .15 - Math.sin(u * Math.PI) * .3;
+    mesh(tri, new THREE.MeshBasicMaterial({ color: C(colors[i % colors.length]), side: THREE.DoubleSide, toneMapped: false }), x, y, 0, g);
+  }
+  const s = sign(text, 'CELEBRATION', '#ff6b4a', 3.8, g, 0, H - 1.3, .02);
+  return g;
 }
 export function tree(x, z, s = 1, parent) {
   const P = treeParts();
   const g = new THREE.Group(); g.position.set(x, 0, z); g.scale.setScalar(s); parent.add(g);
   mesh(P.trunkGeo, P.trunkMat, 0, .35, 0, g);
   const top = mesh(P.crownGeo, P.crowns[(rnd() * P.crowns.length) | 0], 0, 1.05, 0, g);
+  top.userData = { base: top.material, th: rnd() }; treeTops.push(top);
   top.scale.y = rr(1.1, 1.5);
   return g;
 }

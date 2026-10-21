@@ -3,13 +3,20 @@
    黒くしない：空はCSSのグラデ（canvasは透過）、霧＝地平線の色、光は半球光＋平行光1灯、灯りは自発光。 */
 import * as THREE from 'three';
 import { lawnTex, pavingTex, strataTex, signTex, glowTex, cv, tex, rr } from './dio-tex.js';
-import { building, construction, gateHangar, radioTower, tree, pixelSprite, mats, blob } from './dio-build.js';
+import { building, construction, gateHangar, radioTower, tree, pixelSprite, mats, blob, applySeason, celebration, treeTops } from './dio-build.js';
 
 const D2R = Math.PI / 180;
-const HALF = 18;                 // 島の半分の大きさ
 const QUAD = { play: [-1, 1], ask: [1, 1], learn: [-1, -1], rest: [1, -1] }; // 手前左・手前右・奥左・奥右
-const PLOTS = [[0, 0], [1, 0], [0, 1], [1, 1], [2, 0], [0, 2], [2, 1], [1, 2], [2, 2]]; // 中心に近い順＝園は外へ増築される
-const plotPos = (land, k) => { const [sx, sz] = QUAD[land], [i, j] = PLOTS[k % PLOTS.length]; return [sx * (4.7 + i * 4.8), sz * (4.7 + j * 4.8)]; };
+const STEP = 4.8, FIRST = 4.7;   // 区画の間隔と、広場からいちばん近い区画までの距離
+/* 島は作品数に合わせて育つ：1区画に R×R 棟。いちばん多い区画が埋まったら R を1つ増やし、島を一回り広げる */
+function layout(works) {
+  const n = {}; for (const w of works) if (w.land in QUAD && w.kind !== 'tower') n[w.land] = (n[w.land] || 0) + 1;
+  const R = Math.max(3, Math.ceil(Math.sqrt(Math.max(0, ...Object.values(n)))));
+  const plots = [];
+  for (let i = 0; i < R; i++) for (let j = 0; j < R; j++) plots.push([i, j]);
+  plots.sort((a, b) => Math.max(...a) - Math.max(...b) || (a[0] + a[1]) - (b[0] + b[1]) || a[1] - b[1]); // 中心に近い順＝園は外へ増築される
+  return { R, plots, HALF: FIRST + (R - 1) * STEP + 3.7 };
+}
 
 /* 時間帯ごとの色。sky は CSS のグラデ（上→地平線）、fog＝地平線 */
 const PALETTES = {
@@ -22,6 +29,9 @@ export function phaseOf(d = new Date()) { const h = d.getHours() + d.getMinutes(
 
 export async function createDiorama(canvas, opt) {
   const { data, onSelect = () => {}, onSlow = () => {}, reduced = false, pinsEl = null } = opt;
+  const { plots: PLOTS, HALF } = layout(data.works);
+  treeTops.length = 0; // 作り直したときに、前の模型の木を季節替えの対象に残さない
+  const plotPos = (land, k) => { const [sx, sz] = QUAD[land], [i, j] = PLOTS[k]; return [sx * (FIRST + i * STEP), sz * (FIRST + j * STEP)]; };
   const dprCap = Math.min(window.devicePixelRatio || 1, 1.5);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(dprCap);
@@ -59,7 +69,7 @@ export async function createDiorama(canvas, opt) {
     x.fillStyle = 'rgba(255,255,255,.92)'; x.textBaseline = 'middle';
     x.font = '900 86px "Zen Kaku Gothic New", sans-serif'; x.fillText(land.name, 8, 66);
     const w = x.measureText(land.name).width; x.fillStyle = land.color; x.font = '900 54px "Big Shoulders Display", sans-serif'; x.fillText(land.en, w + 28, 72);
-    const lab = flat(7, 1.75, new THREE.MeshBasicMaterial({ map: tex(c), transparent: true, depthWrite: false, toneMapped: false }), sx * 9.6, sz * 16.6, .04);
+    const lab = flat(7, 1.75, new THREE.MeshBasicMaterial({ map: tex(c), transparent: true, depthWrite: false, toneMapped: false }), sx * 9.6, sz * (HALF - 1.4), .04);
   }
 
   /* 誘導灯（点の集まり＝描画1回）。夜に強く光る */
@@ -85,8 +95,8 @@ export async function createDiorama(canvas, opt) {
     items.push({ w, g, base: g.position.clone() });
   }
   const towerW = data.works.find(w => w.kind === 'tower');
-  if (towerW) { const t = radioTower(towerW); t.position.set(-4.6, 0, -15.2); scene.add(t); items.push({ w: towerW, g: t, base: t.position.clone() }); }
-  const gate = gateHangar(); gate.position.set(0, 0, 15.6); scene.add(gate);
+  if (towerW) { const t = radioTower(towerW); t.position.set(0, 0, -(HALF - 1.9)); scene.add(t); items.push({ w: towerW, g: t, base: t.position.clone() }); }
+  const gate = gateHangar(); gate.position.set(0, 0, HALF - 2.4); scene.add(gate);
   const nextNo = data.nextNo || 'F-' + String(data.works.filter(w => !w.facility).length + 1).padStart(2, '0');
   const site = construction(data.construction, nextNo); scene.add(site.g);
 
@@ -99,18 +109,30 @@ export async function createDiorama(canvas, opt) {
     if (Math.abs(t) > 2.5) { tree(t, -HALF + .8, rr(.7, 1.1), scene); tree(-HALF + .8, t, rr(.7, 1.1), scene); tree(HALF - .8, t, rr(.7, 1.1), scene); }
   }
 
+  /* 季節と節目（日付から app.js が決めて渡す。定期作業なしで、毎日すこしずつ変わる） */
+  const season = opt.season || { kind: 'green', p: 0 };
+  applySeason(season.kind, season.p);
+  let snow = null;
+  if (season.kind === 'winter') {
+    const pos = []; for (let i = 0; i < 320; i++) pos.push(rr(-HALF, HALF), rr(0, 14), rr(-HALF, HALF));
+    const sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    snow = new THREE.Points(sg, new THREE.PointsMaterial({ map: glowTex('255,255,255'), size: .35, transparent: true, depthWrite: false, toneMapped: false }));
+    scene.add(snow);
+  }
+  if (opt.celebrate) { const c = celebration(opt.celebrate, data.lands.map(l => l.color).concat('#ffc531')); c.position.set(0, 0, HALF - 5.6); scene.add(c); }
+
   /* ドット絵のキャスト（その場の2コマだけ。画面を横切らない） */
   const PX = (opt.base || '') + 'assets/px/';
   const cast = [];
   const put = (a, b, x, z, unit) => { const s = pixelSprite(PX + a, b && PX + b, unit); s.position.set(x, 0, z); scene.add(s); cast.push(s); return s; };
-  put('marshaller_green_A.png', 'marshaller_green_B.png', 1.9, 12.6);
+  put('marshaller_green_A.png', 'marshaller_green_B.png', 1.9, HALF - 5.4);
   put('marshaller_blue_A.png', 'marshaller_blue_B.png', -2.0, 5.2);
   put('marshaller_red_A.png', 'marshaller_red_B.png', 5.2, -2.0);
   put('welder_a.png', 'welder_b.png', -2.2, 2.6);
   put('mech_a.png', 'mech_b.png', 2.4, 2.9);
   put('forklift_a.png', 'forklift_b.png', 3.6, .3, .034);
   put('crate_a.png', null, -3.0, -2.6, .034); put('barrel.png', null, -2.4, -3.0, .034);
-  put('plane_long.png', null, 4.2, -15.0, .05);
+  put('plane_long.png', null, HALF - 3.2, 0, .05);  // 東の誘導路の端に駐機
 
   /* ---------- カメラ ---------- */
   // 縦長の画面（スマホ）は少し真上寄りから見て、島を縦にも大きく見せる
@@ -194,7 +216,7 @@ export async function createDiorama(canvas, opt) {
   function focusLand(land) {
     if (!land || !QUAD[land]) { Object.assign(goal, { tx: home.tx, ty: home.ty, tz: home.tz, zoom: 1, el: home.el }); return; }
     const [sx, sz] = QUAD[land];
-    Object.assign(goal, { tx: sx * 8.6, ty: 0, tz: sz * 8.6 + 1, zoom: .55, el: 42 });
+    Object.assign(goal, { tx: sx * HALF * .48, ty: 0, tz: sz * HALF * .48 + 1, zoom: .55, el: 42 });
     if (reduced) Object.assign(cur, goal);
   }
   function select(id) {
@@ -252,6 +274,7 @@ export async function createDiorama(canvas, opt) {
       site.beam.material.rotation += dt * 3;
       site.beaconMat.emissiveIntensity = 1.2 + Math.sin(nowT / 160) * .6;
     }
+    if (snow && !reduced) { const a = snow.geometry.attributes.position; for (let i = 1; i < a.array.length; i += 3) { a.array[i] -= dt * 1.1; if (a.array[i] < 0) a.array[i] = 14; } a.needsUpdate = true; }
     castT += dt; if (castT > .45) { castT = 0; for (const s of cast) { const u = s.userData; if (u.tB) { u.f ^= 1; s.material.map = u.f ? u.tB : u.tA; } } }
     for (const [g, p] of pops) { const q = Math.min(1, p + dt * 2.2); pops.set(g, q); g.scale.y = (.01 + (1 - Math.pow(1 - q, 3)) * .99) * (g.userData.s || 1); if (q >= 1) pops.delete(g); }
     renderer.render(scene, camera);
