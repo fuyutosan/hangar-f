@@ -221,7 +221,7 @@ body.in-park{overflow:hidden}
 .tk-k{margin:0;font:900 12px/1.4 var(--en);letter-spacing:.12em;color:var(--sub)}
 .tk-no{margin:6px 0;font:900 48px/1 var(--en);letter-spacing:.08em}
 .tk-d{margin:0;font-size:13px;color:var(--sub)}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40;background:var(--ink);color:#fff;border-radius:14px;padding:12px 16px;max-width:90vw;font-size:14px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40;width:max-content;background:var(--ink);color:#fff;border-radius:14px;padding:12px 16px;max-width:90vw;font-size:14px}
 
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}

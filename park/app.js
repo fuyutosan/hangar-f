@@ -169,7 +169,7 @@ const ticketNo = () => 'F-' + TODAY.slice(5).replace('-', '');
 function phaseNow() { const h = NOW.getHours() + NOW.getMinutes() / 60; return h >= 6.5 && h < 16.5 ? 'day' : (h >= 16.5 && h < 18.8) || (h >= 5 && h < 6.5) ? 'dusk' : 'night'; }
 
 /* ---------- 共有・動画・お知らせ ---------- */
-function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3200); }
+function toast(msg) { const t = $('#toast'); t.innerHTML = jp(msg); t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3200); }
 async function share(w) {
   const url = w ? `${DATA.park.url}#w-${w.id}` : DATA.park.url;
   const text = w ? `${w.name} ── ${w.one}（HANGAR F.）` : `HANGAR F. ── ${DATA.park.catch}`;
