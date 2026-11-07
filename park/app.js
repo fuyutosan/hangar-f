@@ -208,6 +208,7 @@ function bootDiorama() {
     const t = Q.get('phase');
     D = await createDiorama($('#cv'), { data: DATA, reduced: RM, pinsEl: $('#pins'), phase: ['day', 'dusk', 'night'].includes(t) ? t : undefined, season: SEASON, celebrate: CELEB,
       onSelect: (id, how) => id ? pick(id, how) : closeCard(), onSlow: slow });
+    if (Q.has('debug')) window.__park = D; // 点検用（?debug のときだけ）
     $('#stage').classList.add('ready');
     if (!document.body.classList.contains('in-park')) D.setIdle(true);
     return D;

@@ -130,7 +130,7 @@ export function building(w, scaffold) {
   if (w.flagship) addFlagship(g, info, w.color);
   const hit = new THREE.Mesh(new THREE.BoxGeometry(info.foot[0] + .8, info.h + .6, info.foot[1] + .8), new THREE.MeshBasicMaterial({ visible: false }));
   hit.position.y = (info.h + .6) / 2; hit.userData.id = w.id; g.add(hit);
-  g.userData = { id: w.id, h: info.h, hit, flag: info.flag };
+  g.userData = { id: w.id, h: info.h, hit, flag: info.flag, foot: info.foot };
   if (w.care) g.userData.care = addCare(g, info);
   return g;
 }

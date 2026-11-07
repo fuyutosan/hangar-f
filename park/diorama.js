@@ -2,7 +2,7 @@
    works.json の鏡写し。正本はHTMLのガイドで、ここは「見て触れる模型」。
    黒くしない：空はCSSのグラデ（canvasは透過）、霧＝地平線の色、光は半球光＋平行光1灯、灯りは自発光。 */
 import * as THREE from 'three';
-import { lawnTex, pavingTex, strataTex, signTex, glowTex, cv, tex, rr } from './dio-tex.js';
+import { lawnTex, pavingTex, strataTex, signTex, glowTex, guestTex, cv, tex, rr } from './dio-tex.js';
 import { building, construction, gateHangar, radioTower, tree, pixelSprite, mats, blob, applySeason, celebration, treeTops } from './dio-build.js';
 
 const D2R = Math.PI / 180;
@@ -134,6 +134,87 @@ export async function createDiorama(canvas, opt) {
   put('forklift_a.png', 'forklift_b.png', 3.6, .3, .034);
   put('crate_a.png', null, -3.0, -2.6, .034); put('barrel.png', null, -2.4, -3.0, .034);
   put('plane_long.png', null, HALF - 3.2, 0, .05);  // 東の誘導路の端に駐機
+
+  /* ---------- お客さん（来園者）：十字の道の端から入り、道を歩いて建物の入口へ入り、しばらくして出てくる ----------
+     当たり判定には入れない（タップは建物だけが受ける）。経路は障害物の箱と当てて、通れる道だけを使う */
+  const boxes = [[-3.8, -3.8, 3.8, 3.8], [-2.6, HALF - 4.9, 2.6, HALF], [-1.6, -HALF, 1.6, -(HALF - 3.4)]]; // 工事現場・玄関・無線塔
+  for (const { g, w } of items) if (g.userData.foot) {
+    const [fw, fd] = g.userData.foot, s = g.userData.s || 1, p = g.position;
+    boxes.push([p.x - fw * s / 2 - .3, p.z - fd * s / 2 - .3, p.x + fw * s / 2 + .3, p.z + fd * s / 2 + .1]);
+    if (w.flagship) { const x = p.x + (-fw / 2 - .35) * s, z = p.z + (fd / 2 + .2) * s; boxes.push([x - .45, z - .45, x + .45, z + .45]); } // 主力の旗竿
+  }
+  for (const land of Object.keys(QUAD)) for (let k = (byLand[land] ?? -1) + 1; k < PLOTS.length; k++) { const [x, z] = plotPos(land, k); boxes.push([x - 2.2, z - 2, x + 2.2, z + 2]); } // 空き区画の木
+  const clear = (a, b) => { const n = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / .25); for (let i = 0; i <= n; i++) { const x = a[0] + (b[0] - a[0]) * i / n, z = a[1] + (b[1] - a[1]) * i / n; if (boxes.some(q => x > q[0] && x < q[2] && z > q[1] && z < q[3])) return false; } return true; };
+  // 道の端：南＝玄関の格納庫の裏、北＝無線塔の前、東＝駐機中の機体のそば、西＝島の縁
+  const ARMS = [{ s: [0, HALF - 5.2], ax: 'z' }, { s: [0, -(HALF - 3.7)], ax: 'z' }, { s: [HALF - 4.6, 0], ax: 'x' }, { s: [-(HALF - 1.2), 0], ax: 'x' }];
+  for (const A of ARMS) A.routes = [];
+  for (const it of items) {
+    const u = it.g.userData; if (!u.foot) continue;
+    const p = it.g.position, front = p.z + u.foot[1] * (u.s || 1) / 2;
+    for (const A of ARMS) for (const off of it.w.flagship ? [.4, .9] : [.4]) { // 主力の旗竿が道の側にあるときは、少し手前に立ってよける
+      const door = [p.x, front + off], lane = A.ax === 'z' ? [Math.sign(door[0]) * .75, 0] : [0, Math.sign(door[1]) * .75];
+      const st = [A.s[0] + lane[0], A.s[1] + lane[1]], turn = A.ax === 'z' ? [lane[0], door[1]] : [door[0], lane[1]];
+      if (A.ax === 'z' ? Math.abs(turn[1]) > Math.abs(A.s[1]) : Math.abs(turn[0]) > Math.abs(A.s[0])) continue; // 道の端より外へは行かない
+      if (A.ax === 'z' ? Math.sign(turn[1]) !== Math.sign(A.s[1]) : Math.sign(turn[0]) !== Math.sign(A.s[0])) continue; // 中央の工事現場は横切らない
+      if (clear(st, turn) && clear(turn, door)) { A.routes.push({ it, st, turn, door, lane }); break; }
+    }
+  }
+  const arms = ARMS.filter(A => A.routes.length);
+  const SHIRT = ['#ff6b8a', '#4fa3ff', '#ffd04a', '#5fcf8a', '#b98cff', '#ff9a4a', '#f4f1ea', '#3fc7c7'], HAIR = ['#3a2a22', '#6b4a2e', '#1f1f2a', '#c98b4a', '#8a5a3a'], PANTS = ['#2f3a5a', '#4a4a55', '#6b5a8a', '#3d5a4a'];
+  const pickOf = a => a[(Math.random() * a.length) | 0];
+  const guests = [];
+  const NG = arms.length ? ((canvas.clientWidth || innerWidth) / (canvas.clientHeight || innerHeight) < .8 ? 8 : 10) : 0; // 狭い画面は島が小さく見えるので少なめ
+  for (let i = 0; i < NG; i++) {
+    const pal = { hair: pickOf(HAIR), skin: pickOf(['#f6d3b3', '#e9bb93', '#c98f68']), shirt: SHIRT[i % SHIRT.length], pants: pickOf(PANTS), hat: i % 4 === 1 ? pickOf(['#ffffff', '#ffd04a', '#ff6b8a']) : null, balloon: i % 5 === 2 ? pickOf(['#ff4f5e', '#4fa3ff', '#ffd04a']) : null };
+    const tx = [[guestTex(pal, 0, false), guestTex(pal, 1, false)], [guestTex(pal, 0, true), guestTex(pal, 1, true)]];
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tx[0][0], transparent: true, alphaTest: .05, toneMapped: false, depthWrite: false }));
+    s.center.set(.5, 0); s.scale.set(20 * .042, 36 * .042, 1); s.visible = false; scene.add(s);
+    guests.push({ s, tx, path: [], k: 0, mode: 'off', t: Math.random() * 6, v: rr(.75, 1.05), j: (Math.random() - .5) * .4, f: 0, ft: 0, back: false });
+  }
+  const jit = (q, G, A) => A.ax === 'z' ? [q[0] + G.j, q[1]] : [q[0], q[1] + G.j];
+  const visRoutes = A => A.routes.filter(r => r.it.g.visible);
+  function plan(G, home = false) { // 次の行き先：入ったあとは同じ道の別の建物へ寄るか、道の端へ戻って帰る（home＝来た道を帰る）
+    const A = G.arm, rs = visRoutes(A), next = G.r && !home ? rs.filter(x => x !== G.r && clear(G.r.turn, x.turn)) : [];
+    if (next.length && Math.random() < .55) {
+      const r = pickOf(next); G.path = [G.r.door, jit(G.r.turn, G, A), jit(r.turn, G, A), r.door]; G.r = r; G.mode = 'walk';
+    } else if (G.r) { G.path = [G.r.door, jit(G.r.turn, G, A), jit(G.r.st, G, A), A.s]; G.r = null; G.mode = 'walk'; }
+    else if (rs.length) { const r = pickOf(rs); G.path = [A.s, jit(r.st, G, A), jit(r.turn, G, A), r.door]; G.r = r; G.mode = 'walk'; }
+    else { G.mode = 'off'; G.t = 2; G.s.visible = false; }
+    G.k = 0;
+  }
+  function spawn(G) { G.arm = pickOf(arms); G.r = null; plan(G); if (G.mode === 'walk') { G.s.position.set(G.arm.s[0], 0, G.arm.s[1]); G.s.visible = true; G.fade = 0; } }
+  const showTex = G => { G.s.material.map = G.tx[G.back ? 1 : 0][G.f]; };
+  function stepGuest(G, dt, anim) {
+    const s = G.s, m = s.material;
+    if (G.mode === 'off') { if ((G.t -= dt) <= 0) spawn(G); return; }
+    if (G.mode === 'inside') { if ((G.t -= dt) <= 0) { if (!G.r.it.g.visible) { G.r = null; G.mode = 'off'; G.t = rr(1, 4); return; } G.mode = 'out'; G.fade = 0; s.visible = true; G.back = false; showTex(G); } return; }
+    if (G.mode === 'in' || G.mode === 'out') { // 入口の扉を抜ける（少し奥へ進みながら消える／出てくる）
+      G.fade = Math.min(1, G.fade + dt * 2.2); const d = G.r.door, z = d[1] - .55 * (G.mode === 'in' ? G.fade : 1 - G.fade);
+      s.position.set(d[0], 0, z); m.opacity = G.mode === 'in' ? 1 - G.fade : G.fade;
+      if (G.fade >= 1) { if (G.mode === 'in') { G.mode = 'inside'; G.t = rr(3, 7); s.visible = false; } else { m.opacity = 1; plan(G); } }
+      return;
+    }
+    // 歩く
+    const p = s.position, q = G.path[G.k + 1];
+    if (G.fade < 1) { G.fade = Math.min(1, G.fade + dt * 2.5); m.opacity = G.fade; }
+    if (!q) return;
+    const dx = q[0] - p.x, dz = q[1] - p.z, L = Math.hypot(dx, dz), st = G.v * dt;
+    if (L <= st) {
+      p.x = q[0]; p.z = q[1]; G.k++;
+      if (G.k >= G.path.length - 1) {
+        if (G.r && G.path[G.path.length - 1] === G.r.door) { if (G.r.it.g.visible) { G.mode = 'in'; G.fade = 0; G.back = true; showTex(G); } else plan(G, true); }
+        else { G.mode = 'off'; G.t = rr(1, 4); s.visible = false; }
+      }
+    } else { p.x += dx / L * st; p.z += dz / L * st; }
+    if (Math.abs(dz) > .02 || Math.abs(dx) > .02) G.back = dz < -Math.abs(dx) * .5;
+    if (anim) { G.ft += dt; if (G.ft > .22) { G.ft = 0; G.f ^= 1; } p.y = G.f ? .03 : 0; }
+    showTex(G);
+  }
+  // 最初から園に人がいるように、少しずつ時間を進めておく（動きを減らす設定では、入口の前に立っているだけ）
+  const allR = arms.flatMap(visRoutes);
+  if (reduced) guests.forEach((G, i) => { const r = allR[i % allR.length]; if (!r) return; G.r = r; G.mode = 'still'; G.s.position.set(r.door[0] + G.j, 0, r.door[1] + .3); G.s.visible = true; });
+  else for (const G of guests) { const n = (Math.random() * 300) | 0; for (let i = 0; i < n; i++) stepGuest(G, .1, false); }
+  let guestN = guests.length; // 重い端末では減らす（見張りが画質を下げたら半分、ガイドへ切り替えたら0）
 
   /* ---------- カメラ ---------- */
   // 縦長の画面（スマホ）は少し真上寄りから見て、島を縦にも大きく見せる
@@ -277,6 +358,8 @@ export async function createDiorama(canvas, opt) {
       if (careRings.length) { const beat = 1 + Math.sin(nowT / 420) * .06; for (const c of careRings) c.scale.setScalar(beat); }
     }
     if (snow && !reduced) { const a = snow.geometry.attributes.position; for (let i = 1; i < a.array.length; i += 3) { a.array[i] -= dt * 1.1; if (a.array[i] < 0) a.array[i] = 14; } a.needsUpdate = true; }
+    if (!reduced) for (let i = 0; i < guests.length; i++) { const G = guests[i]; if (i < guestN) stepGuest(G, dt, true); else G.s.visible = false; }
+    else for (const G of guests) if (G.r) G.s.visible = G.r.it.g.visible;
     castT += dt; if (castT > .45) { castT = 0; for (const s of cast) { const u = s.userData; if (u.tB) { u.f ^= 1; s.material.map = u.f ? u.tB : u.tA; } } }
     for (const [g, p] of pops) { const q = Math.min(1, p + dt * 2.2); pops.set(g, q); g.scale.y = (.01 + (1 - Math.pow(1 - q, 3)) * .99) * (g.userData.s || 1); if (q >= 1) pops.delete(g); }
     renderer.render(scene, camera);
@@ -286,7 +369,7 @@ export async function createDiorama(canvas, opt) {
       frames++; acc += dt;
       if (nowT - t0 > 2000) {
         const avg = acc / frames * 1000;
-        if (avg > 33 && stage === 0) { renderer.setPixelRatio(1); stage = 1; } else if (avg > 40 && stage === 1) { stage = 2; slowFired = true; onSlow(avg); } else stage = 2;
+        if (avg > 33 && stage === 0) { renderer.setPixelRatio(1); stage = 1; guestN = Math.ceil(guests.length / 2); } else if (avg > 40 && stage === 1) { stage = 2; slowFired = true; guestN = 0; onSlow(avg); } else stage = 2;
         frames = 0; acc = 0; t0 = nowT; lastAvg = avg;
       }
     }
@@ -306,8 +389,8 @@ export async function createDiorama(canvas, opt) {
     resume() { paused = false; running = !document.hidden; last = t0 = performance.now(); frames = 0; acc = 0; },
     // 園に入るたびに見張り直す（入口で一度測っただけで終わらせない）
     watch() { if (stage === 2 && !slowFired) stage = renderer.getPixelRatio() < dprCap ? 1 : 0; frames = 0; acc = 0; t0 = performance.now(); },
-    stats: () => ({ avgMs: lastAvg, dpr: renderer.getPixelRatio(), calls: renderer.info.render.calls, tris: renderer.info.render.triangles }),
+    stats: () => ({ avgMs: lastAvg, dpr: renderer.getPixelRatio(), calls: renderer.info.render.calls, tris: renderer.info.render.triangles, guests: guests.filter(G => G.s.visible).length, guestsMax: guestN, inside: guests.filter(G => G.mode === 'inside').length, routes: ARMS.map(A => A.routes.map(r => r.it.w.id)) }),
     sync() { Object.assign(cur, goal); placeCamera(); renderer.render(scene, camera); placePins(); },
-    dispose() { cancelAnimationFrame(raf); ro.disconnect(); document.removeEventListener('visibilitychange', vis); renderer.dispose(); },
+    dispose() { for (const G of guests) { G.tx.flat().forEach(t => t.dispose()); G.s.material.dispose(); } cancelAnimationFrame(raf); ro.disconnect(); document.removeEventListener('visibilitychange', vis); renderer.dispose(); },
   };
 }

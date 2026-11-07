@@ -151,3 +151,38 @@ export function pixelTex(src) {
   t.userData.ready = ready;
   pxCache.set(src, t); return t;
 }
+
+/* お客さん（来園者）のドット絵。キャストと同じちび体型・黒縁で、服と髪の色違いを canvas で描く（画像は増やさない）。
+   pal = { hair, skin, shirt, pants, hat?, balloon? }、frame＝歩きの2コマ（0/1）、back＝後ろ向き（奥へ歩くとき） */
+export function guestTex(pal, frame, back) {
+  const GW = 20, GH = 36, g = Array.from({ length: GH }, () => Array(GW).fill(null));
+  const put = (x, y, c) => { if (x >= 0 && x < GW && y >= 0 && y < GH) g[y][x] = c; };
+  const rect = (x0, y0, x1, y1, c) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) put(x, y, c); };
+  const B = 10; // 頭のてっぺんの行（上は風船の場所）
+  // 頭（角を1つずつ落とす）
+  rect(4, B, 15, B + 10, pal.hair); put(4, B, null); put(15, B, null); put(4, B + 10, null); put(15, B + 10, null);
+  if (!back) {
+    rect(5, B + 4, 14, B + 10, pal.skin); put(5, B + 10, null); put(14, B + 10, null);
+    rect(7, B + 6, 7, B + 7, '#1b1f2e'); rect(12, B + 6, 12, B + 7, '#1b1f2e');
+    put(6, B + 9, '#f3a0a0'); put(13, B + 9, '#f3a0a0');
+  }
+  if (pal.hat) { rect(4, B - 1, 15, B + 2, pal.hat); if (!back) rect(3, B + 3, 16, B + 3, pal.hat); }
+  // 胴と腕（腕は1コマごとに片方が1つ上がる）
+  rect(5, B + 11, 14, B + 17, pal.shirt);
+  const la = frame ? 0 : -1, ra = frame ? -1 : 0;
+  rect(3, B + 12 + la, 4, B + 16 + la, pal.shirt); rect(3, B + 17 + la, 4, B + 17 + la, pal.skin);
+  rect(15, B + 12 + ra, 16, B + 16 + ra, pal.shirt); rect(15, B + 17 + ra, 16, B + 17 + ra, pal.skin);
+  // 脚（片方が1つ浮く＝歩き）
+  const ll = frame ? 0 : 1, rl = frame ? 1 : 0;
+  rect(6, B + 18, 9, B + 23 - ll, pal.pants); rect(6, B + 24 - ll, 9, B + 24 - ll, '#5a3a2a');
+  rect(10, B + 18, 13, B + 23 - rl, pal.pants); rect(10, B + 24 - rl, 13, B + 24 - rl, '#5a3a2a');
+  if (pal.balloon) { rect(14, 1, 18, 5, pal.balloon); put(14, 1, null); put(18, 1, null); put(14, 5, null); put(18, 5, null); put(15, 2, '#ffffff'); }
+  // 縁取り：塗った所に隣り合う空きマスを黒っぽく
+  const O = '#1b1f2e', edge = [];
+  for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) if (!g[y][x] && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => g[y + dy]?.[x + dx] && g[y + dy][x + dx] !== O)) edge.push([x, y]);
+  for (const [x, y] of edge) g[y][x] = O;
+  if (pal.balloon) rect(17, 7, 17, B + 16 + ra, '#e9e4da'); // 風船のひも（縁取りのあとに描く）
+  const c = cv(GW, GH), x = c.getContext('2d');
+  for (let y = 0; y < GH; y++) for (let k = 0; k < GW; k++) if (g[y][k]) { x.fillStyle = g[y][k]; x.fillRect(k, y, 1, 1); }
+  return tex(c, { nearest: true });
+}
