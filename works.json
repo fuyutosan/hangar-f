@@ -223,6 +223,21 @@
    "flagship": true
   },
   {
+   "id": "oheya-hanabi",
+   "name": "おへや花火",
+   "land": "rest",
+   "kind": "app",
+   "icon": "🎆",
+   "color": "#f2b65a",
+   "date": "2026-11-11",
+   "url": "https://oheya-hanabi.pages.dev/",
+   "go": "眺める",
+   "one": "好きな音楽をかけて、お部屋で花火。",
+   "desc": "好きな音楽をかけたまま、お部屋で花火を眺めるアプリ。花火の中を飛ぶドローンの眺めや、名古屋城の夜空もえらべます。無料・登録なし・インストール不要。",
+   "shot": "assets/shots/oheya-hanabi.webp",
+   "shotM": "assets/shots/oheya-hanabi-m.webp"
+  },
+  {
    "id": "x",
    "name": "無線塔（X）",
    "land": "ask",
